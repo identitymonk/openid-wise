@@ -1,0 +1,21 @@
+name: Build Spec
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: gem install kramdown-rfc
+      - run: pip install xml2rfc
+      - run: make
