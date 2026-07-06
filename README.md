@@ -10,9 +10,11 @@ on [RFC 8417](https://datatracker.ietf.org/doc/html/rfc8417) and the
 
 ## Current Draft
 
-| Specification | Source |
-|---------------|--------|
-| WISE Profile 1.0 | [openid-wise-profile-1_0.md](openid-wise-profile-1_0.md) |
+| Specification | Source | Rendered |
+|---------------|--------|----------|
+| WISE Profile 1.0 | [openid-wise-profile-1_0.md](openid-wise-profile-1_0.md) | [build/openid-wise-profile-1_0.html](build/openid-wise-profile-1_0.html) |
+
+The rendered HTML and text are generated into the `build/` folder by `make`.
 
 ## Building the spec
 
@@ -23,7 +25,7 @@ gem install kramdown-rfc
 pip install xml2rfc
 ```
 
-Build all outputs:
+Build all outputs (written to `build/`):
 
 ```bash
 make
@@ -32,9 +34,10 @@ make
 Or build individually:
 
 ```bash
-kramdown-rfc2629 openid-wise-profile-1_0.md > openid-wise-profile-1_0.xml
-xml2rfc openid-wise-profile-1_0.xml --html -o openid-wise-profile-1_0.html
-xml2rfc openid-wise-profile-1_0.xml --text -o openid-wise-profile-1_0.txt
+mkdir -p build
+kramdown-rfc2629 openid-wise-profile-1_0.md > build/openid-wise-profile-1_0.xml
+xml2rfc build/openid-wise-profile-1_0.xml --html -o build/openid-wise-profile-1_0.html
+xml2rfc build/openid-wise-profile-1_0.xml --text -o build/openid-wise-profile-1_0.txt
 ```
 
 ## Related Specifications

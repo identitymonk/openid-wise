@@ -1,31 +1,139 @@
 ---
+stand_alone: true
+ipr: none
+cat: std # Check
+submissiontype: IETF
+wg: OpenID Shared Signals
 
-title: "OpenID WISE Profile Specification 1.0 - draft 00" abbrev: "WISE Profile 1.0" category: std
+docname: openid-wise-profile-1_0
 
-docname: openid-wise-profile-1_0 submissiontype: IETF number: date: consensus: true v: 3 area: "Security" workgroup: "Shared Signals"
+title: "OpenID WISE Profile Specification 1.0 - draft 00"
+abbrev: wiseset
+lang: en
+kw:
+ - security events
+ - workload identity
+ - shared signals
+ - SET
 
-keyword:
+author:
+- ins: J. Lombardo
+  name: Jeff Lombardo
+  org: Amazon Web Services
+  email: jeff.lombardo@gmail.com
+- ins: D. Sneeggen
+  name: Dag Sneeggen
+  org: Dendro
+  email: dag@dendro.systems
 
-- security events
-- workload identity
-- shared signals
-- SET
+normative:
+  RFC2119:
+  RFC8174:
+  RFC7516:
+  RFC8417:
+  RFC9493:
+  SSF:
+    title: "OpenID Shared Signals Framework Specification 1.0"
+    target: https://openid.net/specs/openid-sharedsignals-framework-1_0.html
+    author:
+      - ins: A. Tulshibagwale
+        name: Atul Tulshibagwale
+      - ins: T. Cappalli
+        name: Tim Cappalli
+      - ins: M. Scurtescu
+        name: Marius Scurtescu
+      - ins: A. Backman
+        name: Annabelle Backman
+      - ins: J. Bradley
+        name: John Bradley
+    date: 2024
+  CAEP:
+    title: "OpenID Continuous Access Evaluation Profile 1.0"
+    target: https://openid.net/specs/openid-caep-specification-1_0.html
+    author:
+      - ins: T. Cappalli
+        name: Tim Cappalli
+      - ins: A. Tulshibagwale
+        name: Atul Tulshibagwale
+    date: 2024
+  RISC:
+    title: "OpenID RISC Profile Specification 1.0"
+    target: https://openid.net/specs/openid-risc-1_0-final.html
+    author:
+      - ins: M. Scurtescu
+        name: Marius Scurtescu
+      - ins: A. Backman
+        name: Annabelle Backman
+      - ins: P. Hunt
+        name: Phil Hunt
+      - ins: J. Bradley
+        name: John Bradley
+      - ins: S. Bounev
+        name: Stan Bounev
+      - ins: A. Tulshibagwale
+        name: Atul Tulshibagwale
+    date: 2025
+  WIMSE-ARCH:
+    title: "Workload Identity in a Multi System Environment (WIMSE) Architecture"
+    target: https://www.ietf.org/archive/id/draft-ietf-wimse-arch-07.html
+    author:
+      - ins: J. Salowey
+        name: Joe Salowey
+      - ins: Y. Rosomakho
+        name: Yaroslav Rosomakho
+      - ins: H. Tschofenig
+        name: Hannes Tschofenig
+    date: 2026
+  WIMSE-ID:
+    title: "Workload Identifier"
+    target: https://datatracker.ietf.org/doc/draft-ietf-wimse-identifier/
+    author:
+      - ins: Y. Rosomakho
+        name: Yaroslav Rosomakho
+      - ins: J. Salowey
+        name: Joe Salowey
+    date: 2026
+  WIMSE-CRED:
+    title: "WIMSE Workload Credentials"
+    target: https://datatracker.ietf.org/doc/draft-ietf-wimse-workload-creds/
+    author:
+      - ins: B. Campbell
+        name: Brian Campbell
+      - ins: J. Salowey
+        name: Joe Salowey
+      - ins: A. Schwenkschuster
+        name: Arndt Schwenkschuster
+      - ins: Y. Sheffer
+        name: Yaron Sheffer
+      - ins: Y. Rosomakho
+        name: Yaroslav Rosomakho
+    date: 2026
 
-## author:
-
-```
-ins: J. Lombardo
-name: Jeff Lombardo
-org: Amazon Web Services
-email: jeff.lombardo@gmail.com
-
-```
-
-- ins: D. Sneeggen name: Dag Sneeggen org: Dendro email: [dag@dendro.systems](mailto:dag@dendro.systems)
-
-normative: RFC2119: RFC8174: RFC7516: RFC8417: RFC9493: SSF: title: "OpenID Shared Signals Framework Specification 1.0" target: [https://openid.net/specs/openid-sharedsignals-framework-1_0.html](https://openid.net/specs/openid-sharedsignals-framework-1_0.html) author: - ins: A. Tulshibagwale name: Atul Tulshibagwale - ins: T. Cappalli name: Tim Cappalli - ins: M. Scurtescu name: Marius Scurtescu - ins: A. Backman name: Annabelle Backman - ins: J. Bradley name: John Bradley date: 2024 CAEP: title: "OpenID Continuous Access Evaluation Profile 1.0" target: [https://openid.net/specs/openid-caep-specification-1_0.html](https://openid.net/specs/openid-caep-specification-1_0.html) author: - ins: T. Cappalli name: Tim Cappalli - ins: A. Tulshibagwale name: Atul Tulshibagwale date: 2024 WIMSE-ARCH: title: "Workload Identity in a Multi System Environment (WIMSE) Architecture" target: [https://www.ietf.org/archive/id/draft-ietf-wimse-arch-07.html](https://www.ietf.org/archive/id/draft-ietf-wimse-arch-07.html) author: - ins: J. Salowey name: Joe Salowey - ins: Y. Rosomakho name: Yaroslav Rosomakho - ins: H. Tschofenig name: Hannes Tschofenig date: 2026 WIMSE-ID: title: "Workload Identifier" target: [https://datatracker.ietf.org/doc/draft-ietf-wimse-identifier/](https://datatracker.ietf.org/doc/draft-ietf-wimse-identifier/) author: - ins: Y. Rosomakho name: Yaroslav Rosomakho - ins: J. Salowey name: Joe Salowey date: 2026 WIMSE-CRED: title: "WIMSE Workload Credentials" target: [https://datatracker.ietf.org/doc/draft-ietf-wimse-workload-creds/](https://datatracker.ietf.org/doc/draft-ietf-wimse-workload-creds/) author: - ins: B. Campbell name: Brian Campbell - ins: J. Salowey name: Joe Salowey - ins: A. Schwenkschuster name: Arndt Schwenkschuster - ins: Y. Sheffer name: Yaron Sheffer - ins: Y. Rosomakho name: Yaroslav Rosomakho date: 2026
-
-informative: RFC7519: RFC7517: RISC: title: "OpenID RISC Profile Specification 1.0" target: [https://openid.net/specs/openid-risc-profile-specification-1_0.html](https://openid.net/specs/openid-risc-profile-specification-1_0.html) author: - ins: M. Scurtescu name: Marius Scurtescu - ins: A. Backman name: Annabelle Backman - ins: A. Tulshibagwale name: Atul Tulshibagwale date: 2024 SPIFFE: title: "Secure Production Identity Framework for Everyone" target: [https://spiffe.io/docs/latest/spiffe-specs/spiffe/](https://spiffe.io/docs/latest/spiffe-specs/spiffe/) date: 2024 AGENT-AUTH: title: "AI Agent Authentication and Authorization" target: [https://www.ietf.org/archive/id/draft-klrc-aiagent-auth-02.html](https://www.ietf.org/archive/id/draft-klrc-aiagent-auth-02.html) author: - ins: P. Kasselman name: Pieter Kasselman - ins: D. Hardt name: Dick Hardt - ins: A. Schwenkschuster name: Arndt Schwenkschuster date: 2026 CIMD: title: "Client ID Metadata Document" target: [https://www.ietf.org/archive/id/draft-parecki-oauth-client-id-metadata-document-07.html](https://www.ietf.org/archive/id/draft-parecki-oauth-client-id-metadata-document-07.html) author: - ins: A. Parecki name: Aaron Parecki date: 2025
+informative:
+  RFC7519:
+  RFC7517:
+  SPIFFE:
+    title: "Secure Production Identity Framework for Everyone"
+    target: https://spiffe.io/docs/latest/spiffe-specs/spiffe/
+    date: 2024
+  AGENT-AUTH:
+    title: "AI Agent Authentication and Authorization"
+    target: https://www.ietf.org/archive/id/draft-klrc-aiagent-auth-02.html
+    author:
+      - ins: P. Kasselman
+        name: Pieter Kasselman
+      - ins: D. Hardt
+        name: Dick Hardt
+      - ins: A. Schwenkschuster
+        name: Arndt Schwenkschuster
+    date: 2026
+  CIMD:
+    title: "Client ID Metadata Document"
+    target: https://www.ietf.org/archive/id/draft-parecki-oauth-client-id-metadata-document-07.html
+    author:
+      - ins: A. Parecki
+        name: Aaron Parecki
+    date: 2025
 
 --- abstract
 
@@ -75,10 +183,9 @@ Because a single authority governs each trust domain, WISE events are designed t
 
 The base URI for WISE event types is:
 
-```
+~~~
 https://schemas.openid.net/secevent/wise/event-type/
-
-```
+~~~
 
 ## Workload Credential Lifecycle Events
 
@@ -102,14 +209,15 @@ The `credential-issued` event signals that a new credential was issued to a work
 
 Attributes:
 
-- **credential_type** - REQUIRED. The type of credential issued. Possible values:- `wit` - Workload Identity Token as defined in {{WIMSE-CRED}}
-- `wic` - Workload Identity Certificate as defined in {{WIMSE-CRED}}
-- `x509_svid` - X.509-SVID as defined in {{SPIFFE}}
-- `x509_generic` - Generic X.509 certificate not conforming to WIC or SVID profiles
-- `oauth_private_key_jwt` - OAuth 2.0 client authentication using private_key_jwt (RFC 7523)
-- `oauth_mtls` - OAuth 2.0 mutual TLS client authentication (RFC 8705)
-- `oauth_client_secret` - OAuth 2.0 client_id and client_secret credential pair
-- `api_key` - Static API key or long-lived bearer token
+- **credential_type** - REQUIRED. The type of credential issued. Possible values:
+    - `wit` - Workload Identity Token as defined in {{WIMSE-CRED}}
+    - `wic` - Workload Identity Certificate as defined in {{WIMSE-CRED}}
+    - `x509_svid` - X.509-SVID as defined in {{SPIFFE}}
+    - `x509_generic` - Generic X.509 certificate not conforming to WIC or SVID profiles
+    - `oauth_private_key_jwt` - OAuth 2.0 client authentication using private_key_jwt (RFC 7523)
+    - `oauth_mtls` - OAuth 2.0 mutual TLS client authentication (RFC 8705)
+    - `oauth_client_secret` - OAuth 2.0 client_id and client_secret credential pair
+    - `api_key` - Static API key or long-lived bearer token
 - Additional values MAY be defined by profiling specifications or private agreement between Transmitter and Receiver.
 - **credential_id** - OPTIONAL. An identifier for the credential (e.g., certificate serial number, `jti` claim value).
 - **expiry** - OPTIONAL. The expiration time of the credential as a JSON number (NumericDate per {{RFC7519}}).
@@ -117,7 +225,7 @@ Attributes:
 
 The following example is non-normative.
 
-```json
+~~~ json
 {
   "iss": "https://authority.example.com/",
   "jti": "wise-evt-001",
@@ -135,9 +243,7 @@ The following example is non-normative.
     }
   }
 }
-
-```
-
+~~~
 {: #fig-credential-issued title="Example: Credential Issued"}
 
 ### credential-rotated
@@ -156,7 +262,7 @@ Attributes:
 
 The following example is non-normative.
 
-```json
+~~~ json
 {
   "iss": "https://authority.example.com/",
   "jti": "wise-evt-002",
@@ -175,9 +281,7 @@ The following example is non-normative.
     }
   }
 }
-
-```
-
+~~~
 {: #fig-credential-rotated title="Example: Credential Rotated"}
 
 ### credential-revoked
@@ -190,15 +294,16 @@ Attributes:
 
 - **credential_type** - REQUIRED. The type of credential revoked.
 - **credential_id** - OPTIONAL. Identifier of the revoked credential.
-- **reason** - OPTIONAL. Why the credential was revoked. Possible values:- `compromise` - The credential is believed compromised.
-- `superseded` - Replaced by a new credential.
-- `cessation` - The workload no longer operates.
-- `policy_violation` - Revoked due to a policy violation.
+- **reason** - OPTIONAL. Why the credential was revoked. Possible values:
+    - `compromise` - The credential is believed compromised.
+    - `superseded` - Replaced by a new credential.
+    - `cessation` - The workload no longer operates.
+    - `policy_violation` - Revoked due to a policy violation.
 - **event_timestamp** - OPTIONAL. The time at which revocation occurred.
 
 The following example is non-normative.
 
-```json
+~~~ json
 {
   "iss": "https://authority.example.com/",
   "jti": "wise-evt-003",
@@ -216,9 +321,7 @@ The following example is non-normative.
     }
   }
 }
-
-```
-
+~~~
 {: #fig-credential-revoked title="Example: Credential Revoked"}
 
 ### credential-compromise
@@ -236,7 +339,7 @@ Attributes:
 
 The following example is non-normative.
 
-```json
+~~~ json
 {
   "iss": "https://authority.example.com/",
   "jti": "wise-evt-004",
@@ -254,9 +357,7 @@ The following example is non-normative.
     }
   }
 }
-
-```
-
+~~~
 {: #fig-credential-compromise title="Example: Credential Compromise"}
 
 ### credential-renewal-failure
@@ -270,15 +371,16 @@ Attributes:
 - **credential_type** - REQUIRED. The type of credential that failed to renew.
 - **credential_id** - OPTIONAL. Identifier of the credential that was not renewed.
 - **current_expiry** - OPTIONAL. Expiration of the current (last valid) credential. JSON number (NumericDate).
-- **failure_reason** - OPTIONAL. Why renewal failed. Possible values:- `identity_server_unreachable` - Cannot reach the Identity Server.
-- `posture_evaluation_failed` - The workload did not pass posture evaluation.
-- `policy_denied` - Issuance policy denied renewal.
-- `internal_error` - Internal error in the provisioning pipeline.
+- **failure_reason** - OPTIONAL. Why renewal failed. Possible values:
+    - `identity_server_unreachable` - Cannot reach the Identity Server.
+    - `posture_evaluation_failed` - The workload did not pass posture evaluation.
+    - `policy_denied` - Issuance policy denied renewal.
+    - `internal_error` - Internal error in the provisioning pipeline.
 - **event_timestamp** - OPTIONAL. Time the failure was detected.
 
 The following example is non-normative.
 
-```json
+~~~ json
 {
   "iss": "https://authority.example.com/",
   "jti": "wise-evt-005",
@@ -296,9 +398,7 @@ The following example is non-normative.
     }
   }
 }
-
-```
-
+~~~
 {: #fig-credential-renewal-failure title="Example: Credential Renewal Failure"}
 
 ## Bound Key Lifecycle Events
@@ -315,21 +415,23 @@ The `bound-key-issued` event signals that a new proof-of-possession key was boun
 
 Attributes:
 
-- **key_type** - REQUIRED. The type of key binding. Possible values:- `dpop` - DPoP proof-of-possession key
-- `mtls` - mTLS certificate-bound key
-- `cnf` - Confirmation key (as per WIT `cnf` claim)
-- `attestation` - Key used during posture evaluation
+- **key_type** - REQUIRED. The type of key binding. Possible values:
+    - `dpop` - DPoP proof-of-possession key
+    - `mtls` - mTLS certificate-bound key
+    - `cnf` - Confirmation key (as per WIT `cnf` claim)
+    - `attestation` - Key used during posture evaluation
 - **key_id** - OPTIONAL. Identifier of the bound key (`kid` or Subject Key Identifier).
 - **credential_id** - OPTIONAL. Identifier of the credential the key is bound to.
-- **key_storage** - OPTIONAL. Where the private key material is stored. Possible values:- `hardware` - Key is stored in a hardware security module, TPM, secure enclave, or equivalent tamper-resistant storage.
-- `software` - Key is stored in software (filesystem, memory, or application-managed keystore).
+- **key_storage** - OPTIONAL. Where the private key material is stored. Possible values:
+    - `hardware` - Key is stored in a hardware security module, TPM, secure enclave, or equivalent tamper-resistant storage.
+    - `software` - Key is stored in software (filesystem, memory, or application-managed keystore).
 - **key_storage_ecosystem** - OPTIONAL. Free-text description of the hardware or software environment protecting the key. Examples: "iPhone 17s, iOS 23 patch 6", "AWS Nitro Enclave", "Azure Confidential VM, AMD SEV-SNP", "FIPS 140-3 Level 3 HSM".
 - **expiry** - OPTIONAL. Expiration of the bound key. JSON number (NumericDate).
 - **event_timestamp** - OPTIONAL. Time of issuance.
 
 The following example is non-normative.
 
-```json
+~~~ json
 {
   "iss": "https://authority.example.com/",
   "jti": "wise-evt-010",
@@ -349,9 +451,7 @@ The following example is non-normative.
     }
   }
 }
-
-```
-
+~~~
 {: #fig-bound-key-issued title="Example: Bound Key Issued"}
 
 ### bound-key-rotated
@@ -382,14 +482,15 @@ Attributes:
 - **key_type** - REQUIRED. The type of key binding.
 - **key_id** - OPTIONAL. Identifier of the revoked key.
 - **credential_id** - OPTIONAL. Identifier of the associated credential.
-- **reason** - OPTIONAL. Why the key was revoked. Possible values:- `compromise` - The key material is believed compromised.
-- `superseded` - Replaced by a new key.
-- `policy_violation` - Revoked due to policy.
+- **reason** - OPTIONAL. Why the key was revoked. Possible values:
+    - `compromise` - The key material is believed compromised.
+    - `superseded` - Replaced by a new key.
+    - `policy_violation` - Revoked due to policy.
 - **event_timestamp** - OPTIONAL. Time of revocation.
 
 The following example is non-normative.
 
-```json
+~~~ json
 {
   "iss": "https://authority.example.com/",
   "jti": "wise-evt-012",
@@ -408,9 +509,7 @@ The following example is non-normative.
     }
   }
 }
-
-```
-
+~~~
 {: #fig-bound-key-revoked title="Example: Bound Key Revoked"}
 
 ## Workload Identity State Events
@@ -425,10 +524,11 @@ The `workload-disabled` event signals that the trust domain authority has suspen
 
 Attributes:
 
-- **reason** - OPTIONAL. Why the workload was disabled. Possible values:- `compromise` - The workload is believed compromised.
-- `policy_violation` - Suspended due to a policy violation.
-- `administrative` - Disabled by an administrator.
-- `maintenance` - Temporarily disabled for maintenance.
+- **reason** - OPTIONAL. Why the workload was disabled. Possible values:
+    - `compromise` - The workload is believed compromised.
+    - `policy_violation` - Suspended due to a policy violation.
+    - `administrative` - Disabled by an administrator.
+    - `maintenance` - Temporarily disabled for maintenance.
 - **event_timestamp** - OPTIONAL. Time of disablement.
 
 ### workload-enabled
@@ -463,27 +563,30 @@ The `trust-anchor-changed` event signals that the trust anchors for a trust doma
 
 Attributes:
 
-- **anchor_type** - REQUIRED. The type of trust material that changed. Possible values:- `x509_ca` - X.509 CA certificate(s) used to validate Workload Identity Certificates (WIC) or X.509-SVIDs.
-- `jwks` - JSON Web Key Set used to validate Workload Identity Tokens (WIT).
-- **change_type** - REQUIRED. The nature of the change. Possible values:- `key-added` - A new key or CA was added to the trust bundle.
-- `key-rotated` - An existing key or CA was replaced.
-- `key-revoked` - A key or CA was revoked and MUST no longer be trusted.
-- `key-expired` - A key or CA has expired.
-- `full-replacement` - The entire trust bundle was replaced.
+- **anchor_type** - REQUIRED. The type of trust material that changed. Possible values:
+    - `x509_ca` - X.509 CA certificate(s) used to validate Workload Identity Certificates (WIC) or X.509-SVIDs.
+    - `jwks` - JSON Web Key Set used to validate Workload Identity Tokens (WIT).
+- **change_type** - REQUIRED. The nature of the change. Possible values:
+    - `key-added` - A new key or CA was added to the trust bundle.
+    - `key-rotated` - An existing key or CA was replaced.
+    - `key-revoked` - A key or CA was revoked and MUST no longer be trusted.
+    - `key-expired` - A key or CA has expired.
+    - `full-replacement` - The entire trust bundle was replaced.
 - **trust_domain** - REQUIRED. The FQDN of the trust domain whose material changed.
 - **effective_at** - OPTIONAL. When the new material becomes (or became) active. JSON number (NumericDate).
 - **old_material_expiry** - OPTIONAL. When the old material will cease to be valid (grace period end). JSON number (NumericDate).
 - **jwks_uri** - OPTIONAL. When `anchor_type` is `jwks`, the URI to fetch the updated JWK Set.
 - **x509_bundle_uri** - OPTIONAL. When `anchor_type` is `x509_ca`, the URI to fetch the updated CA bundle.
 - **key_id** - OPTIONAL. The specific key affected. For JWKS, the `kid` value. For X.509, the certificate serial number or Subject Key Identifier.
-- **reason** - OPTIONAL. Why the change was made. Possible values:- `scheduled-rotation` - Routine key rotation.
-- `compromise` - A key or CA is believed compromised.
-- `policy-change` - Changed due to updated security policy.
-- `expiry` - Proactive rotation before scheduled expiry.
+- **reason** - OPTIONAL. Why the change was made. Possible values:
+    - `scheduled-rotation` - Routine key rotation.
+    - `compromise` - A key or CA is believed compromised.
+    - `policy-change` - Changed due to updated security policy.
+    - `expiry` - Proactive rotation before scheduled expiry.
 
 The following example is non-normative.
 
-```json
+~~~ json
 {
   "iss": "https://authority.example.com/",
   "jti": "wise-evt-020",
@@ -506,14 +609,12 @@ The following example is non-normative.
     }
   }
 }
-
-```
-
+~~~
 {: #fig-trust-anchor-jwks title="Example: Trust Anchor Changed (JWKS Rotation)"}
 
 The following example is non-normative.
 
-```json
+~~~ json
 {
   "iss": "https://authority.example.com/",
   "jti": "wise-evt-021",
@@ -533,9 +634,7 @@ The following example is non-normative.
     }
   }
 }
-
-```
-
+~~~
 {: #fig-trust-anchor-x509 title="Example: Trust Anchor Changed (CA Compromise)"}
 
 ### trust-domain-federation-revoked
@@ -547,10 +646,11 @@ The `trust-domain-federation-revoked` event signals that a previously federated 
 Attributes:
 
 - **trust_domain** - REQUIRED. The FQDN of the trust domain that is no longer trusted.
-- **reason** - OPTIONAL. Why federation was revoked. Possible values:- `compromise` - The federated domain is believed compromised.
-- `policy_violation` - Federation revoked due to policy.
-- `administrative` - Administrative decision to end federation.
-- `contractual` - Business relationship ended.
+- **reason** - OPTIONAL. Why federation was revoked. Possible values:
+    - `compromise` - The federated domain is believed compromised.
+    - `policy_violation` - Federation revoked due to policy.
+    - `administrative` - Administrative decision to end federation.
+    - `contractual` - Business relationship ended.
 - **effective_at** - OPTIONAL. When the revocation takes effect. JSON number (NumericDate).
 - **event_timestamp** - OPTIONAL. Time the decision was made.
 
@@ -607,9 +707,10 @@ The `posture-evaluation-failed` event signals that a workload did not pass postu
 
 Attributes:
 
-- **evaluation_type** - OPTIONAL. The scope of evaluation that failed. Possible values:- `platform` - Platform-level evaluation (e.g., node integrity, TEE verification).
-- `workload` - Workload-level evaluation (e.g., binary identity, image hash).
-- `runtime` - Runtime environment evaluation (e.g., configuration compliance, network posture).
+- **evaluation_type** - OPTIONAL. The scope of evaluation that failed. Possible values:
+    - `platform` - Platform-level evaluation (e.g., node integrity, TEE verification).
+    - `workload` - Workload-level evaluation (e.g., binary identity, image hash).
+    - `runtime` - Runtime environment evaluation (e.g., configuration compliance, network posture).
 - **reason** - OPTIONAL. Why the evaluation failed.
 - **event_timestamp** - OPTIONAL. Time of the failure.
 
@@ -636,22 +737,24 @@ The `workload-baseline-changed` event signals that a workload's runtime environm
 
 Attributes:
 
-- **reason** - OPTIONAL. Why the baseline changed. Possible values:- `migration` - Workload moved to a different node, region, or zone.
-- `scaling` - New instances added or removed.
-- `redeployment` - Workload was redeployed (same identity, new instance).
-- `image-update` - Runtime image or binary was updated.
-- `config-change` - Configuration affecting identity posture changed.
-- `node-reassignment` - Underlying compute node changed.
+- **reason** - OPTIONAL. Why the baseline changed. Possible values:
+    - `migration` - Workload moved to a different node, region, or zone.
+    - `scaling` - New instances added or removed.
+    - `redeployment` - Workload was redeployed (same identity, new instance).
+    - `image-update` - Runtime image or binary was updated.
+    - `config-change` - Configuration affecting identity posture changed.
+    - `node-reassignment` - Underlying compute node changed.
 - **previous_context** - OPTIONAL. JSON object describing the prior environment metadata (structure defined by implementation).
 - **current_context** - OPTIONAL. JSON object describing the new environment metadata.
-- **posture_evaluation_status** - OPTIONAL. Whether posture re-evaluation has occurred. Possible values:- `succeeded` - Re-evaluation completed successfully.
-- `pending` - Re-evaluation has not yet occurred.
-- `failed` - Re-evaluation was attempted and failed.
+- **posture_evaluation_status** - OPTIONAL. Whether posture re-evaluation has occurred. Possible values:
+    - `succeeded` - Re-evaluation completed successfully.
+    - `pending` - Re-evaluation has not yet occurred.
+    - `failed` - Re-evaluation was attempted and failed.
 - **event_timestamp** - OPTIONAL. Time of the change.
 
 The following example is non-normative.
 
-```json
+~~~ json
 {
   "iss": "https://authority.example.com/",
   "jti": "wise-evt-030",
@@ -676,9 +779,7 @@ The following example is non-normative.
     }
   }
 }
-
-```
-
+~~~
 {: #fig-baseline-changed title="Example: Workload Baseline Changed (Migration)"}
 
 ### workload-compromised
@@ -702,10 +803,11 @@ The `anomalous-behavior-detected` event signals that unusual behavior was observ
 Attributes:
 
 - **anomaly_type** - OPTIONAL. Category of the anomaly.
-- **severity** - OPTIONAL. Severity level. Possible values:- `low`
-- `medium`
-- `high`
-- `critical`
+- **severity** - OPTIONAL. Severity level. Possible values:
+    - `low`
+    - `medium`
+    - `high`
+    - `critical`
 - **reason_admin** - OPTIONAL. Description for administrators.
 - **event_timestamp** - OPTIONAL. Time of detection.
 
@@ -719,37 +821,34 @@ The `uri` format is the primary subject identifier format for WISE events. It ca
 
 The following example is non-normative.
 
-```json
+~~~ json
 {
   "format": "uri",
   "uri": "wimse://trust.example.com/workload/payment-service"
 }
-
-```
+~~~
 
 Deployments using SPIFFE identifiers {{SPIFFE}} express the subject using the `spiffe` URI scheme:
 
 The following example is non-normative.
 
-```json
+~~~ json
 {
   "format": "uri",
   "uri": "spiffe://trust.example.com/ns/production/sa/payment-service"
 }
-
-```
+~~~
 
 Deployments using OAuth 2.0 Client ID Metadata Documents {{CIMD}} may express the workload subject using the client identifier URI:
 
 The following example is non-normative.
 
-```json
+~~~ json
 {
   "format": "uri",
   "uri": "https://client.example.com/.well-known/oauth-client"
 }
-
-```
+~~~
 
 ## Trust Domain Subject
 
@@ -757,13 +856,12 @@ For events that apply to an entire trust domain (e.g., `trust-anchor-changed`, `
 
 The following example is non-normative.
 
-```json
+~~~ json
 {
   "format": "uri",
   "uri": "wimse://trust.example.com"
 }
-
-```
+~~~
 
 # Security Considerations
 
@@ -796,13 +894,11 @@ This specification defines no new IANA registrations. Event Type URIs are regist
 --- back
 
 # Acknowledgments
-
 {:numbered="false"}
 
 The authors would like to thank the members of the OpenID Foundation Shared Signals Working Group and the IETF WIMSE Working Group for their contributions to this specification.
 
 # Document History
-
 {:numbered="false"}
 
 -00

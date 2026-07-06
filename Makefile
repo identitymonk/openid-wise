@@ -1,17 +1,21 @@
 DRAFTS = openid-wise-profile-1_0
+BUILD = build
 
-all: $(addsuffix .html,$(DRAFTS)) $(addsuffix .txt,$(DRAFTS))
+all: $(addprefix $(BUILD)/,$(addsuffix .html,$(DRAFTS))) $(addprefix $(BUILD)/,$(addsuffix .txt,$(DRAFTS)))
 
-%.xml: %.md
+$(BUILD):
+	mkdir -p $(BUILD)
+
+$(BUILD)/%.xml: %.md | $(BUILD)
 	kramdown-rfc2629 $< > $@
 
-%.html: %.xml
+$(BUILD)/%.html: $(BUILD)/%.xml
 	xml2rfc $< --html -o $@
 
-%.txt: %.xml
+$(BUILD)/%.txt: $(BUILD)/%.xml
 	xml2rfc $< --text -o $@
 
 clean:
-	rm -f $(addsuffix .xml,$(DRAFTS)) $(addsuffix .html,$(DRAFTS)) $(addsuffix .txt,$(DRAFTS))
+	rm -rf $(BUILD)
 
 .PHONY: all clean
