@@ -6,7 +6,7 @@ OpenID Shared Signals                                        J. Lombardo
                                                      Amazon Web Services
                                                              D. Sneeggen
                                                                   Dendro
-                                                             6 July 2026
+                                                             7 July 2026
 
 
             OpenID WISE Profile Specification 1.0 - draft 00
@@ -78,12 +78,13 @@ Lombardo & Sneeggen          Standards Track                    [Page 1]
      4.2.  Replay and Freshness  . . . . . . . . . . . . . . . . . .  25
      4.3.  Authorization . . . . . . . . . . . . . . . . . . . . . .  25
      4.4.  Compromise Response . . . . . . . . . . . . . . . . . . .  25
-   5.  Privacy Considerations  . . . . . . . . . . . . . . . . . . .  25
+     4.5.  Relationship to Credential Freshness Models . . . . . . .  25
+   5.  Privacy Considerations  . . . . . . . . . . . . . . . . . . .  26
    6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  26
    7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  26
      7.1.  Normative References  . . . . . . . . . . . . . . . . . .  26
      7.2.  Informative References  . . . . . . . . . . . . . . . . .  27
-   Acknowledgments . . . . . . . . . . . . . . . . . . . . . . . . .  27
+   Acknowledgments . . . . . . . . . . . . . . . . . . . . . . . . .  28
    Document History  . . . . . . . . . . . . . . . . . . . . . . . .  28
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  28
 
@@ -103,7 +104,6 @@ Lombardo & Sneeggen          Standards Track                    [Page 1]
    through either Workload Identity Tokens (WIT) at the application
    layer or Workload Identity Certificates (WIC) at the transport layer,
    as defined in [WIMSE-CRED].
-
 
 
 
@@ -1384,6 +1384,44 @@ Lombardo & Sneeggen          Standards Track                   [Page 24]
    reject the affected credentials, keys, or trust material without
    waiting for additional confirmation.
 
+4.5.  Relationship to Credential Freshness Models
+
+   Deployments use different mechanisms to limit the exposure window of
+   a compromised or deprovisioned workload:
+
+   *  Issuer-side status signalling, where the trust domain authority
+      communicates lifecycle changes to relying parties through an event
+      channel.  The events defined in this specification serve this
+      purpose.
+
+
+
+
+Lombardo & Sneeggen          Standards Track                   [Page 25]
+
+                                 wiseset                       July 2026
+
+
+   *  Short credential lifetime, where the remaining validity period
+      bounds the exposure window.  In the WIMSE model, credentials are
+      intentionally short-lived to force posture evaluation before re-
+      issuance.
+
+   *  Condition-liveness, where a locally observable condition (hardware
+      release policy, TEE state, platform integrity measurement) gates
+      each key operation.  Failure of the condition prevents the next
+      presentation or handshake step without requiring a remote signal.
+
+   These mechanisms are complementary, not mutually exclusive.
+   Condition-bounded credentials reduce the local deprovisioning window
+   but cannot observe externally originated changes: issuer policy
+   withdrawal, trust anchor rotation, cross-domain incident response, or
+   administrative decisions to terminate an established connection.
+   WISE events address these cases.  Deployments combining short-lived
+   credentials with condition-liveness properties still benefit from
+   issuer-side signalling for lifecycle changes that no local mechanism
+   can detect.
+
 5.  Privacy Considerations
 
    WISE events may reveal information about internal infrastructure,
@@ -1394,13 +1432,6 @@ Lombardo & Sneeggen          Standards Track                   [Page 24]
    Events SHOULD NOT include personally identifiable information.
    Workload identifiers SHOULD NOT encode information about the humans
    who manage or operate the workloads.
-
-
-
-Lombardo & Sneeggen          Standards Track                   [Page 25]
-
-                                 wiseset                       July 2026
-
 
 6.  IANA Considerations
 
@@ -1419,6 +1450,13 @@ Lombardo & Sneeggen          Standards Track                   [Page 25]
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+
+
+Lombardo & Sneeggen          Standards Track                   [Page 26]
+
+                                 wiseset                       July 2026
+
 
    [RFC7516]  Jones, M. and J. Hildebrand, "JSON Web Encryption (JWE)",
               RFC 7516, DOI 10.17487/RFC7516, May 2015,
@@ -1449,15 +1487,6 @@ Lombardo & Sneeggen          Standards Track                   [Page 25]
               Specification 1.0", 2025,
               <https://openid.net/specs/openid-risc-1_0-final.html>.
 
-
-
-
-
-Lombardo & Sneeggen          Standards Track                   [Page 26]
-
-                                 wiseset                       July 2026
-
-
    [WIMSE-ARCH]
               Salowey, J., Rosomakho, Y., and H. Tschofenig, "Workload
               Identity in a Multi System Environment (WIMSE)
@@ -1475,6 +1504,15 @@ Lombardo & Sneeggen          Standards Track                   [Page 26]
               workload-creds/>.
 
 7.2.  Informative References
+
+
+
+
+
+Lombardo & Sneeggen          Standards Track                   [Page 27]
+
+                                 wiseset                       July 2026
+
 
    [RFC7519]  Jones, M., Bradley, J., and N. Sakimura, "JSON Web Token
               (JWT)", RFC 7519, DOI 10.17487/RFC7519, May 2015,
@@ -1503,17 +1541,6 @@ Acknowledgments
    Shared Signals Working Group and the IETF WIMSE Working Group for
    their contributions to this specification.
 
-
-
-
-
-
-
-Lombardo & Sneeggen          Standards Track                   [Page 27]
-
-                                 wiseset                       July 2026
-
-
 Document History
 
    -00
@@ -1530,33 +1557,6 @@ Authors' Addresses
    Dag Sneeggen
    Dendro
    Email: dag@dendro.systems
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

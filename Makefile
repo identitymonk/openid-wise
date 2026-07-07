@@ -1,7 +1,9 @@
 DRAFTS = openid-wise-profile-1_0
 BUILD = build
 
-all: $(addprefix $(BUILD)/,$(addsuffix .html,$(DRAFTS))) $(addprefix $(BUILD)/,$(addsuffix .txt,$(DRAFTS)))
+all: $(addprefix $(BUILD)/,$(addsuffix .html,$(DRAFTS))) \
+     $(addprefix $(BUILD)/,$(addsuffix .txt,$(DRAFTS))) \
+     $(addprefix $(BUILD)/,$(addsuffix .docx,$(DRAFTS)))
 
 $(BUILD):
 	mkdir -p $(BUILD)
@@ -14,6 +16,9 @@ $(BUILD)/%.html: $(BUILD)/%.xml
 
 $(BUILD)/%.txt: $(BUILD)/%.xml
 	xml2rfc $< --text -o $@
+
+$(BUILD)/%.docx: $(BUILD)/%.html
+	pandoc $< -f html -t docx -o $@
 
 clean:
 	rm -rf $(BUILD)

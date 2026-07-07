@@ -1236,7 +1236,7 @@ li > p:last-of-type:only-child {
 <dd class="workgroup">OpenID Shared Signals</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-07-06" class="published">6 July 2026</time>
+<time datetime="2026-07-07" class="published">7 July 2026</time>
     </dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
@@ -1400,6 +1400,9 @@ li > p:last-of-type:only-child {
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.4">
                 <p id="section-toc.1-1.4.2.4.1"><a href="#section-4.4" class="auto internal xref">4.4</a>.  <a href="#name-compromise-response" class="internal xref">Compromise Response</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.5">
+                <p id="section-toc.1-1.4.2.5.1"><a href="#section-4.5" class="auto internal xref">4.5</a>.  <a href="#name-relationship-to-credential-" class="internal xref">Relationship to Credential Freshness Models</a></p>
 </li>
             </ul>
 </li>
@@ -2702,6 +2705,26 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.1-2" cla
 <a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-compromise-response" class="section-name selfRef">Compromise Response</a>
         </h3>
 <p id="section-4.4-1">Upon receiving a <code>credential-compromise</code>, <code>bound-key-revoked</code> (with reason <code>compromise</code>), <code>trust-anchor-changed</code> (with reason <code>compromise</code>), or <code>workload-compromised</code> event, Receivers SHOULD take immediate action to reject the affected credentials, keys, or trust material without waiting for additional confirmation.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="relationship-to-credential-freshness-models">
+<section id="section-4.5">
+        <h3 id="name-relationship-to-credential-">
+<a href="#section-4.5" class="section-number selfRef">4.5. </a><a href="#name-relationship-to-credential-" class="section-name selfRef">Relationship to Credential Freshness Models</a>
+        </h3>
+<p id="section-4.5-1">Deployments use different mechanisms to limit the exposure window of a compromised or deprovisioned workload:<a href="#section-4.5-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.5-2.1">
+            <p id="section-4.5-2.1.1">Issuer-side status signalling, where the trust domain authority communicates lifecycle changes to relying parties through an event channel. The events defined in this specification serve this purpose.<a href="#section-4.5-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.5-2.2">
+            <p id="section-4.5-2.2.1">Short credential lifetime, where the remaining validity period bounds the exposure window. In the WIMSE model, credentials are intentionally short-lived to force posture evaluation before re-issuance.<a href="#section-4.5-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.5-2.3">
+            <p id="section-4.5-2.3.1">Condition-liveness, where a locally observable condition (hardware release policy, TEE state, platform integrity measurement) gates each key operation. Failure of the condition prevents the next presentation or handshake step without requiring a remote signal.<a href="#section-4.5-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.5-3">These mechanisms are complementary, not mutually exclusive. Condition-bounded credentials reduce the local deprovisioning window but cannot observe externally originated changes: issuer policy withdrawal, trust anchor rotation, cross-domain incident response, or administrative decisions to terminate an established connection. WISE events address these cases. Deployments combining short-lived credentials with condition-liveness properties still benefit from issuer-side signalling for lifecycle changes that no local mechanism can detect.<a href="#section-4.5-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>

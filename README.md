@@ -12,9 +12,9 @@ on [RFC 8417](https://datatracker.ietf.org/doc/html/rfc8417) and the
 
 | Specification | Source | Rendered |
 |---------------|--------|----------|
-| WISE Profile 1.0 | [openid-wise-profile-1_0.md](openid-wise-profile-1_0.md) | [build/openid-wise-profile-1_0.html](build/openid-wise-profile-1_0.html) |
+| WISE Profile 1.0 | [openid-wise-profile-1_0.md](openid-wise-profile-1_0.md) | [HTML](build/openid-wise-profile-1_0.html) · [Word](build/openid-wise-profile-1_0.docx) |
 
-The rendered HTML and text are generated into the `build/` folder by `make`.
+The rendered HTML, text, and Word outputs are generated into the `build/` folder by `make`.
 
 ## Building the spec
 
@@ -23,6 +23,7 @@ Install dependencies:
 ```bash
 gem install kramdown-rfc
 pip install xml2rfc
+# pandoc is required for the Word (.docx) output: https://pandoc.org/installing.html
 ```
 
 Build all outputs (written to `build/`):
@@ -38,6 +39,7 @@ mkdir -p build
 kramdown-rfc2629 openid-wise-profile-1_0.md > build/openid-wise-profile-1_0.xml
 xml2rfc build/openid-wise-profile-1_0.xml --html -o build/openid-wise-profile-1_0.html
 xml2rfc build/openid-wise-profile-1_0.xml --text -o build/openid-wise-profile-1_0.txt
+pandoc build/openid-wise-profile-1_0.html -f html -t docx -o build/openid-wise-profile-1_0.docx
 ```
 
 ## Related Specifications

@@ -881,6 +881,16 @@ Access to WISE event streams MUST be authorized. Transmitters MUST verify that R
 
 Upon receiving a `credential-compromise`, `bound-key-revoked` (with reason `compromise`), `trust-anchor-changed` (with reason `compromise`), or `workload-compromised` event, Receivers SHOULD take immediate action to reject the affected credentials, keys, or trust material without waiting for additional confirmation.
 
+## Relationship to Credential Freshness Models
+
+Deployments use different mechanisms to limit the exposure window of a compromised or deprovisioned workload:
+
+- Issuer-side status signalling, where the trust domain authority communicates lifecycle changes to relying parties through an event channel. The events defined in this specification serve this purpose.
+- Short credential lifetime, where the remaining validity period bounds the exposure window. In the WIMSE model, credentials are intentionally short-lived to force posture evaluation before re-issuance.
+- Condition-liveness, where a locally observable condition (hardware release policy, TEE state, platform integrity measurement) gates each key operation. Failure of the condition prevents the next presentation or handshake step without requiring a remote signal.
+
+These mechanisms are complementary, not mutually exclusive. Condition-bounded credentials reduce the local deprovisioning window but cannot observe externally originated changes: issuer policy withdrawal, trust anchor rotation, cross-domain incident response, or administrative decisions to terminate an established connection. WISE events address these cases. Deployments combining short-lived credentials with condition-liveness properties still benefit from issuer-side signalling for lifecycle changes that no local mechanism can detect.
+
 # Privacy Considerations
 
 WISE events may reveal information about internal infrastructure, deployment patterns, scaling behavior, and security incidents. Transmitters SHOULD minimize the information disclosed to what is necessary for the Receiver to take appropriate action.
