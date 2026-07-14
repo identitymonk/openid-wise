@@ -134,6 +134,10 @@ informative:
       - ins: A. Parecki
         name: Aaron Parecki
     date: 2025
+  VEX:
+    title: "Minimum Requirements for Vulnerability Exploitability eXchange (VEX)"
+    target: https://www.cisa.gov/resources-tools/resources/minimum-requirements-vulnerability-exploitability-exchange-vex
+    date: 2023
 
 --- abstract
 
@@ -161,6 +165,7 @@ WISE defines event types that enable:
 - Identity infrastructure components to communicate posture evaluation and policy changes that affect workload trust.
 - Cross-domain signaling of trust material updates that require immediate action by relying parties.
 - Runtime posture change notifications that may affect the trust evaluation of a workload.
+- Supply-chain changes including updated or revoked provenance, and changes to the vulnerability status of a workload's components that require relying parties to re-evaluate trust.
 
 ## Alignment with WIMSE Architecture
 
@@ -811,6 +816,98 @@ Attributes:
 - **reason_admin** - OPTIONAL. Description for administrators.
 - **event_timestamp** - OPTIONAL. Time of detection.
 
+## Supply Chain Events
+
+These events signal changes in a workload's supply chain including the provenance of the software it is built from and the vulnerability status of its components. The
+underlying detail suchas as an SBOM, a build attestation, or a vulnerability advisory is typically held in a separate document maintained by other tooling. These
+events act as signals that inform a relying party that something relevant has changed, and where to obtain the detail, rather than carrying the full
+supply-chain record inline.
+
+### workload-provenance-changed
+
+Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-provenance-changed`
+
+The `workload-provenance-changed` event signals that the provenance of a workload, such as its SBOM or a build attestation has changed. This includes newly available or updated provenance, and the
+revocation or failed verification of previously trusted provenance. A relying party may re-evaluate its trust in the workload, or fetch the referenced document to assess the change.
+
+Attributes:
+
+- **change_type** - REQUIRED. The nature of the change. Possible values:
+    - `updated` - New or updated provenance (for example, a new SBOM) is available.
+    - `revoked` - Previously trusted provenance or an attestation is no longer valid.
+    - `verification_failed` - Verification of the workload's provenance failed.
+- **provenance_uri** - OPTIONAL. A URI at which the affected provenance document can be retrieved.
+- **provenance_format** - OPTIONAL. A hint indicating the kind of document referenced, for example `sbom` or `attestation`.
+- **artifact_digest** - OPTIONAL. A digest of the workload artifact (such as a container image) that the provenance describes, allowing the relying party to correlate the event with what is running.
+- **reason_admin** - OPTIONAL. A human-readable description of the change, intended for administrators.
+- **event_timestamp** - OPTIONAL. The time the change occurred.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-040",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-provenance-changed": {
+      "subject": {
+        "format": "uri",
+        "uri": "wimse://trust.example.com/workload/payment-service"
+      },
+      "change_type": "revoked",
+      "provenance_uri": "https://provenance.example.com/payment-service/attestation",
+      "reason_admin": "Build provenance attestation revoked by source repository owner"
+    }
+  }
+}
+~~~
+{: #fig-provenance-changed title="Example: Workload Provenance Changed"}
+
+### workload-vulnerability-status-changed
+
+Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-vulnerability-status-changed`
+
+The `workload-vulnerability-status-changed` event signals a change in the status of a vulnerability with respect to a workload. The status values follow the Vulnerability Exploitability eXchange (VEX) model {{VEX}}, which distinguishes whether a workload is actually affected by a known vulnerability. This allows a transmitter both to warn a relying party that a workload has become affected, and to relax a prior warning when a vulnerability is found not to apply or has been fixed.
+
+Attributes:
+
+- **vulnerability_id** - REQUIRED. A public identifier for the vulnerability, such as a CVE identifier.
+- **status** - REQUIRED. The status of the workload with respect to the vulnerability, following the VEX model {{VEX}}. Possible values:
+    - `affected` - Actions are recommended to remediate or address the vulnerability.
+    - `not_affected` - No remediation is required (for example, the vulnerable code is not reachable).
+    - `fixed` - This workload contains a fix for the vulnerability.
+    - `under_investigation` - Whether the workload is affected is not yet known.
+- **severity** - OPTIONAL. A qualitative severity to help the relying party prioritise. Possible values: `low`, `medium`, `high`, `critical`.
+- **advisory_uri** - OPTIONAL. A URI at which a full advisory or VEX statement can be retrieved.
+- **reason_admin** - OPTIONAL. A human-readable description, intended for administrators.
+- **event_timestamp** - OPTIONAL. The time the status changed.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-041",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-vulnerability-status-changed": {
+      "subject": {
+        "format": "uri",
+        "uri": "wimse://trust.example.com/workload/payment-service"
+      },
+      "vulnerability_id": "CVE-2026-12345",
+      "status": "affected",
+      "severity": "critical",
+      "advisory_uri": "https://advisories.example.com/CVE-2026-12345"
+    }
+  }
+}
+~~~
+{: #fig-vulnerability-status-changed title="Example: Workload Vulnerability Status Changed"}
+
 # Subject Identifiers for Workload Events
 
 WISE events use subject identifiers as defined in {{RFC9493}}. Workload identities in the WIMSE model are expressed as URIs following the format defined in {{WIMSE-ID}}.
@@ -891,6 +988,10 @@ Deployments use different mechanisms to limit the exposure window of a compromis
 
 These mechanisms are complementary, not mutually exclusive. Condition-bounded credentials reduce the local deprovisioning window but cannot observe externally originated changes: issuer policy withdrawal, trust anchor rotation, cross-domain incident response, or administrative decisions to terminate an established connection. WISE events address these cases. Deployments combining short-lived credentials with condition-liveness properties still benefit from issuer-side signalling for lifecycle changes that no local mechanism can detect.
 
+## Supply Chain Signals
+
+Supply chain events are advisory inputs to a Receiver's own decision-making. A Receiver SHOULD treat a `workload-vulnerability-status-changed` event as information to be evaluated against its own policies, rather than as a directive to be enforced automatically. In particular, a Receiver SHOULD NOT block, revoke, or otherwise restrict a workload's access solely because such an event was received. It SHOULD weigh the event together with the referenced advisory, the reported status and severity, and its own risk posture before deciding what action, if any, to take. A `revoked` provenance change, once validated, indicates that the affected provenance MUST NOT be relied upon.
+
 # Privacy Considerations
 
 WISE events may reveal information about internal infrastructure, deployment patterns, scaling behavior, and security incidents. Transmitters SHOULD minimize the information disclosed to what is necessary for the Receiver to take appropriate action.
@@ -911,6 +1012,13 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 # Document History
 {:numbered="false"}
 
+-01
+
+- Added Supply Chain Events
+
+-00
+
+- Initial draft.
 -00
 
 - Initial draft.
