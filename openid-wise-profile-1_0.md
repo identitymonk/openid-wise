@@ -819,7 +819,7 @@ Attributes:
 ## Supply Chain Events
 
 These events signal changes in a workload's supply chain including the provenance of the software it is built from and the vulnerability status of its components. The
-underlying detail suchas as an SBOM, a build attestation, or a vulnerability advisory is typically held in a separate document maintained by other tooling. These
+underlying detail such as as a Software Bill of Materials (SBOM), a build attestation, or a vulnerability advisory is typically held in a separate document maintained by other tooling. These
 events act as signals that inform a relying party that something relevant has changed, and where to obtain the detail, rather than carrying the full
 supply-chain record inline.
 
