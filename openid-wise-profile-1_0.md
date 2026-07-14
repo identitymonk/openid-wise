@@ -818,17 +818,13 @@ Attributes:
 
 ## Supply Chain Events
 
-These events signal changes in a workload's supply chain including the provenance of the software it is built from and the vulnerability status of its components. The
-underlying detail such as as a Software Bill of Materials (SBOM), a build attestation, or a vulnerability advisory is typically held in a separate document maintained by other tooling. These
-events act as signals that inform a relying party that something relevant has changed, and where to obtain the detail, rather than carrying the full
-supply-chain record inline.
+These events signal changes in a workload's supply chain including the provenance of the software it is built from and the vulnerability status of its components. The underlying detail such as as a Software Bill of Materials (SBOM), a build attestation, or a vulnerability advisory is typically held in a separate document maintained by other tooling. These events act as signals that inform a relying party that something relevant has changed, and where to obtain the detail, rather than carrying the full supply-chain record inline.
 
 ### workload-provenance-changed
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-provenance-changed`
 
-The `workload-provenance-changed` event signals that the provenance of a workload, such as its SBOM or a build attestation has changed. This includes newly available or updated provenance, and the
-revocation or failed verification of previously trusted provenance. A relying party may re-evaluate its trust in the workload, or fetch the referenced document to assess the change.
+The `workload-provenance-changed` event signals that the provenance of a workload, such as its SBOM or a build attestation has changed. This includes newly available or updated provenance, and the revocation or failed verification of previously trusted provenance. A relying party may re-evaluate its trust in the workload, or fetch the referenced document to assess the change.
 
 Attributes:
 
