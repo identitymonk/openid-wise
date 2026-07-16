@@ -112,6 +112,15 @@ normative:
       - ins: Y. Rosomakho
         name: Yaroslav Rosomakho
     date: 2026
+  WPT:
+    title: "WIMSE Workload Proof Token"
+    target: https://datatracker.ietf.org/doc/draft-ietf-wimse-wpt/
+    author:
+      - ins: B. Campbell
+        name: Brian Campbell
+      - ins: A. Schwenkschuster
+        name: Arndt Schwenkschuster
+    date: 2026
 
 informative:
   RFC7519:
@@ -414,7 +423,7 @@ The following example is non-normative.
 
 Bound keys are proof-of-possession keys cryptographically tied to a workload credential. They have an independent lifecycle from the credential itself. A credential may remain valid while its bound key is rotated or revoked, and a key compromise may be addressed without full credential revocation.
 
-In the WIMSE model, the WIT contains a `cnf` claim binding a public key to the workload identity. The corresponding private key is used to produce Workload Proof Tokens (WPT). Bound keys in this context include DPoP proof keys, mTLS certificate-bound keys, and attestation keys used during posture evaluation.
+In the WIMSE model, the WIT contains a `cnf` claim binding a public key to the workload identity. The corresponding private key is used to produce Workload Proof Tokens (WPT) {{WPT}}. Bound keys in this context include DPoP proof keys, mTLS certificate-bound keys, and attestation keys used during posture evaluation.
 
 ### bound-key-issued
 

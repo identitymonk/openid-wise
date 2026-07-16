@@ -6,6 +6,8 @@ OpenID Shared Signals                                        J. Lombardo
                                                      Amazon Web Services
                                                              D. Sneeggen
                                                                   Dendro
+                                                               S. O'Dell
+                                                              CVS Health
                                                             16 July 2026
 
 
@@ -36,7 +38,7 @@ Table of Contents
      1.3.  Notational Conventions  . . . . . . . . . . . . . . . . .   4
    2.  Event Types . . . . . . . . . . . . . . . . . . . . . . . . .   4
      2.1.  Workload Credential Lifecycle Events  . . . . . . . . . .   4
-       2.1.1.  credential-issued . . . . . . . . . . . . . . . . . .   4
+       2.1.1.  credential-issued . . . . . . . . . . . . . . . . . .   5
        2.1.2.  credential-rotated  . . . . . . . . . . . . . . . . .   6
        2.1.3.  credential-revoked  . . . . . . . . . . . . . . . . .   7
        2.1.4.  credential-compromise . . . . . . . . . . . . . . . .   8
@@ -48,16 +50,16 @@ Table of Contents
      2.3.  Workload Identity State Events  . . . . . . . . . . . . .  14
        2.3.1.  workload-disabled . . . . . . . . . . . . . . . . . .  14
        2.3.2.  workload-enabled  . . . . . . . . . . . . . . . . . .  15
-       2.3.3.  workload-purged . . . . . . . . . . . . . . . . . . .  15
-     2.4.  Trust and Federation Events . . . . . . . . . . . . . . .  15
 
 
 
-Lombardo & Sneeggen          Standards Track                    [Page 1]
+Lombardo, et al.             Standards Track                    [Page 1]
 
                                  wiseset                       July 2026
 
 
+       2.3.3.  workload-purged . . . . . . . . . . . . . . . . . . .  15
+     2.4.  Trust and Federation Events . . . . . . . . . . . . . . .  15
        2.4.1.  trust-anchor-changed  . . . . . . . . . . . . . . . .  15
        2.4.2.  trust-domain-federation-revoked . . . . . . . . . . .  18
      2.5.  Policy and Posture Evaluation Events  . . . . . . . . . .  18
@@ -70,23 +72,27 @@ Lombardo & Sneeggen          Standards Track                    [Page 1]
        2.6.1.  workload-baseline-changed . . . . . . . . . . . . . .  21
        2.6.2.  workload-compromised  . . . . . . . . . . . . . . . .  23
        2.6.3.  anomalous-behavior-detected . . . . . . . . . . . . .  23
-   3.  Subject Identifiers for Workload Events . . . . . . . . . . .  24
-     3.1.  URI Format  . . . . . . . . . . . . . . . . . . . . . . .  24
-     3.2.  Trust Domain Subject  . . . . . . . . . . . . . . . . . .  24
-   4.  Security Considerations . . . . . . . . . . . . . . . . . . .  25
-     4.1.  Confidentiality . . . . . . . . . . . . . . . . . . . . .  25
-     4.2.  Replay and Freshness  . . . . . . . . . . . . . . . . . .  25
-     4.3.  Authorization . . . . . . . . . . . . . . . . . . . . . .  25
-     4.4.  Compromise Response . . . . . . . . . . . . . . . . . . .  25
-     4.5.  Relationship to Credential Freshness Models . . . . . . .  25
-   5.  Privacy Considerations  . . . . . . . . . . . . . . . . . . .  26
-   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  26
-   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  26
-     7.1.  Normative References  . . . . . . . . . . . . . . . . . .  26
-     7.2.  Informative References  . . . . . . . . . . . . . . . . .  27
-   Acknowledgments . . . . . . . . . . . . . . . . . . . . . . . . .  28
-   Document History  . . . . . . . . . . . . . . . . . . . . . . . .  28
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  28
+     2.7.  Supply Chain Events . . . . . . . . . . . . . . . . . . .  24
+       2.7.1.  workload-provenance-changed . . . . . . . . . . . . .  24
+       2.7.2.  workload-vulnerability-status-changed . . . . . . . .  25
+   3.  Subject Identifiers for Workload Events . . . . . . . . . . .  27
+     3.1.  URI Format  . . . . . . . . . . . . . . . . . . . . . . .  27
+     3.2.  Trust Domain Subject  . . . . . . . . . . . . . . . . . .  27
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .  28
+     4.1.  Confidentiality . . . . . . . . . . . . . . . . . . . . .  28
+     4.2.  Replay and Freshness  . . . . . . . . . . . . . . . . . .  28
+     4.3.  Authorization . . . . . . . . . . . . . . . . . . . . . .  28
+     4.4.  Compromise Response . . . . . . . . . . . . . . . . . . .  28
+     4.5.  Relationship to Credential Freshness Models . . . . . . .  28
+     4.6.  Supply Chain Signals  . . . . . . . . . . . . . . . . . .  29
+   5.  Privacy Considerations  . . . . . . . . . . . . . . . . . . .  29
+   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  30
+   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  30
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .  30
+     7.2.  Informative References  . . . . . . . . . . . . . . . . .  31
+   Acknowledgments . . . . . . . . . . . . . . . . . . . . . . . . .  32
+   Document History  . . . . . . . . . . . . . . . . . . . . . . . .  32
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  32
 
 1.  Introduction
 
@@ -100,19 +106,18 @@ Lombardo & Sneeggen          Standards Track                    [Page 1]
    model for workload identity: a trust domain, governed by a single
    authority, provisions cryptographic credentials to workloads that
    allow them to authenticate to one another.  The credentials are
+
+
+
+Lombardo, et al.             Standards Track                    [Page 2]
+
+                                 wiseset                       July 2026
+
+
    short-lived by design, binding a workload identifier to key material
    through either Workload Identity Tokens (WIT) at the application
    layer or Workload Identity Certificates (WIC) at the transport layer,
    as defined in [WIMSE-CRED].
-
-
-
-
-
-Lombardo & Sneeggen          Standards Track                    [Page 2]
-
-                                 wiseset                       July 2026
-
 
    The emergence of AI agents as a new category of workload, as
    described in [AGENT-AUTH], introduces additional security
@@ -145,6 +150,10 @@ Lombardo & Sneeggen          Standards Track                    [Page 2]
    *  Runtime posture change notifications that may affect the trust
       evaluation of a workload.
 
+   *  Supply-chain changes including updated or revoked provenance, and
+      changes to the vulnerability status of a workload's components
+      that require relying parties to re-evaluate trust.
+
 1.2.  Alignment with WIMSE Architecture
 
    This specification aligns with the WIMSE architecture [WIMSE-ARCH],
@@ -154,6 +163,13 @@ Lombardo & Sneeggen          Standards Track                    [Page 2]
       common set of security controls and policies, identified by a
       fully qualified domain name.
 
+
+
+Lombardo, et al.             Standards Track                    [Page 3]
+
+                                 wiseset                       July 2026
+
+
    *  A single trust domain authority issues workload identity
       credentials for all workloads within that domain.
 
@@ -162,13 +178,6 @@ Lombardo & Sneeggen          Standards Track                    [Page 2]
 
    Because a single authority governs each trust domain, WISE events are
    designed to signal state changes:
-
-
-
-Lombardo & Sneeggen          Standards Track                    [Page 3]
-
-                                 wiseset                       July 2026
-
 
    1.  From a trust domain authority to federated peers, when changes
        affect the ability of external parties to validate or trust
@@ -206,6 +215,17 @@ Lombardo & Sneeggen          Standards Track                    [Page 3]
    signaling for environments operating heterogeneous credential
    ecosystems or transitioning toward WIMSE-compliant infrastructure.
 
+
+
+
+
+
+
+Lombardo, et al.             Standards Track                    [Page 4]
+
+                                 wiseset                       July 2026
+
+
 2.1.1.  credential-issued
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
@@ -218,13 +238,6 @@ Lombardo & Sneeggen          Standards Track                    [Page 3]
 
    *  *credential_type* - REQUIRED.  The type of credential issued.
       Possible values:
-
-
-
-Lombardo & Sneeggen          Standards Track                    [Page 4]
-
-                                 wiseset                       July 2026
-
 
       -  wit - Workload Identity Token as defined in [WIMSE-CRED]
 
@@ -264,20 +277,7 @@ Lombardo & Sneeggen          Standards Track                    [Page 4]
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-Lombardo & Sneeggen          Standards Track                    [Page 5]
+Lombardo, et al.             Standards Track                    [Page 5]
 
                                  wiseset                       July 2026
 
@@ -333,7 +333,7 @@ Lombardo & Sneeggen          Standards Track                    [Page 5]
 
 
 
-Lombardo & Sneeggen          Standards Track                    [Page 6]
+Lombardo, et al.             Standards Track                    [Page 6]
 
                                  wiseset                       July 2026
 
@@ -389,7 +389,7 @@ Lombardo & Sneeggen          Standards Track                    [Page 6]
 
 
 
-Lombardo & Sneeggen          Standards Track                    [Page 7]
+Lombardo, et al.             Standards Track                    [Page 7]
 
                                  wiseset                       July 2026
 
@@ -445,7 +445,7 @@ Lombardo & Sneeggen          Standards Track                    [Page 7]
 
 
 
-Lombardo & Sneeggen          Standards Track                    [Page 8]
+Lombardo, et al.             Standards Track                    [Page 8]
 
                                  wiseset                       July 2026
 
@@ -501,7 +501,7 @@ Lombardo & Sneeggen          Standards Track                    [Page 8]
 
 
 
-Lombardo & Sneeggen          Standards Track                    [Page 9]
+Lombardo, et al.             Standards Track                    [Page 9]
 
                                  wiseset                       July 2026
 
@@ -547,9 +547,9 @@ Lombardo & Sneeggen          Standards Track                    [Page 9]
 
    In the WIMSE model, the WIT contains a cnf claim binding a public key
    to the workload identity.  The corresponding private key is used to
-   produce Workload Proof Tokens (WPT).  Bound keys in this context
-   include DPoP proof keys, mTLS certificate-bound keys, and attestation
-   keys used during posture evaluation.
+   produce Workload Proof Tokens (WPT) [WPT].  Bound keys in this
+   context include DPoP proof keys, mTLS certificate-bound keys, and
+   attestation keys used during posture evaluation.
 
 
 
@@ -557,7 +557,7 @@ Lombardo & Sneeggen          Standards Track                    [Page 9]
 
 
 
-Lombardo & Sneeggen          Standards Track                   [Page 10]
+Lombardo, et al.             Standards Track                   [Page 10]
 
                                  wiseset                       July 2026
 
@@ -613,7 +613,7 @@ Lombardo & Sneeggen          Standards Track                   [Page 10]
 
 
 
-Lombardo & Sneeggen          Standards Track                   [Page 11]
+Lombardo, et al.             Standards Track                   [Page 11]
 
                                  wiseset                       July 2026
 
@@ -669,7 +669,7 @@ Lombardo & Sneeggen          Standards Track                   [Page 11]
 
 
 
-Lombardo & Sneeggen          Standards Track                   [Page 12]
+Lombardo, et al.             Standards Track                   [Page 12]
 
                                  wiseset                       July 2026
 
@@ -725,7 +725,7 @@ Lombardo & Sneeggen          Standards Track                   [Page 12]
 
 
 
-Lombardo & Sneeggen          Standards Track                   [Page 13]
+Lombardo, et al.             Standards Track                   [Page 13]
 
                                  wiseset                       July 2026
 
@@ -781,7 +781,7 @@ Lombardo & Sneeggen          Standards Track                   [Page 13]
 
 
 
-Lombardo & Sneeggen          Standards Track                   [Page 14]
+Lombardo, et al.             Standards Track                   [Page 14]
 
                                  wiseset                       July 2026
 
@@ -837,7 +837,7 @@ Lombardo & Sneeggen          Standards Track                   [Page 14]
 
 
 
-Lombardo & Sneeggen          Standards Track                   [Page 15]
+Lombardo, et al.             Standards Track                   [Page 15]
 
                                  wiseset                       July 2026
 
@@ -893,7 +893,7 @@ Lombardo & Sneeggen          Standards Track                   [Page 15]
 
 
 
-Lombardo & Sneeggen          Standards Track                   [Page 16]
+Lombardo, et al.             Standards Track                   [Page 16]
 
                                  wiseset                       July 2026
 
@@ -949,7 +949,7 @@ Lombardo & Sneeggen          Standards Track                   [Page 16]
 
 
 
-Lombardo & Sneeggen          Standards Track                   [Page 17]
+Lombardo, et al.             Standards Track                   [Page 17]
 
                                  wiseset                       July 2026
 
@@ -1005,7 +1005,7 @@ Lombardo & Sneeggen          Standards Track                   [Page 17]
 
 
 
-Lombardo & Sneeggen          Standards Track                   [Page 18]
+Lombardo, et al.             Standards Track                   [Page 18]
 
                                  wiseset                       July 2026
 
@@ -1061,7 +1061,7 @@ Lombardo & Sneeggen          Standards Track                   [Page 18]
 
 
 
-Lombardo & Sneeggen          Standards Track                   [Page 19]
+Lombardo, et al.             Standards Track                   [Page 19]
 
                                  wiseset                       July 2026
 
@@ -1117,7 +1117,7 @@ Lombardo & Sneeggen          Standards Track                   [Page 19]
 
 
 
-Lombardo & Sneeggen          Standards Track                   [Page 20]
+Lombardo, et al.             Standards Track                   [Page 20]
 
                                  wiseset                       July 2026
 
@@ -1173,7 +1173,7 @@ Lombardo & Sneeggen          Standards Track                   [Page 20]
 
 
 
-Lombardo & Sneeggen          Standards Track                   [Page 21]
+Lombardo, et al.             Standards Track                   [Page 21]
 
                                  wiseset                       July 2026
 
@@ -1229,7 +1229,7 @@ Lombardo & Sneeggen          Standards Track                   [Page 21]
 
 
 
-Lombardo & Sneeggen          Standards Track                   [Page 22]
+Lombardo, et al.             Standards Track                   [Page 22]
 
                                  wiseset                       July 2026
 
@@ -1285,7 +1285,175 @@ Lombardo & Sneeggen          Standards Track                   [Page 22]
 
 
 
-Lombardo & Sneeggen          Standards Track                   [Page 23]
+Lombardo, et al.             Standards Track                   [Page 23]
+
+                                 wiseset                       July 2026
+
+
+2.7.  Supply Chain Events
+
+   These events signal changes in a workload's supply chain including
+   the provenance of the software it is built from and the vulnerability
+   status of its components.  The underlying detail such as as a
+   Software Bill of Materials (SBOM), a build attestation, or a
+   vulnerability advisory is typically held in a separate document
+   maintained by other tooling.  These events act as signals that inform
+   a relying party that something relevant has changed, and where to
+   obtain the detail, rather than carrying the full supply-chain record
+   inline.
+
+2.7.1.  workload-provenance-changed
+
+   Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
+   workload-provenance-changed
+
+   The workload-provenance-changed event signals that the provenance of
+   a workload, such as its SBOM or a build attestation has changed.
+   This includes newly available or updated provenance, and the
+   revocation or failed verification of previously trusted provenance.
+   A relying party may re-evaluate its trust in the workload, or fetch
+   the referenced document to assess the change.
+
+   Attributes:
+
+   *  *change_type* - REQUIRED.  The nature of the change.  Possible
+      values:
+
+      -  updated - New or updated provenance (for example, a new SBOM)
+         is available.
+
+      -  revoked - Previously trusted provenance or an attestation is no
+         longer valid.
+
+      -  verification_failed - Verification of the workload's provenance
+         failed.
+
+   *  *provenance_uri* - OPTIONAL.  A URI at which the affected
+      provenance document can be retrieved.
+
+   *  *provenance_format* - OPTIONAL.  A hint indicating the kind of
+      document referenced, for example sbom or attestation.
+
+   *  *artifact_digest* - OPTIONAL.  A digest of the workload artifact
+      (such as a container image) that the provenance describes,
+      allowing the relying party to correlate the event with what is
+      running.
+
+
+
+Lombardo, et al.             Standards Track                   [Page 24]
+
+                                 wiseset                       July 2026
+
+
+   *  *reason_admin* - OPTIONAL.  A human-readable description of the
+      change, intended for administrators.
+
+   *  *event_timestamp* - OPTIONAL.  The time the change occurred.
+
+   The following example is non-normative.
+
+   {
+     "iss": "https://authority.example.com/",
+     "jti": "wise-evt-040",
+     "iat": 1700000000,
+     "aud": "https://rp.partner.example.net/wise",
+     "events": {
+       "https://schemas.openid.net/secevent/wise/event-type/workload-provenance-changed": {
+         "subject": {
+           "format": "uri",
+           "uri": "wimse://trust.example.com/workload/payment-service"
+         },
+         "change_type": "revoked",
+         "provenance_uri": "https://provenance.example.com/payment-service/attestation",
+         "reason_admin": "Build provenance attestation revoked by source repository owner"
+       }
+     }
+   }
+
+              Figure 11: Example: Workload Provenance Changed
+
+2.7.2.  workload-vulnerability-status-changed
+
+   Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
+   workload-vulnerability-status-changed
+
+   The workload-vulnerability-status-changed event signals a change in
+   the status of a vulnerability with respect to a workload.  The status
+   values follow the Vulnerability Exploitability eXchange (VEX) model
+   [VEX], which distinguishes whether a workload is actually affected by
+   a known vulnerability.  This allows a transmitter both to warn a
+   relying party that a workload has become affected, and to relax a
+   prior warning when a vulnerability is found not to apply or has been
+   fixed.
+
+   Attributes:
+
+   *  *vulnerability_id* - REQUIRED.  A public identifier for the
+      vulnerability, such as a CVE identifier.
+
+
+
+
+
+
+Lombardo, et al.             Standards Track                   [Page 25]
+
+                                 wiseset                       July 2026
+
+
+   *  *status* - REQUIRED.  The status of the workload with respect to
+      the vulnerability, following the VEX model [VEX].  Possible
+      values:
+
+      -  affected - Actions are recommended to remediate or address the
+         vulnerability.
+
+      -  not_affected - No remediation is required (for example, the
+         vulnerable code is not reachable).
+
+      -  fixed - This workload contains a fix for the vulnerability.
+
+      -  under_investigation - Whether the workload is affected is not
+         yet known.
+
+   *  *severity* - OPTIONAL.  A qualitative severity to help the relying
+      party prioritise.  Possible values: low, medium, high, critical.
+
+   *  *advisory_uri* - OPTIONAL.  A URI at which a full advisory or VEX
+      statement can be retrieved.
+
+   *  *reason_admin* - OPTIONAL.  A human-readable description, intended
+      for administrators.
+
+   *  *event_timestamp* - OPTIONAL.  The time the status changed.
+
+   The following example is non-normative.
+
+   {
+     "iss": "https://authority.example.com/",
+     "jti": "wise-evt-041",
+     "iat": 1700000000,
+     "aud": "https://rp.partner.example.net/wise",
+     "events": {
+       "https://schemas.openid.net/secevent/wise/event-type/workload-vulnerability-status-changed": {
+         "subject": {
+           "format": "uri",
+           "uri": "wimse://trust.example.com/workload/payment-service"
+         },
+         "vulnerability_id": "CVE-2026-12345",
+         "status": "affected",
+         "severity": "critical",
+         "advisory_uri": "https://advisories.example.com/CVE-2026-12345"
+       }
+     }
+   }
+
+         Figure 12: Example: Workload Vulnerability Status Changed
+
+
+
+Lombardo, et al.             Standards Track                   [Page 26]
 
                                  wiseset                       July 2026
 
@@ -1341,7 +1509,7 @@ Lombardo & Sneeggen          Standards Track                   [Page 23]
 
 
 
-Lombardo & Sneeggen          Standards Track                   [Page 24]
+Lombardo, et al.             Standards Track                   [Page 27]
 
                                  wiseset                       July 2026
 
@@ -1397,7 +1565,7 @@ Lombardo & Sneeggen          Standards Track                   [Page 24]
 
 
 
-Lombardo & Sneeggen          Standards Track                   [Page 25]
+Lombardo, et al.             Standards Track                   [Page 28]
 
                                  wiseset                       July 2026
 
@@ -1422,6 +1590,20 @@ Lombardo & Sneeggen          Standards Track                   [Page 25]
    issuer-side signalling for lifecycle changes that no local mechanism
    can detect.
 
+4.6.  Supply Chain Signals
+
+   Supply chain events are advisory inputs to a Receiver's own decision-
+   making.  A Receiver SHOULD treat a workload-vulnerability-status-
+   changed event as information to be evaluated against its own
+   policies, rather than as a directive to be enforced automatically.
+   In particular, a Receiver SHOULD NOT block, revoke, or otherwise
+   restrict a workload's access solely because such an event was
+   received.  It SHOULD weigh the event together with the referenced
+   advisory, the reported status and severity, and its own risk posture
+   before deciding what action, if any, to take.  A revoked provenance
+   change, once validated, indicates that the affected provenance MUST
+   NOT be relied upon.
+
 5.  Privacy Considerations
 
    WISE events may reveal information about internal infrastructure,
@@ -1432,6 +1614,17 @@ Lombardo & Sneeggen          Standards Track                   [Page 25]
    Events SHOULD NOT include personally identifiable information.
    Workload identifiers SHOULD NOT encode information about the humans
    who manage or operate the workloads.
+
+
+
+
+
+
+
+Lombardo, et al.             Standards Track                   [Page 29]
+
+                                 wiseset                       July 2026
+
 
 6.  IANA Considerations
 
@@ -1450,13 +1643,6 @@ Lombardo & Sneeggen          Standards Track                   [Page 25]
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
-
-
-
-Lombardo & Sneeggen          Standards Track                   [Page 26]
-
-                                 wiseset                       July 2026
-
 
    [RFC7516]  Jones, M. and J. Hildebrand, "JSON Web Encryption (JWE)",
               RFC 7516, DOI 10.17487/RFC7516, May 2015,
@@ -1487,6 +1673,15 @@ Lombardo & Sneeggen          Standards Track                   [Page 26]
               Specification 1.0", 2025,
               <https://openid.net/specs/openid-risc-1_0-final.html>.
 
+
+
+
+
+Lombardo, et al.             Standards Track                   [Page 30]
+
+                                 wiseset                       July 2026
+
+
    [WIMSE-ARCH]
               Salowey, J., Rosomakho, Y., and H. Tschofenig, "Workload
               Identity in a Multi System Environment (WIMSE)
@@ -1503,16 +1698,11 @@ Lombardo & Sneeggen          Standards Track                   [Page 26]
               <https://datatracker.ietf.org/doc/draft-ietf-wimse-
               workload-creds/>.
 
+   [WPT]      Campbell, B. and A. Schwenkschuster, "WIMSE Workload Proof
+              Token", 2026,
+              <https://datatracker.ietf.org/doc/draft-ietf-wimse-wpt/>.
+
 7.2.  Informative References
-
-
-
-
-
-Lombardo & Sneeggen          Standards Track                   [Page 27]
-
-                                 wiseset                       July 2026
-
 
    [RFC7519]  Jones, M., Bradley, J., and N. Sakimura, "JSON Web Token
               (JWT)", RFC 7519, DOI 10.17487/RFC7519, May 2015,
@@ -1535,6 +1725,19 @@ Lombardo & Sneeggen          Standards Track                   [Page 27]
               <https://www.ietf.org/archive/id/draft-parecki-oauth-
               client-id-metadata-document-07.html>.
 
+   [VEX]      "Minimum Requirements for Vulnerability Exploitability
+              eXchange (VEX)", 2023, <https://www.cisa.gov/resources-
+              tools/resources/minimum-requirements-vulnerability-
+              exploitability-exchange-vex>.
+
+
+
+
+Lombardo, et al.             Standards Track                   [Page 31]
+
+                                 wiseset                       July 2026
+
+
 Acknowledgments
 
    The authors would like to thank the members of the OpenID Foundation
@@ -1543,7 +1746,13 @@ Acknowledgments
 
 Document History
 
+   -01
+
+   *  Added Supply Chain Events
+
    -00
+
+   *  Initial draft. -00
 
    *  Initial draft.
 
@@ -1551,7 +1760,7 @@ Authors' Addresses
 
    Jeff Lombardo
    Amazon Web Services
-   Email: jeff.lombardo@gmail.com
+   Email: jeff@authnopuz.xyz
 
 
    Dag Sneeggen
@@ -1559,10 +1768,25 @@ Authors' Addresses
    Email: dag@dendro.systems
 
 
+   Sean O'Dell
+   CVS Health
+   Email: sean.odell@cvshealth.com
 
 
 
 
 
 
-Lombardo & Sneeggen          Standards Track                   [Page 28]
+
+
+
+
+
+
+
+
+
+
+
+
+Lombardo, et al.             Standards Track                   [Page 32]
