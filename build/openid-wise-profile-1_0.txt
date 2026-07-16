@@ -8,10 +8,12 @@ OpenID Shared Signals                                        J. Lombardo
                                                                   Dendro
                                                                S. O'Dell
                                                               CVS Health
+                                                            P. Kasselman
+                                                        Defakto Security
                                                             16 July 2026
 
 
-            OpenID WISE Profile Specification 1.0 - draft 00
+            OpenID WISE Profile Specification 1.0 - draft 02
                         openid-wise-profile-1_0
 
 Abstract
@@ -19,11 +21,11 @@ Abstract
    This document defines the Workload Identity Security Events (WISE)
    profile, a set of Security Event Token (SET) event types for
    signaling security-relevant state changes related to workload
-   identities.  WISE builds on the Security Event Token (SET) framework
-   defined in [RFC8417] and the Shared Signals Framework [SSF] to enable
-   trust domains and identity infrastructure components to communicate
-   workload identity lifecycle events, credential and key management
-   events, trust material changes, and posture evaluation events.
+   identities.  WISE builds on the SET framework defined in [RFC8417]
+   and the Shared Signals Framework [SSF] to enable trust domains and
+   identity infrastructure components to communicate workload identity
+   lifecycle events, credential and key management events, trust
+   material changes, and posture evaluation events.
 
    WISE complements the existing RISC and CAEP profiles by addressing
    the non-human identity domain, specifically workload-to-workload
@@ -37,19 +39,17 @@ Table of Contents
      1.2.  Alignment with WIMSE Architecture . . . . . . . . . . . .   3
      1.3.  Notational Conventions  . . . . . . . . . . . . . . . . .   4
    2.  Event Types . . . . . . . . . . . . . . . . . . . . . . . . .   4
-     2.1.  Workload Credential Lifecycle Events  . . . . . . . . . .   4
-       2.1.1.  credential-issued . . . . . . . . . . . . . . . . . .   5
-       2.1.2.  credential-rotated  . . . . . . . . . . . . . . . . .   6
-       2.1.3.  credential-revoked  . . . . . . . . . . . . . . . . .   7
-       2.1.4.  credential-compromise . . . . . . . . . . . . . . . .   8
-       2.1.5.  credential-renewal-failure  . . . . . . . . . . . . .   9
-     2.2.  Bound Key Lifecycle Events  . . . . . . . . . . . . . . .  10
-       2.2.1.  bound-key-issued  . . . . . . . . . . . . . . . . . .  11
-       2.2.2.  bound-key-rotated . . . . . . . . . . . . . . . . . .  12
-       2.2.3.  bound-key-revoked . . . . . . . . . . . . . . . . . .  13
-     2.3.  Workload Lifecycle Events . . . . . . . . . . . . . . . .  14
-       2.3.1.  workload-disabled . . . . . . . . . . . . . . . . . .  14
-       2.3.2.  workload-enabled  . . . . . . . . . . . . . . . . . .  15
+     2.1.  Common Optional Claims  . . . . . . . . . . . . . . . . .   4
+     2.2.  Workload Credential Lifecycle Events  . . . . . . . . . .   5
+       2.2.1.  credential-issued . . . . . . . . . . . . . . . . . .   5
+       2.2.2.  credential-rotated  . . . . . . . . . . . . . . . . .   7
+       2.2.3.  credential-revoked  . . . . . . . . . . . . . . . . .   8
+       2.2.4.  credential-compromise . . . . . . . . . . . . . . . .   9
+       2.2.5.  credential-renewal-failure  . . . . . . . . . . . . .  10
+     2.3.  Bound Key Lifecycle Events  . . . . . . . . . . . . . . .  11
+       2.3.1.  bound-key-issued  . . . . . . . . . . . . . . . . . .  12
+       2.3.2.  bound-key-rotated . . . . . . . . . . . . . . . . . .  13
+       2.3.3.  bound-key-revoked . . . . . . . . . . . . . . . . . .  14
 
 
 
@@ -58,41 +58,44 @@ Lombardo, et al.             Standards Track                    [Page 1]
                                  wiseset                       July 2026
 
 
-       2.3.3.  workload-purged . . . . . . . . . . . . . . . . . . .  15
-     2.4.  Trust and Federation Events . . . . . . . . . . . . . . .  15
-       2.4.1.  trust-anchor-changed  . . . . . . . . . . . . . . . .  16
-       2.4.2.  trust-domain-federation-revoked . . . . . . . . . . .  18
-     2.5.  Policy and Posture Evaluation Events  . . . . . . . . . .  19
-       2.5.1.  issuance-policy-changed . . . . . . . . . . . . . . .  19
-       2.5.2.  posture-evaluation-policy-changed . . . . . . . . . .  19
-       2.5.3.  validation-policy-changed . . . . . . . . . . . . . .  20
-       2.5.4.  posture-evaluation-failed . . . . . . . . . . . . . .  20
-       2.5.5.  posture-evaluation-succeeded  . . . . . . . . . . . .  21
-     2.6.  Runtime Posture Events  . . . . . . . . . . . . . . . . .  21
-       2.6.1.  workload-baseline-changed . . . . . . . . . . . . . .  21
-       2.6.2.  workload-compromised  . . . . . . . . . . . . . . . .  23
-       2.6.3.  anomalous-behavior-detected . . . . . . . . . . . . .  24
-     2.7.  Supply Chain Events . . . . . . . . . . . . . . . . . . .  24
-       2.7.1.  workload-provenance-changed . . . . . . . . . . . . .  24
-       2.7.2.  workload-vulnerability-status-changed . . . . . . . .  26
-   3.  Subject Identifiers for Workload Events . . . . . . . . . . .  27
-     3.1.  URI Format  . . . . . . . . . . . . . . . . . . . . . . .  28
-     3.2.  Trust Domain Subject  . . . . . . . . . . . . . . . . . .  28
-   4.  Security Considerations . . . . . . . . . . . . . . . . . . .  29
-     4.1.  Confidentiality . . . . . . . . . . . . . . . . . . . . .  29
-     4.2.  Replay and Freshness  . . . . . . . . . . . . . . . . . .  29
-     4.3.  Authorization . . . . . . . . . . . . . . . . . . . . . .  29
-     4.4.  Compromise Response . . . . . . . . . . . . . . . . . . .  29
-     4.5.  Relationship to Credential Freshness Models . . . . . . .  29
-     4.6.  Supply Chain Signals  . . . . . . . . . . . . . . . . . .  30
-   5.  Privacy Considerations  . . . . . . . . . . . . . . . . . . .  30
-   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  30
-   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  30
-     7.1.  Normative References  . . . . . . . . . . . . . . . . . .  30
-     7.2.  Informative References  . . . . . . . . . . . . . . . . .  32
-   Acknowledgments . . . . . . . . . . . . . . . . . . . . . . . . .  33
-   Document History  . . . . . . . . . . . . . . . . . . . . . . . .  33
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  33
+     2.4.  Workload Lifecycle Events . . . . . . . . . . . . . . . .  15
+       2.4.1.  workload-disabled . . . . . . . . . . . . . . . . . .  15
+       2.4.2.  workload-enabled  . . . . . . . . . . . . . . . . . .  16
+       2.4.3.  workload-purged . . . . . . . . . . . . . . . . . . .  16
+     2.5.  Trust and Federation Events . . . . . . . . . . . . . . .  16
+       2.5.1.  trust-anchor-changed  . . . . . . . . . . . . . . . .  17
+       2.5.2.  trust-domain-federation-revoked . . . . . . . . . . .  19
+     2.6.  Policy and Posture Evaluation Events  . . . . . . . . . .  20
+       2.6.1.  issuance-policy-changed . . . . . . . . . . . . . . .  20
+       2.6.2.  posture-evaluation-policy-changed . . . . . . . . . .  20
+       2.6.3.  validation-policy-changed . . . . . . . . . . . . . .  21
+       2.6.4.  posture-evaluation-failed . . . . . . . . . . . . . .  21
+       2.6.5.  posture-evaluation-succeeded  . . . . . . . . . . . .  22
+     2.7.  Runtime Posture Events  . . . . . . . . . . . . . . . . .  22
+       2.7.1.  workload-baseline-changed . . . . . . . . . . . . . .  22
+       2.7.2.  workload-compromised  . . . . . . . . . . . . . . . .  24
+       2.7.3.  anomalous-behavior-detected . . . . . . . . . . . . .  25
+     2.8.  Supply Chain Events . . . . . . . . . . . . . . . . . . .  25
+       2.8.1.  workload-provenance-changed . . . . . . . . . . . . .  25
+       2.8.2.  workload-vulnerability-status-changed . . . . . . . .  27
+   3.  Subject Identifiers for Workload Events . . . . . . . . . . .  28
+     3.1.  URI Format  . . . . . . . . . . . . . . . . . . . . . . .  29
+     3.2.  Trust Domain Subject  . . . . . . . . . . . . . . . . . .  29
+   4.  Security Considerations . . . . . . . . . . . . . . . . . . .  30
+     4.1.  Confidentiality . . . . . . . . . . . . . . . . . . . . .  30
+     4.2.  Replay and Freshness  . . . . . . . . . . . . . . . . . .  30
+     4.3.  Authorization . . . . . . . . . . . . . . . . . . . . . .  30
+     4.4.  Compromise Response . . . . . . . . . . . . . . . . . . .  30
+     4.5.  Relationship to Credential Freshness Models . . . . . . .  30
+     4.6.  Supply Chain Signals  . . . . . . . . . . . . . . . . . .  31
+   5.  Privacy Considerations  . . . . . . . . . . . . . . . . . . .  31
+   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  31
+   7.  References  . . . . . . . . . . . . . . . . . . . . . . . . .  31
+     7.1.  Normative References  . . . . . . . . . . . . . . . . . .  31
+     7.2.  Informative References  . . . . . . . . . . . . . . . . .  33
+   Acknowledgments . . . . . . . . . . . . . . . . . . . . . . . . .  34
+   Document History  . . . . . . . . . . . . . . . . . . . . . . . .  34
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  35
 
 1.  Introduction
 
@@ -102,10 +105,7 @@ Lombardo, et al.             Standards Track                    [Page 1]
    serverless functions, and increasingly, AI agents operating
    autonomously or on behalf of users.
 
-   The WIMSE architecture [WIMSE-ARCH] establishes the foundational
-   model for workload identity: a trust domain, typically governed by a
-   single authority, provisions cryptographic credentials to workloads
-   that allow them to authenticate to one another.  The credentials are
+
 
 
 
@@ -114,6 +114,10 @@ Lombardo, et al.             Standards Track                    [Page 2]
                                  wiseset                       July 2026
 
 
+   The WIMSE architecture [WIMSE-ARCH] establishes the foundational
+   model for workload identity: a trust domain, typically governed by a
+   single authority, provisions cryptographic credentials to workloads
+   that allow them to authenticate to one another.  The credentials are
    short-lived by design, binding a workload identifier to key material
    through either Workload Identity Tokens (WIT) at the application
    layer or Workload Identity Certificates (WIC) at the transport layer,
@@ -159,16 +163,16 @@ Lombardo, et al.             Standards Track                    [Page 2]
    This specification aligns with the WIMSE architecture [WIMSE-ARCH],
    which defines a model where:
 
-   *  A trust domain is a logical grouping of systems that share a
-      common set of security controls and policies, identified by a
-      fully qualified domain name.
-
 
 
 Lombardo, et al.             Standards Track                    [Page 3]
 
                                  wiseset                       July 2026
 
+
+   *  A trust domain is a logical grouping of systems that share a
+      common set of security controls and policies, identified by a
+      fully qualified domain name.
 
    *  Workload identity credentials are issued under the authority of a
       trust domain, which maps to one or more trust anchors used to
@@ -203,7 +207,43 @@ Lombardo, et al.             Standards Track                    [Page 3]
 
    https://schemas.openid.net/secevent/wise/event-type/
 
-2.1.  Workload Credential Lifecycle Events
+2.1.  Common Optional Claims
+
+   Unless stated otherwise, any WISE event MAY include the common
+   optional claims defined in Section 2 of [CAEP].  In particular:
+
+   *  *reason_admin* - OPTIONAL.  A localizable administrative message
+      intended for logging and auditing, as defined in [CAEP].  Its
+      value is a JSON object containing one or more key/value pairs,
+      where each key is a BCP 47 [RFC5646] language tag and each value
+      is the locale-specific message.
+
+
+
+
+Lombardo, et al.             Standards Track                    [Page 4]
+
+                                 wiseset                       July 2026
+
+
+   *  *reason_user* - OPTIONAL.  A localizable, user-facing message, as
+      defined in [CAEP].  Its value follows the same JSON object
+      structure as reason_admin.
+
+   *  *initiating_entity* - OPTIONAL.  A JSON string describing what
+      triggered the event, as defined in [CAEP]: one of admin, user,
+      policy, or system.
+
+   When a WISE event includes reason_admin or reason_user, the claim
+   MUST use the localizable JSON object structure defined above rather
+   than a plain string.  The following is a non-normative example:
+
+   "reason_admin": {
+     "en": "Private key material detected in public repository",
+     "de": "Privates Schluesselmaterial in oeffentlichem Repository entdeckt"
+   }
+
+2.2.  Workload Credential Lifecycle Events
 
    These events signal changes to the credentials issued to workloads by
    the trust domain authority.
@@ -217,16 +257,7 @@ Lombardo, et al.             Standards Track                    [Page 3]
    signaling for environments operating heterogeneous credential
    ecosystems or transitioning toward WIMSE-compliant infrastructure.
 
-
-
-
-
-Lombardo, et al.             Standards Track                    [Page 4]
-
-                                 wiseset                       July 2026
-
-
-2.1.1.  credential-issued
+2.2.1.  credential-issued
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    credential-issued
@@ -242,6 +273,14 @@ Lombardo, et al.             Standards Track                    [Page 4]
       -  wit - Workload Identity Token as defined in [WIMSE-CRED]
 
       -  wic - Workload Identity Certificate as defined in [WIMSE-CRED]
+
+
+
+
+Lombardo, et al.             Standards Track                    [Page 5]
+
+                                 wiseset                       July 2026
+
 
       -  x509_svid - X.509-SVID as defined in [SPIFFE]
 
@@ -273,15 +312,6 @@ Lombardo, et al.             Standards Track                    [Page 4]
 
    The following example is non-normative.
 
-
-
-
-
-Lombardo, et al.             Standards Track                    [Page 5]
-
-                                 wiseset                       July 2026
-
-
    {
      "iss": "https://authority.example.com/",
      "jti": "wise-evt-001",
@@ -300,9 +330,17 @@ Lombardo, et al.             Standards Track                    [Page 5]
      }
    }
 
+
+
+
+Lombardo, et al.             Standards Track                    [Page 6]
+
+                                 wiseset                       July 2026
+
+
                     Figure 1: Example: Credential Issued
 
-2.1.2.  credential-rotated
+2.2.2.  credential-rotated
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    credential-rotated
@@ -313,7 +351,7 @@ Lombardo, et al.             Standards Track                    [Page 5]
    Attributes:
 
    *  *credential_type* - REQUIRED.  The type of credential rotated.
-      Same values as in Section 2.1.1.
+      Same values as in Section 2.2.1.
 
    *  *previous_credential_id* - OPTIONAL.  Identifier of the credential
       being replaced.
@@ -328,15 +366,6 @@ Lombardo, et al.             Standards Track                    [Page 5]
       occurred.
 
    The following example is non-normative.
-
-
-
-
-
-Lombardo, et al.             Standards Track                    [Page 6]
-
-                                 wiseset                       July 2026
-
 
    {
      "iss": "https://authority.example.com/",
@@ -357,9 +386,17 @@ Lombardo, et al.             Standards Track                    [Page 6]
      }
    }
 
+
+
+
+Lombardo, et al.             Standards Track                    [Page 7]
+
+                                 wiseset                       July 2026
+
+
                    Figure 2: Example: Credential Rotated
 
-2.1.3.  credential-revoked
+2.2.3.  credential-revoked
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    credential-revoked
@@ -387,14 +424,31 @@ Lombardo, et al.             Standards Track                    [Page 6]
    *  *event_timestamp* - OPTIONAL.  The time at which revocation
       occurred.
 
+   The following example is non-normative.
 
 
-Lombardo, et al.             Standards Track                    [Page 7]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Lombardo, et al.             Standards Track                    [Page 8]
 
                                  wiseset                       July 2026
 
-
-   The following example is non-normative.
 
    {
      "iss": "https://authority.example.com/",
@@ -416,7 +470,7 @@ Lombardo, et al.             Standards Track                    [Page 7]
 
                    Figure 3: Example: Credential Revoked
 
-2.1.4.  credential-compromise
+2.2.4.  credential-compromise
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    credential-compromise
@@ -435,8 +489,9 @@ Lombardo, et al.             Standards Track                    [Page 7]
    *  *event_timestamp* - OPTIONAL.  The time at which the compromise
       was detected.
 
-   *  *reason_admin* - OPTIONAL.  A human-readable description of the
-      compromise, intended for administrators.
+   *  *reason_admin* - OPTIONAL.  Localizable administrative description
+      of the compromise, as defined in the Common Optional Claims
+      (Section 2.1).
 
    The following example is non-normative.
 
@@ -445,7 +500,8 @@ Lombardo, et al.             Standards Track                    [Page 7]
 
 
 
-Lombardo, et al.             Standards Track                    [Page 8]
+
+Lombardo, et al.             Standards Track                    [Page 9]
 
                                  wiseset                       July 2026
 
@@ -463,14 +519,16 @@ Lombardo, et al.             Standards Track                    [Page 8]
          },
          "credential_type": "wit",
          "credential_id": "jti:wit-signing-key-2024-q4",
-         "reason_admin": "Private key material detected in public repository"
+         "reason_admin": {
+           "en": "Private key material detected in public repository"
+         }
        }
      }
    }
 
                   Figure 4: Example: Credential Compromise
 
-2.1.5.  credential-renewal-failure
+2.2.5.  credential-renewal-failure
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    credential-renewal-failure
@@ -499,9 +557,7 @@ Lombardo, et al.             Standards Track                    [Page 8]
 
 
 
-
-
-Lombardo, et al.             Standards Track                    [Page 9]
+Lombardo, et al.             Standards Track                   [Page 10]
 
                                  wiseset                       July 2026
 
@@ -540,7 +596,7 @@ Lombardo, et al.             Standards Track                    [Page 9]
 
                Figure 5: Example: Credential Renewal Failure
 
-2.2.  Bound Key Lifecycle Events
+2.3.  Bound Key Lifecycle Events
 
    Bound keys are proof-of-possession keys cryptographically tied to a
    workload credential.  They have an independent lifecycle from the
@@ -557,12 +613,12 @@ Lombardo, et al.             Standards Track                    [Page 9]
 
 
 
-Lombardo, et al.             Standards Track                   [Page 10]
+Lombardo, et al.             Standards Track                   [Page 11]
 
                                  wiseset                       July 2026
 
 
-2.2.1.  bound-key-issued
+2.3.1.  bound-key-issued
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    bound-key-issued
@@ -613,7 +669,7 @@ Lombardo, et al.             Standards Track                   [Page 10]
 
 
 
-Lombardo, et al.             Standards Track                   [Page 11]
+Lombardo, et al.             Standards Track                   [Page 12]
 
                                  wiseset                       July 2026
 
@@ -640,7 +696,7 @@ Lombardo, et al.             Standards Track                   [Page 11]
 
                     Figure 6: Example: Bound Key Issued
 
-2.2.2.  bound-key-rotated
+2.3.2.  bound-key-rotated
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    bound-key-rotated
@@ -669,7 +725,7 @@ Lombardo, et al.             Standards Track                   [Page 11]
 
 
 
-Lombardo, et al.             Standards Track                   [Page 12]
+Lombardo, et al.             Standards Track                   [Page 13]
 
                                  wiseset                       July 2026
 
@@ -679,7 +735,7 @@ Lombardo, et al.             Standards Track                   [Page 12]
 
    *  *event_timestamp* - OPTIONAL.  Time of rotation.
 
-2.2.3.  bound-key-revoked
+2.3.3.  bound-key-revoked
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    bound-key-revoked
@@ -725,7 +781,7 @@ Lombardo, et al.             Standards Track                   [Page 12]
 
 
 
-Lombardo, et al.             Standards Track                   [Page 13]
+Lombardo, et al.             Standards Track                   [Page 14]
 
                                  wiseset                       July 2026
 
@@ -751,12 +807,12 @@ Lombardo, et al.             Standards Track                   [Page 13]
 
                     Figure 7: Example: Bound Key Revoked
 
-2.3.  Workload Lifecycle Events
+2.4.  Workload Lifecycle Events
 
    These events signal changes to the lifecycle state of a workload as
    managed by the trust domain authority.
 
-2.3.1.  workload-disabled
+2.4.1.  workload-disabled
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    workload-disabled
@@ -781,7 +837,7 @@ Lombardo, et al.             Standards Track                   [Page 13]
 
 
 
-Lombardo, et al.             Standards Track                   [Page 14]
+Lombardo, et al.             Standards Track                   [Page 15]
 
                                  wiseset                       July 2026
 
@@ -792,7 +848,7 @@ Lombardo, et al.             Standards Track                   [Page 14]
 
    *  *event_timestamp* - OPTIONAL.  Time of disablement.
 
-2.3.2.  workload-enabled
+2.4.2.  workload-enabled
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    workload-enabled
@@ -808,7 +864,7 @@ Lombardo, et al.             Standards Track                   [Page 14]
 
    *  *event_timestamp* - OPTIONAL.  Time of re-enablement.
 
-2.3.3.  workload-purged
+2.4.3.  workload-purged
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    workload-purged
@@ -826,7 +882,7 @@ Lombardo, et al.             Standards Track                   [Page 14]
 
    *  *event_timestamp* - OPTIONAL.  Time of removal.
 
-2.4.  Trust and Federation Events
+2.5.  Trust and Federation Events
 
    These events signal changes to the trust material that federated
    peers and relying parties use to validate workload identity
@@ -837,12 +893,12 @@ Lombardo, et al.             Standards Track                   [Page 14]
 
 
 
-Lombardo, et al.             Standards Track                   [Page 15]
+Lombardo, et al.             Standards Track                   [Page 16]
 
                                  wiseset                       July 2026
 
 
-2.4.1.  trust-anchor-changed
+2.5.1.  trust-anchor-changed
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    trust-anchor-changed
@@ -893,7 +949,7 @@ Lombardo, et al.             Standards Track                   [Page 15]
 
 
 
-Lombardo, et al.             Standards Track                   [Page 16]
+Lombardo, et al.             Standards Track                   [Page 17]
 
                                  wiseset                       July 2026
 
@@ -949,7 +1005,7 @@ Lombardo, et al.             Standards Track                   [Page 16]
 
 
 
-Lombardo, et al.             Standards Track                   [Page 17]
+Lombardo, et al.             Standards Track                   [Page 18]
 
                                  wiseset                       July 2026
 
@@ -976,7 +1032,7 @@ Lombardo, et al.             Standards Track                   [Page 17]
 
           Figure 9: Example: Trust Anchor Changed (CA Compromise)
 
-2.4.2.  trust-domain-federation-revoked
+2.5.2.  trust-domain-federation-revoked
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    trust-domain-federation-revoked
@@ -1005,7 +1061,7 @@ Lombardo, et al.             Standards Track                   [Page 17]
 
 
 
-Lombardo, et al.             Standards Track                   [Page 18]
+Lombardo, et al.             Standards Track                   [Page 19]
 
                                  wiseset                       July 2026
 
@@ -1015,7 +1071,7 @@ Lombardo, et al.             Standards Track                   [Page 18]
 
    *  *event_timestamp* - OPTIONAL.  Time the decision was made.
 
-2.5.  Policy and Posture Evaluation Events
+2.6.  Policy and Posture Evaluation Events
 
    These events signal changes to the policies governing workload
    identity issuance, posture evaluation, and credential validation
@@ -1027,7 +1083,7 @@ Lombardo, et al.             Standards Track                   [Page 18]
    credentials.  This replaces the traditional notion of static
    attestation with a continuous evaluation model.
 
-2.5.1.  issuance-policy-changed
+2.6.1.  issuance-policy-changed
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    issuance-policy-changed
@@ -1048,7 +1104,7 @@ Lombardo, et al.             Standards Track                   [Page 18]
 
    *  *event_timestamp* - OPTIONAL.  Time the change was made.
 
-2.5.2.  posture-evaluation-policy-changed
+2.6.2.  posture-evaluation-policy-changed
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    posture-evaluation-policy-changed
@@ -1061,7 +1117,7 @@ Lombardo, et al.             Standards Track                   [Page 18]
 
 
 
-Lombardo, et al.             Standards Track                   [Page 19]
+Lombardo, et al.             Standards Track                   [Page 20]
 
                                  wiseset                       July 2026
 
@@ -1076,7 +1132,7 @@ Lombardo, et al.             Standards Track                   [Page 19]
 
    *  *event_timestamp* - OPTIONAL.  Time the change was made.
 
-2.5.3.  validation-policy-changed
+2.6.3.  validation-policy-changed
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    validation-policy-changed
@@ -1097,7 +1153,7 @@ Lombardo, et al.             Standards Track                   [Page 19]
 
    *  *event_timestamp* - OPTIONAL.  Time the change was made.
 
-2.5.4.  posture-evaluation-failed
+2.6.4.  posture-evaluation-failed
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    posture-evaluation-failed
@@ -1117,7 +1173,7 @@ Lombardo, et al.             Standards Track                   [Page 19]
 
 
 
-Lombardo, et al.             Standards Track                   [Page 20]
+Lombardo, et al.             Standards Track                   [Page 21]
 
                                  wiseset                       July 2026
 
@@ -1132,7 +1188,7 @@ Lombardo, et al.             Standards Track                   [Page 20]
 
    *  *event_timestamp* - OPTIONAL.  Time of the failure.
 
-2.5.5.  posture-evaluation-succeeded
+2.6.5.  posture-evaluation-succeeded
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    posture-evaluation-succeeded
@@ -1155,9 +1211,9 @@ Lombardo, et al.             Standards Track                   [Page 20]
 
    *  *event_timestamp* - OPTIONAL.  Time of successful evaluation.
 
-2.6.  Runtime Posture Events
+2.7.  Runtime Posture Events
 
-2.6.1.  workload-baseline-changed
+2.7.1.  workload-baseline-changed
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    workload-baseline-changed
@@ -1173,7 +1229,7 @@ Lombardo, et al.             Standards Track                   [Page 20]
 
 
 
-Lombardo, et al.             Standards Track                   [Page 21]
+Lombardo, et al.             Standards Track                   [Page 22]
 
                                  wiseset                       July 2026
 
@@ -1229,7 +1285,7 @@ Lombardo, et al.             Standards Track                   [Page 21]
 
 
 
-Lombardo, et al.             Standards Track                   [Page 22]
+Lombardo, et al.             Standards Track                   [Page 23]
 
                                  wiseset                       July 2026
 
@@ -1261,7 +1317,7 @@ Lombardo, et al.             Standards Track                   [Page 22]
 
          Figure 10: Example: Workload Baseline Changed (Migration)
 
-2.6.2.  workload-compromised
+2.7.2.  workload-compromised
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    workload-compromised
@@ -1275,7 +1331,9 @@ Lombardo, et al.             Standards Track                   [Page 22]
 
    *  *detection_method* - OPTIONAL.  How the compromise was detected.
 
-   *  *reason_admin* - OPTIONAL.  Description for administrators.
+   *  *reason_admin* - OPTIONAL.  Localizable administrative
+      description, as defined in the Common Optional Claims
+      (Section 2.1).
 
    *  *event_timestamp* - OPTIONAL.  Time of detection.
 
@@ -1283,14 +1341,12 @@ Lombardo, et al.             Standards Track                   [Page 22]
 
 
 
-
-
-Lombardo, et al.             Standards Track                   [Page 23]
+Lombardo, et al.             Standards Track                   [Page 24]
 
                                  wiseset                       July 2026
 
 
-2.6.3.  anomalous-behavior-detected
+2.7.3.  anomalous-behavior-detected
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    anomalous-behavior-detected
@@ -1314,38 +1370,41 @@ Lombardo, et al.             Standards Track                   [Page 23]
 
       -  critical
 
-   *  *reason_admin* - OPTIONAL.  Description for administrators.
+   *  *reason_admin* - OPTIONAL.  Localizable administrative
+      description, as defined in the Common Optional Claims
+      (Section 2.1).
 
    *  *event_timestamp* - OPTIONAL.  Time of detection.
 
-2.7.  Supply Chain Events
+2.8.  Supply Chain Events
 
    These events signal changes in a workload's supply chain including
    the provenance of the software it is built from and the vulnerability
-   status of its components.  The underlying detail such as as a
-   Software Bill of Materials (SBOM), a build attestation, or a
-   vulnerability advisory is typically held in a separate document
-   maintained by other tooling.  These events act as signals that inform
-   a relying party that something relevant has changed, and where to
-   obtain the detail, rather than carrying the full supply-chain record
-   inline.
+   status of its components.  The underlying detail such as a Software
+   Bill of Materials (SBOM), a build attestation, or a vulnerability
+   advisory is typically held in a separate document maintained by other
+   tooling.  These events act as signals that inform a relying party
+   that something relevant has changed, and where to obtain the detail,
+   rather than carrying the full supply-chain record inline.
 
-2.7.1.  workload-provenance-changed
+2.8.1.  workload-provenance-changed
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    workload-provenance-changed
 
-   The workload-provenance-changed event signals that the provenance of
-   a workload, such as its SBOM or a build attestation has changed.
-   This includes newly available or updated provenance, and the
 
 
 
-Lombardo, et al.             Standards Track                   [Page 24]
+
+
+Lombardo, et al.             Standards Track                   [Page 25]
 
                                  wiseset                       July 2026
 
 
+   The workload-provenance-changed event signals that the provenance of
+   a workload, such as its SBOM or a build attestation has changed.
+   This includes newly available or updated provenance, and the
    revocation or failed verification of previously trusted provenance.
    A relying party may re-evaluate its trust in the workload, or fetch
    the referenced document to assess the change.
@@ -1375,8 +1434,9 @@ Lombardo, et al.             Standards Track                   [Page 24]
       allowing the relying party to correlate the event with what is
       running.
 
-   *  *reason_admin* - OPTIONAL.  A human-readable description of the
-      change, intended for administrators.
+   *  *reason_admin* - OPTIONAL.  Localizable administrative description
+      of the change, as defined in the Common Optional Claims
+      (Section 2.1).
 
    *  *event_timestamp* - OPTIONAL.  The time the change occurred.
 
@@ -1393,11 +1453,7 @@ Lombardo, et al.             Standards Track                   [Page 24]
 
 
 
-
-
-
-
-Lombardo, et al.             Standards Track                   [Page 25]
+Lombardo, et al.             Standards Track                   [Page 26]
 
                                  wiseset                       July 2026
 
@@ -1415,14 +1471,16 @@ Lombardo, et al.             Standards Track                   [Page 25]
          },
          "change_type": "revoked",
          "provenance_uri": "https://provenance.example.com/payment-service/attestation",
-         "reason_admin": "Build provenance attestation revoked by source repository owner"
+         "reason_admin": {
+           "en": "Build provenance attestation revoked by source repository owner"
+         }
        }
      }
    }
 
               Figure 11: Example: Workload Provenance Changed
 
-2.7.2.  workload-vulnerability-status-changed
+2.8.2.  workload-vulnerability-status-changed
 
    Event Type URI: https://schemas.openid.net/secevent/wise/event-type/
    workload-vulnerability-status-changed
@@ -1448,15 +1506,16 @@ Lombardo, et al.             Standards Track                   [Page 25]
       -  affected - Actions are recommended to remediate or address the
          vulnerability.
 
-      -  not_affected - No remediation is required (for example, the
-         vulnerable code is not reachable).
 
 
 
-Lombardo, et al.             Standards Track                   [Page 26]
+Lombardo, et al.             Standards Track                   [Page 27]
 
                                  wiseset                       July 2026
 
+
+      -  not_affected - No remediation is required (for example, the
+         vulnerable code is not reachable).
 
       -  fixed - This workload contains a fix for the vulnerability.
 
@@ -1469,8 +1528,9 @@ Lombardo, et al.             Standards Track                   [Page 26]
    *  *advisory_uri* - OPTIONAL.  A URI at which a full advisory or VEX
       statement can be retrieved.
 
-   *  *reason_admin* - OPTIONAL.  A human-readable description, intended
-      for administrators.
+   *  *reason_admin* - OPTIONAL.  Localizable administrative
+      description, as defined in the Common Optional Claims
+      (Section 2.1).
 
    *  *event_timestamp* - OPTIONAL.  The time the status changed.
 
@@ -1505,11 +1565,7 @@ Lombardo, et al.             Standards Track                   [Page 26]
 
 
 
-
-
-
-
-Lombardo, et al.             Standards Track                   [Page 27]
+Lombardo, et al.             Standards Track                   [Page 28]
 
                                  wiseset                       July 2026
 
@@ -1565,7 +1621,7 @@ Lombardo, et al.             Standards Track                   [Page 27]
 
 
 
-Lombardo, et al.             Standards Track                   [Page 28]
+Lombardo, et al.             Standards Track                   [Page 29]
 
                                  wiseset                       July 2026
 
@@ -1621,7 +1677,7 @@ Lombardo, et al.             Standards Track                   [Page 28]
 
 
 
-Lombardo, et al.             Standards Track                   [Page 29]
+Lombardo, et al.             Standards Track                   [Page 30]
 
                                  wiseset                       July 2026
 
@@ -1677,19 +1733,14 @@ Lombardo, et al.             Standards Track                   [Page 29]
 
 
 
-Lombardo, et al.             Standards Track                   [Page 30]
+Lombardo, et al.             Standards Track                   [Page 31]
 
                                  wiseset                       July 2026
 
 
-   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/rfc/rfc2119>.
-
-   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
-              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
-              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+   [RFC5646]  Phillips, A., Ed. and M. Davis, Ed., "Tags for Identifying
+              Languages", BCP 47, RFC 5646, DOI 10.17487/RFC5646,
+              September 2009, <https://www.rfc-editor.org/rfc/rfc5646>.
 
    [RFC7516]  Jones, M. and J. Hildebrand, "JSON Web Encryption (JWE)",
               RFC 7516, DOI 10.17487/RFC7516, May 2015,
@@ -1723,9 +1774,14 @@ Lombardo, et al.             Standards Track                   [Page 30]
               <https://www.rfc-editor.org/rfc/rfc9493>.
 
    [SSF]      Tulshibagwale, A., Cappalli, T., Scurtescu, M., Backman,
-              A., and J. Bradley, "OpenID Shared Signals Framework
-              Specification 1.0", 2024, <https://openid.net/specs/
-              openid-sharedsignals-framework-1_0.html>.
+              A., Bradley, J., and S. Miel, "OpenID Shared Signals
+              Framework Specification 1.0", 2025,
+              <https://openid.net/specs/openid-sharedsignals-framework-
+              1_0.html>.
+
+   [CAEP]     Cappalli, T. and A. Tulshibagwale, "OpenID Continuous
+              Access Evaluation Profile 1.0", 2025,
+              <https://openid.net/specs/openid-caep-1_0.html>.
 
 
 
@@ -1733,15 +1789,10 @@ Lombardo, et al.             Standards Track                   [Page 30]
 
 
 
-Lombardo, et al.             Standards Track                   [Page 31]
+Lombardo, et al.             Standards Track                   [Page 32]
 
                                  wiseset                       July 2026
 
-
-   [CAEP]     Cappalli, T. and A. Tulshibagwale, "OpenID Continuous
-              Access Evaluation Profile 1.0", 2024,
-              <https://openid.net/specs/openid-caep-specification-
-              1_0.html>.
 
    [RISC]     Scurtescu, M., Backman, A., Hunt, P., Bradley, J., Bounev,
               S., and A. Tulshibagwale, "OpenID RISC Profile
@@ -1768,6 +1819,15 @@ Lombardo, et al.             Standards Track                   [Page 31]
               Token", 2026,
               <https://datatracker.ietf.org/doc/draft-ietf-wimse-wpt/>.
 
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
 7.2.  Informative References
 
    [RFC7519]  Jones, M., Bradley, J., and N. Sakimura, "JSON Web Token
@@ -1781,18 +1841,20 @@ Lombardo, et al.             Standards Track                   [Page 31]
    [SPIFFE]   "Secure Production Identity Framework for Everyone", 2024,
               <https://spiffe.io/docs/latest/spiffe-specs/spiffe/>.
 
+
+
+
+
+Lombardo, et al.             Standards Track                   [Page 33]
+
+                                 wiseset                       July 2026
+
+
    [AGENT-AUTH]
               Kasselman, P., Hardt, D., and A. Schwenkschuster, "AI
               Agent Authentication and Authorization", 2026,
               <https://www.ietf.org/archive/id/draft-klrc-aiagent-auth-
               02.html>.
-
-
-
-Lombardo, et al.             Standards Track                   [Page 32]
-
-                                 wiseset                       July 2026
-
 
    [CIMD]     Parecki, A., "Client ID Metadata Document", 2025,
               <https://www.ietf.org/archive/id/draft-parecki-oauth-
@@ -1811,13 +1873,47 @@ Acknowledgments
 
 Document History
 
+   -02
+
+   *  Aligned terminology with the WIMSE architecture: replaced
+      "Identity Server" with "Credential Service", and "machine identity
+      lifecycle" with "workload identity lifecycle".
+
+   *  Softened the single-authority language and aligned it with WIMSE
+      (a trust domain maps to one or more trust anchors).
+
+   *  Renamed "Workload Identity State Events" to "Workload Lifecycle
+      Events" and clarified that credential cancellation and issuance
+      are conveyed by separate companion events.
+
+   *  Added a "Common Optional Claims" section aligning reason_admin,
+      reason_user, and initiating_entity with CAEP as localizable
+      objects.
+
+   *  Promoted RISC to a normative reference and refreshed the RISC,
+      CAEP, and SSF references to their final 1.0 versions.
+
+   *  Added normative references for WPT, RFC 5646, RFC 7523, RFC 8705,
+      and RFC 9325, and cited RFC 7517 for the JWK Set.
+
+   *  Replaced the TLS 1.2 requirement with a normative reference to the
+      TLS recommendations in RFC 9325.
+
+
+
+Lombardo, et al.             Standards Track                   [Page 34]
+
+                                 wiseset                       July 2026
+
+
+   *  Normalized enum values to use underscores while keeping event type
+      names hyphenated.
+
    -01
 
    *  Added Supply Chain Events
 
    -00
-
-   *  Initial draft. -00
 
    *  Initial draft.
 
@@ -1838,6 +1934,9 @@ Authors' Addresses
    Email: sean.odell@cvshealth.com
 
 
+   Pieter Kasselman
+   Defakto Security
+   Email: pieter@defakto.security
 
 
 
@@ -1845,4 +1944,17 @@ Authors' Addresses
 
 
 
-Lombardo, et al.             Standards Track                   [Page 33]
+
+
+
+
+
+
+
+
+
+
+
+
+
+Lombardo, et al.             Standards Track                   [Page 35]

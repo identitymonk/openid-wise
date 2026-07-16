@@ -7,7 +7,7 @@ wg: OpenID Shared Signals
 
 docname: openid-wise-profile-1_0
 
-title: "OpenID WISE Profile Specification 1.0 - draft 00"
+title: "OpenID WISE Profile Specification 1.0 - draft 02"
 abbrev: wiseset
 lang: en
 kw:
@@ -29,10 +29,13 @@ author:
   name: Sean O'Dell
   org: CVS Health
   email: sean.odell@cvshealth.com
+- ins: P. Kasselman
+  name: Pieter Kasselman
+  org: Defakto Security
+  email: pieter@defakto.security
 
 normative:
-  RFC2119:
-  RFC8174:
+  RFC5646:
   RFC7516:
   RFC7523:
   RFC8417:
@@ -53,16 +56,18 @@ normative:
         name: Annabelle Backman
       - ins: J. Bradley
         name: John Bradley
-    date: 2024
+      - ins: S. Miel
+        name: Shayne Miel
+    date: 2025
   CAEP:
     title: "OpenID Continuous Access Evaluation Profile 1.0"
-    target: https://openid.net/specs/openid-caep-specification-1_0.html
+    target: https://openid.net/specs/openid-caep-1_0.html
     author:
       - ins: T. Cappalli
         name: Tim Cappalli
       - ins: A. Tulshibagwale
         name: Atul Tulshibagwale
-    date: 2024
+    date: 2025
   RISC:
     title: "OpenID RISC Profile Specification 1.0"
     target: https://openid.net/specs/openid-risc-1_0-final.html
@@ -157,7 +162,7 @@ informative:
 
 --- abstract
 
-This document defines the Workload Identity Security Events (WISE) profile, a set of Security Event Token (SET) event types for signaling security-relevant state changes related to workload identities. WISE builds on the Security Event Token (SET) framework defined in {{RFC8417}} and the Shared Signals Framework {{SSF}} to enable trust domains and identity infrastructure components to communicate workload identity lifecycle events, credential and key management events, trust material changes, and posture evaluation events.
+This document defines the Workload Identity Security Events (WISE) profile, a set of Security Event Token (SET) event types for signaling security-relevant state changes related to workload identities. WISE builds on the SET framework defined in {{RFC8417}} and the Shared Signals Framework {{SSF}} to enable trust domains and identity infrastructure components to communicate workload identity lifecycle events, credential and key management events, trust material changes, and posture evaluation events.
 
 WISE complements the existing RISC and CAEP profiles by addressing the non-human identity domain, specifically workload-to-workload authentication and the workload identity lifecycle as described in the WIMSE architecture {{WIMSE-ARCH}}.
 
@@ -206,6 +211,23 @@ The base URI for WISE event types is:
 
 ~~~
 https://schemas.openid.net/secevent/wise/event-type/
+~~~
+
+## Common Optional Claims {#common-optional-claims}
+
+Unless stated otherwise, any WISE event MAY include the common optional claims defined in Section 2 of {{CAEP}}. In particular:
+
+- **reason_admin** - OPTIONAL. A localizable administrative message intended for logging and auditing, as defined in {{CAEP}}. Its value is a JSON object containing one or more key/value pairs, where each key is a BCP 47 {{RFC5646}} language tag and each value is the locale-specific message.
+- **reason_user** - OPTIONAL. A localizable, user-facing message, as defined in {{CAEP}}. Its value follows the same JSON object structure as `reason_admin`.
+- **initiating_entity** - OPTIONAL. A JSON string describing what triggered the event, as defined in {{CAEP}}: one of `admin`, `user`, `policy`, or `system`.
+
+When a WISE event includes `reason_admin` or `reason_user`, the claim MUST use the localizable JSON object structure defined above rather than a plain string. The following is a non-normative example:
+
+~~~ json
+"reason_admin": {
+  "en": "Private key material detected in public repository",
+  "de": "Privates Schluesselmaterial in oeffentlichem Repository entdeckt"
+}
 ~~~
 
 ## Workload Credential Lifecycle Events
@@ -356,7 +378,7 @@ Attributes:
 - **credential_type** - REQUIRED. The type of credential compromised.
 - **credential_id** - OPTIONAL. Identifier of the compromised credential.
 - **event_timestamp** - OPTIONAL. The time at which the compromise was detected.
-- **reason_admin** - OPTIONAL. A human-readable description of the compromise, intended for administrators.
+- **reason_admin** - OPTIONAL. Localizable administrative description of the compromise, as defined in the Common Optional Claims ({{common-optional-claims}}).
 
 The following example is non-normative.
 
@@ -374,7 +396,9 @@ The following example is non-normative.
       },
       "credential_type": "wit",
       "credential_id": "jti:wit-signing-key-2024-q4",
-      "reason_admin": "Private key material detected in public repository"
+      "reason_admin": {
+        "en": "Private key material detected in public repository"
+      }
     }
   }
 }
@@ -812,7 +836,7 @@ The `workload-compromised` event signals that a workload is believed to be compr
 Attributes:
 
 - **detection_method** - OPTIONAL. How the compromise was detected.
-- **reason_admin** - OPTIONAL. Description for administrators.
+- **reason_admin** - OPTIONAL. Localizable administrative description, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **event_timestamp** - OPTIONAL. Time of detection.
 
 ### anomalous-behavior-detected
@@ -829,12 +853,12 @@ Attributes:
     - `medium`
     - `high`
     - `critical`
-- **reason_admin** - OPTIONAL. Description for administrators.
+- **reason_admin** - OPTIONAL. Localizable administrative description, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **event_timestamp** - OPTIONAL. Time of detection.
 
 ## Supply Chain Events
 
-These events signal changes in a workload's supply chain including the provenance of the software it is built from and the vulnerability status of its components. The underlying detail such as as a Software Bill of Materials (SBOM), a build attestation, or a vulnerability advisory is typically held in a separate document maintained by other tooling. These events act as signals that inform a relying party that something relevant has changed, and where to obtain the detail, rather than carrying the full supply-chain record inline.
+These events signal changes in a workload's supply chain including the provenance of the software it is built from and the vulnerability status of its components. The underlying detail such as a Software Bill of Materials (SBOM), a build attestation, or a vulnerability advisory is typically held in a separate document maintained by other tooling. These events act as signals that inform a relying party that something relevant has changed, and where to obtain the detail, rather than carrying the full supply-chain record inline.
 
 ### workload-provenance-changed
 
@@ -851,7 +875,7 @@ Attributes:
 - **provenance_uri** - OPTIONAL. A URI at which the affected provenance document can be retrieved.
 - **provenance_format** - OPTIONAL. A hint indicating the kind of document referenced, for example `sbom` or `attestation`.
 - **artifact_digest** - OPTIONAL. A digest of the workload artifact (such as a container image) that the provenance describes, allowing the relying party to correlate the event with what is running.
-- **reason_admin** - OPTIONAL. A human-readable description of the change, intended for administrators.
+- **reason_admin** - OPTIONAL. Localizable administrative description of the change, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **event_timestamp** - OPTIONAL. The time the change occurred.
 
 The following example is non-normative.
@@ -870,7 +894,9 @@ The following example is non-normative.
       },
       "change_type": "revoked",
       "provenance_uri": "https://provenance.example.com/payment-service/attestation",
-      "reason_admin": "Build provenance attestation revoked by source repository owner"
+      "reason_admin": {
+        "en": "Build provenance attestation revoked by source repository owner"
+      }
     }
   }
 }
@@ -893,7 +919,7 @@ Attributes:
     - `under_investigation` - Whether the workload is affected is not yet known.
 - **severity** - OPTIONAL. A qualitative severity to help the relying party prioritise. Possible values: `low`, `medium`, `high`, `critical`.
 - **advisory_uri** - OPTIONAL. A URI at which a full advisory or VEX statement can be retrieved.
-- **reason_admin** - OPTIONAL. A human-readable description, intended for administrators.
+- **reason_admin** - OPTIONAL. Localizable administrative description, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **event_timestamp** - OPTIONAL. The time the status changed.
 
 The following example is non-normative.
@@ -1024,13 +1050,21 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 # Document History
 {:numbered="false"}
 
+-02
+
+- Aligned terminology with the WIMSE architecture: replaced "Identity Server" with "Credential Service", and "machine identity lifecycle" with "workload identity lifecycle".
+- Softened the single-authority language and aligned it with WIMSE (a trust domain maps to one or more trust anchors).
+- Renamed "Workload Identity State Events" to "Workload Lifecycle Events" and clarified that credential cancellation and issuance are conveyed by separate companion events.
+- Added a "Common Optional Claims" section aligning `reason_admin`, `reason_user`, and `initiating_entity` with CAEP as localizable objects.
+- Promoted RISC to a normative reference and refreshed the RISC, CAEP, and SSF references to their final 1.0 versions.
+- Added normative references for WPT, RFC 5646, RFC 7523, RFC 8705, and RFC 9325, and cited RFC 7517 for the JWK Set.
+- Replaced the TLS 1.2 requirement with a normative reference to the TLS recommendations in RFC 9325.
+- Normalized enum values to use underscores while keeping event type names hyphenated.
+
 -01
 
 - Added Supply Chain Events
 
--00
-
-- Initial draft.
 -00
 
 - Initial draft.
