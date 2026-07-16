@@ -1,9 +1,18 @@
 DRAFTS = openid-wise-profile-1_0
 BUILD = build
 
-all: $(addprefix $(BUILD)/,$(addsuffix .html,$(DRAFTS))) \
-     $(addprefix $(BUILD)/,$(addsuffix .txt,$(DRAFTS))) \
-     $(addprefix $(BUILD)/,$(addsuffix .docx,$(DRAFTS)))
+# DOCX output is only produced when pandoc is available (i.e. local builds).
+# CI runners without pandoc build HTML and TXT only.
+PANDOC := $(shell command -v pandoc 2>/dev/null)
+
+OUTPUTS = $(addprefix $(BUILD)/,$(addsuffix .html,$(DRAFTS))) \
+          $(addprefix $(BUILD)/,$(addsuffix .txt,$(DRAFTS)))
+
+ifdef PANDOC
+OUTPUTS += $(addprefix $(BUILD)/,$(addsuffix .docx,$(DRAFTS)))
+endif
+
+all: $(OUTPUTS)
 
 $(BUILD):
 	mkdir -p $(BUILD)

@@ -6,7 +6,7 @@ OpenID Shared Signals                                        J. Lombardo
                                                      Amazon Web Services
                                                              D. Sneeggen
                                                                   Dendro
-                                                             7 July 2026
+                                                            16 July 2026
 
 
             OpenID WISE Profile Specification 1.0 - draft 00

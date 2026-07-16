@@ -14,7 +14,10 @@ on [RFC 8417](https://datatracker.ietf.org/doc/html/rfc8417) and the
 |---------------|--------|----------|
 | WISE Profile 1.0 | [openid-wise-profile-1_0.md](openid-wise-profile-1_0.md) | [HTML](build/openid-wise-profile-1_0.html) · [Word](build/openid-wise-profile-1_0.docx) |
 
-The rendered HTML, text, and Word outputs are generated into the `build/` folder by `make`.
+The rendered outputs are generated into the `build/` folder by `make`. HTML and
+text are always produced. The Word (`.docx`) output is only generated when
+[pandoc](https://pandoc.org/installing.html) is installed, so it is a local-only
+convenience and is skipped in CI.
 
 ## Building the spec
 
@@ -23,7 +26,8 @@ Install dependencies:
 ```bash
 gem install kramdown-rfc
 pip install xml2rfc
-# pandoc is required for the Word (.docx) output: https://pandoc.org/installing.html
+# Optional, for the local Word (.docx) output only:
+# install pandoc — see https://pandoc.org/installing.html
 ```
 
 Build all outputs (written to `build/`):

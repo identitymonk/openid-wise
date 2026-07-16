@@ -20,11 +20,15 @@ author:
 - ins: J. Lombardo
   name: Jeff Lombardo
   org: Amazon Web Services
-  email: jeff.lombardo@gmail.com
+  email: jeff@authnopuz.xyz
 - ins: D. Sneeggen
   name: Dag Sneeggen
   org: Dendro
   email: dag@dendro.systems
+- ins: S. O'Dell
+  name: Sean O'Dell
+  org: CVS Health
+  email: sean.odell@cvshealth.com
 
 normative:
   RFC2119:
