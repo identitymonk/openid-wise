@@ -1834,7 +1834,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.1-2" cla
               <p id="section-2.1.5-4.4.1"><strong>failure_reason</strong> - OPTIONAL. Why renewal failed. Possible values:<a href="#section-2.1.5-4.4.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2.1.5-4.4.2.1">
-                  <p id="section-2.1.5-4.4.2.1.1"><code>identity_server_unreachable</code> - Cannot reach the Identity Server.<a href="#section-2.1.5-4.4.2.1.1" class="pilcrow">¶</a></p>
+                  <p id="section-2.1.5-4.4.2.1.1"><code>credential_service_unreachable</code> - Cannot reach the Credential Service (Section 3.2.1 of <span>[<a href="#WIMSE-ARCH" class="cite xref">WIMSE-ARCH</a>]</span>).<a href="#section-2.1.5-4.4.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-2.1.5-4.4.2.2">
                   <p id="section-2.1.5-4.4.2.2.1"><code>posture_evaluation_failed</code> - The workload did not pass posture evaluation.<a href="#section-2.1.5-4.4.2.2.1" class="pilcrow">¶</a></p>
@@ -2343,7 +2343,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.1-2" cla
 <a href="#section-2.5" class="section-number selfRef">2.5. </a><a href="#name-policy-and-posture-evaluati" class="section-name selfRef">Policy and Posture Evaluation Events</a>
         </h3>
 <p id="section-2.5-1">These events signal changes to the policies governing workload identity issuance, posture evaluation, and credential validation within or across trust domains.<a href="#section-2.5-1" class="pilcrow">¶</a></p>
-<p id="section-2.5-2">In the WIMSE model, posture evaluation is the process by which the Identity Server assesses a workload's runtime environment, software integrity, and deployment context before issuing or renewing credentials. This replaces the traditional notion of static attestation with a continuous evaluation model.<a href="#section-2.5-2" class="pilcrow">¶</a></p>
+<p id="section-2.5-2">In the WIMSE model, posture evaluation is the process by which the Credential Service assesses a workload's runtime environment, software integrity, and deployment context before issuing or renewing credentials. This replaces the traditional notion of static attestation with a continuous evaluation model.<a href="#section-2.5-2" class="pilcrow">¶</a></p>
 <div id="issuance-policy-changed">
 <section id="section-2.5.1">
           <h4 id="name-issuance-policy-changed">
@@ -2422,7 +2422,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.1-2" cla
 <a href="#section-2.5.4" class="section-number selfRef">2.5.4. </a><a href="#name-posture-evaluation-failed" class="section-name selfRef">posture-evaluation-failed</a>
           </h4>
 <p id="section-2.5.4-1">Event Type URI: <code>https://schemas.openid.net/secevent/wise/event-type/posture-evaluation-failed</code><a href="#section-2.5.4-1" class="pilcrow">¶</a></p>
-<p id="section-2.5.4-2">The <code>posture-evaluation-failed</code> event signals that a workload did not pass posture evaluation. The Identity Server determined that the workload's runtime environment, software integrity, or deployment context did not meet the requirements for credential issuance.<a href="#section-2.5.4-2" class="pilcrow">¶</a></p>
+<p id="section-2.5.4-2">The <code>posture-evaluation-failed</code> event signals that a workload did not pass posture evaluation. The Credential Service determined that the workload's runtime environment, software integrity, or deployment context did not meet the requirements for credential issuance.<a href="#section-2.5.4-2" class="pilcrow">¶</a></p>
 <p id="section-2.5.4-3">Attributes:<a href="#section-2.5.4-3" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2.5.4-4.1">
@@ -2454,7 +2454,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.1-2" cla
 <a href="#section-2.5.5" class="section-number selfRef">2.5.5. </a><a href="#name-posture-evaluation-succeede" class="section-name selfRef">posture-evaluation-succeeded</a>
           </h4>
 <p id="section-2.5.5-1">Event Type URI: <code>https://schemas.openid.net/secevent/wise/event-type/posture-evaluation-succeeded</code><a href="#section-2.5.5-1" class="pilcrow">¶</a></p>
-<p id="section-2.5.5-2">The <code>posture-evaluation-succeeded</code> event signals that a workload successfully passed posture evaluation. This event is produced as part of the regular credential provisioning process. It confirms that the workload met the Identity Server's requirements and that a credential was or will be issued.<a href="#section-2.5.5-2" class="pilcrow">¶</a></p>
+<p id="section-2.5.5-2">The <code>posture-evaluation-succeeded</code> event signals that a workload successfully passed posture evaluation. This event is produced as part of the regular credential provisioning process. It confirms that the workload met the Credential Service's requirements and that a credential was or will be issued.<a href="#section-2.5.5-2" class="pilcrow">¶</a></p>
 <p id="section-2.5.5-3">This event does not imply that a prior failure occurred. It is generated each time posture evaluation completes successfully, providing an audit trail and enabling downstream systems to track the health of the provisioning pipeline.<a href="#section-2.5.5-3" class="pilcrow">¶</a></p>
 <p id="section-2.5.5-4">Attributes:<a href="#section-2.5.5-4" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -2852,7 +2852,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.1-2" cla
         <h3 id="name-confidentiality">
 <a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-confidentiality" class="section-name selfRef">Confidentiality</a>
         </h3>
-<p id="section-4.1-1">WISE events MAY contain sensitive information about workload infrastructure topology, credential identifiers, and security posture. Transmitters and Receivers MUST use encrypted transport (TLS 1.2+) for all event delivery. Events SHOULD be encrypted using JSON Web Encryption (JWE) <span>[<a href="#RFC7516" class="cite xref">RFC7516</a>]</span> when transmitted across trust domain boundaries.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1-1">WISE events MAY contain sensitive information about workload infrastructure topology, credential identifiers, and security posture. All network requests in this protocol MUST use TLS, and the use of TLS MUST follow the recommendations in <span>[<a href="#RFC9325" class="cite xref">RFC9325</a>]</span>. Events SHOULD be encrypted using JSON Web Encryption (JWE) <span>[<a href="#RFC7516" class="cite xref">RFC7516</a>]</span> when transmitted across trust domain boundaries.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="replay-and-freshness">
@@ -2952,6 +2952,10 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.1-2" cla
 <dt id="RFC8417">[RFC8417]</dt>
         <dd>
 <span class="refAuthor">Hunt, P., Ed.</span>, <span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Denniss, W.</span>, and <span class="refAuthor">M. Ansari</span>, <span class="refTitle">"Security Event Token (SET)"</span>, <span class="seriesInfo">RFC 8417</span>, <span class="seriesInfo">DOI 10.17487/RFC8417</span>, <time datetime="2018-07" class="refDate">July 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8417">https://www.rfc-editor.org/rfc/rfc8417</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9325">[RFC9325]</dt>
+        <dd>
+<span class="refAuthor">Sheffer, Y.</span>, <span class="refAuthor">Saint-Andre, P.</span>, and <span class="refAuthor">T. Fossati</span>, <span class="refTitle">"Recommendations for Secure Use of Transport Layer Security (TLS) and Datagram Transport Layer Security (DTLS)"</span>, <span class="seriesInfo">BCP 195</span>, <span class="seriesInfo">RFC 9325</span>, <span class="seriesInfo">DOI 10.17487/RFC9325</span>, <time datetime="2022-11" class="refDate">November 2022</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9325">https://www.rfc-editor.org/rfc/rfc9325</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC9493">[RFC9493]</dt>
         <dd>

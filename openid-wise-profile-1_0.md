@@ -35,6 +35,7 @@ normative:
   RFC8174:
   RFC7516:
   RFC8417:
+  RFC9325:
   RFC9493:
   SSF:
     title: "OpenID Shared Signals Framework Specification 1.0"
@@ -390,7 +391,7 @@ Attributes:
 - **credential_id** - OPTIONAL. Identifier of the credential that was not renewed.
 - **current_expiry** - OPTIONAL. Expiration of the current (last valid) credential. JSON number (NumericDate).
 - **failure_reason** - OPTIONAL. Why renewal failed. Possible values:
-    - `identity_server_unreachable` - Cannot reach the Identity Server.
+    - `credential_service_unreachable` - Cannot reach the Credential Service (Section 3.2.1 of {{WIMSE-ARCH}}).
     - `posture_evaluation_failed` - The workload did not pass posture evaluation.
     - `policy_denied` - Issuance policy denied renewal.
     - `internal_error` - Internal error in the provisioning pipeline.
@@ -676,7 +677,7 @@ Attributes:
 
 These events signal changes to the policies governing workload identity issuance, posture evaluation, and credential validation within or across trust domains.
 
-In the WIMSE model, posture evaluation is the process by which the Identity Server assesses a workload's runtime environment, software integrity, and deployment context before issuing or renewing credentials. This replaces the traditional notion of static attestation with a continuous evaluation model.
+In the WIMSE model, posture evaluation is the process by which the Credential Service assesses a workload's runtime environment, software integrity, and deployment context before issuing or renewing credentials. This replaces the traditional notion of static attestation with a continuous evaluation model.
 
 ### issuance-policy-changed
 
@@ -721,7 +722,7 @@ Attributes:
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/posture-evaluation-failed`
 
-The `posture-evaluation-failed` event signals that a workload did not pass posture evaluation. The Identity Server determined that the workload's runtime environment, software integrity, or deployment context did not meet the requirements for credential issuance.
+The `posture-evaluation-failed` event signals that a workload did not pass posture evaluation. The Credential Service determined that the workload's runtime environment, software integrity, or deployment context did not meet the requirements for credential issuance.
 
 Attributes:
 
@@ -736,7 +737,7 @@ Attributes:
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/posture-evaluation-succeeded`
 
-The `posture-evaluation-succeeded` event signals that a workload successfully passed posture evaluation. This event is produced as part of the regular credential provisioning process. It confirms that the workload met the Identity Server's requirements and that a credential was or will be issued.
+The `posture-evaluation-succeeded` event signals that a workload successfully passed posture evaluation. This event is produced as part of the regular credential provisioning process. It confirms that the workload met the Credential Service's requirements and that a credential was or will be issued.
 
 This event does not imply that a prior failure occurred. It is generated each time posture evaluation completes successfully, providing an audit trail and enabling downstream systems to track the health of the provisioning pipeline.
 

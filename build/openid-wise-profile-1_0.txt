@@ -497,7 +497,7 @@ Lombardo, et al.             Standards Track                    [Page 8]
    *  *failure_reason* - OPTIONAL.  Why renewal failed.  Possible
       values:
 
-      -  identity_server_unreachable - Cannot reach the Identity Server.
+
 
 
 
@@ -505,6 +505,9 @@ Lombardo, et al.             Standards Track                    [Page 9]
 
                                  wiseset                       July 2026
 
+
+      -  credential_service_unreachable - Cannot reach the Credential
+         Service (Section 3.2.1 of [WIMSE-ARCH]).
 
       -  posture_evaluation_failed - The workload did not pass posture
          evaluation.
@@ -550,9 +553,6 @@ Lombardo, et al.             Standards Track                    [Page 9]
    produce Workload Proof Tokens (WPT) [WPT].  Bound keys in this
    context include DPoP proof keys, mTLS certificate-bound keys, and
    attestation keys used during posture evaluation.
-
-
-
 
 
 
@@ -994,8 +994,8 @@ Lombardo, et al.             Standards Track                   [Page 17]
    within or across trust domains.
 
    In the WIMSE model, posture evaluation is the process by which the
-   Identity Server assesses a workload's runtime environment, software
-   integrity, and deployment context before issuing or renewing
+   Credential Service assesses a workload's runtime environment,
+   software integrity, and deployment context before issuing or renewing
    credentials.  This replaces the traditional notion of static
    attestation with a continuous evaluation model.
 
@@ -1088,7 +1088,7 @@ Lombardo, et al.             Standards Track                   [Page 19]
    posture-evaluation-failed
 
    The posture-evaluation-failed event signals that a workload did not
-   pass posture evaluation.  The Identity Server determined that the
+   pass posture evaluation.  The Credential Service determined that the
    workload's runtime environment, software integrity, or deployment
    context did not meet the requirements for credential issuance.
 
@@ -1125,8 +1125,8 @@ Lombardo, et al.             Standards Track                   [Page 20]
    The posture-evaluation-succeeded event signals that a workload
    successfully passed posture evaluation.  This event is produced as
    part of the regular credential provisioning process.  It confirms
-   that the workload met the Identity Server's requirements and that a
-   credential was or will be issued.
+   that the workload met the Credential Service's requirements and that
+   a credential was or will be issued.
 
    This event does not imply that a prior failure occurred.  It is
    generated each time posture evaluation completes successfully,
@@ -1525,10 +1525,10 @@ Lombardo, et al.             Standards Track                   [Page 27]
 
    WISE events MAY contain sensitive information about workload
    infrastructure topology, credential identifiers, and security
-   posture.  Transmitters and Receivers MUST use encrypted transport
-   (TLS 1.2+) for all event delivery.  Events SHOULD be encrypted using
-   JSON Web Encryption (JWE) [RFC7516] when transmitted across trust
-   domain boundaries.
+   posture.  All network requests in this protocol MUST use TLS, and the
+   use of TLS MUST follow the recommendations in [RFC9325].  Events
+   SHOULD be encrypted using JSON Web Encryption (JWE) [RFC7516] when
+   transmitted across trust domain boundaries.
 
 4.2.  Replay and Freshness
 
@@ -1653,6 +1653,12 @@ Lombardo, et al.             Standards Track                   [Page 29]
               DOI 10.17487/RFC8417, July 2018,
               <https://www.rfc-editor.org/rfc/rfc8417>.
 
+   [RFC9325]  Sheffer, Y., Saint-Andre, P., and T. Fossati,
+              "Recommendations for Secure Use of Transport Layer
+              Security (TLS) and Datagram Transport Layer Security
+              (DTLS)", BCP 195, RFC 9325, DOI 10.17487/RFC9325, November
+              2022, <https://www.rfc-editor.org/rfc/rfc9325>.
+
    [RFC9493]  Backman, A., Ed., Scurtescu, M., and P. Jain, "Subject
               Identifiers for Security Event Tokens", RFC 9493,
               DOI 10.17487/RFC9493, December 2023,
@@ -1668,12 +1674,6 @@ Lombardo, et al.             Standards Track                   [Page 29]
               <https://openid.net/specs/openid-caep-specification-
               1_0.html>.
 
-   [RISC]     Scurtescu, M., Backman, A., Hunt, P., Bradley, J., Bounev,
-              S., and A. Tulshibagwale, "OpenID RISC Profile
-              Specification 1.0", 2025,
-              <https://openid.net/specs/openid-risc-1_0-final.html>.
-
-
 
 
 
@@ -1681,6 +1681,11 @@ Lombardo, et al.             Standards Track                   [Page 30]
 
                                  wiseset                       July 2026
 
+
+   [RISC]     Scurtescu, M., Backman, A., Hunt, P., Bradley, J., Bounev,
+              S., and A. Tulshibagwale, "OpenID RISC Profile
+              Specification 1.0", 2025,
+              <https://openid.net/specs/openid-risc-1_0-final.html>.
 
    [WIMSE-ARCH]
               Salowey, J., Rosomakho, Y., and H. Tschofenig, "Workload
@@ -1725,11 +1730,6 @@ Lombardo, et al.             Standards Track                   [Page 30]
               <https://www.ietf.org/archive/id/draft-parecki-oauth-
               client-id-metadata-document-07.html>.
 
-   [VEX]      "Minimum Requirements for Vulnerability Exploitability
-              eXchange (VEX)", 2023, <https://www.cisa.gov/resources-
-              tools/resources/minimum-requirements-vulnerability-
-              exploitability-exchange-vex>.
-
 
 
 
@@ -1737,6 +1737,11 @@ Lombardo, et al.             Standards Track                   [Page 31]
 
                                  wiseset                       July 2026
 
+
+   [VEX]      "Minimum Requirements for Vulnerability Exploitability
+              eXchange (VEX)", 2023, <https://www.cisa.gov/resources-
+              tools/resources/minimum-requirements-vulnerability-
+              exploitability-exchange-vex>.
 
 Acknowledgments
 
@@ -1771,11 +1776,6 @@ Authors' Addresses
    Sean O'Dell
    CVS Health
    Email: sean.odell@cvshealth.com
-
-
-
-
-
 
 
 
