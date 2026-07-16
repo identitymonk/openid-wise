@@ -27,8 +27,8 @@ Abstract
 
    WISE complements the existing RISC and CAEP profiles by addressing
    the non-human identity domain, specifically workload-to-workload
-   authentication and the machine identity lifecycle as described in the
-   WIMSE architecture [WIMSE-ARCH].
+   authentication and the workload identity lifecycle as described in
+   the WIMSE architecture [WIMSE-ARCH].
 
 Table of Contents
 

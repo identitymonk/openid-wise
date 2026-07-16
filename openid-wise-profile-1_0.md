@@ -157,7 +157,7 @@ informative:
 
 This document defines the Workload Identity Security Events (WISE) profile, a set of Security Event Token (SET) event types for signaling security-relevant state changes related to workload identities. WISE builds on the Security Event Token (SET) framework defined in {{RFC8417}} and the Shared Signals Framework {{SSF}} to enable trust domains and identity infrastructure components to communicate workload identity lifecycle events, credential and key management events, trust material changes, and posture evaluation events.
 
-WISE complements the existing RISC and CAEP profiles by addressing the non-human identity domain, specifically workload-to-workload authentication and the machine identity lifecycle as described in the WIMSE architecture {{WIMSE-ARCH}}.
+WISE complements the existing RISC and CAEP profiles by addressing the non-human identity domain, specifically workload-to-workload authentication and the workload identity lifecycle as described in the WIMSE architecture {{WIMSE-ARCH}}.
 
 --- middle
 
