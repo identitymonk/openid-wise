@@ -1526,9 +1526,9 @@ Lombardo, et al.             Standards Track                   [Page 27]
    WISE events MAY contain sensitive information about workload
    infrastructure topology, credential identifiers, and security
    posture.  Transmitters and Receivers MUST use encrypted transport
-   (TLS 1.2 or later) for all event delivery.  Events SHOULD be
-   encrypted using JSON Web Encryption (JWE) [RFC7516] when transmitted
-   across trust domain boundaries.
+   (TLS 1.2+) for all event delivery.  Events SHOULD be encrypted using
+   JSON Web Encryption (JWE) [RFC7516] when transmitted across trust
+   domain boundaries.
 
 4.2.  Replay and Freshness
 

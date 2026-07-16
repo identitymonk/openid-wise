@@ -973,7 +973,7 @@ The following example is non-normative.
 
 ## Confidentiality
 
-WISE events MAY contain sensitive information about workload infrastructure topology, credential identifiers, and security posture. Transmitters and Receivers MUST use encrypted transport (TLS 1.2 or later) for all event delivery. Events SHOULD be encrypted using JSON Web Encryption (JWE) {{RFC7516}} when transmitted across trust domain boundaries.
+WISE events MAY contain sensitive information about workload infrastructure topology, credential identifiers, and security posture. All network requests in this protocol MUST use TLS, and the use of TLS MUST follow the recommendations in {{RFC9325}}. Events SHOULD be encrypted using JSON Web Encryption (JWE) {{RFC7516}} when transmitted across trust domain boundaries.
 
 ## Replay and Freshness
 
