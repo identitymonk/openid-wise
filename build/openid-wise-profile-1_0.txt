@@ -103,9 +103,9 @@ Lombardo, et al.             Standards Track                    [Page 1]
    autonomously or on behalf of users.
 
    The WIMSE architecture [WIMSE-ARCH] establishes the foundational
-   model for workload identity: a trust domain, governed by a single
-   authority, provisions cryptographic credentials to workloads that
-   allow them to authenticate to one another.  The credentials are
+   model for workload identity: a trust domain, typically governed by a
+   single authority, provisions cryptographic credentials to workloads
+   that allow them to authenticate to one another.  The credentials are
 
 
 
@@ -170,14 +170,16 @@ Lombardo, et al.             Standards Track                    [Page 3]
                                  wiseset                       July 2026
 
 
-   *  A single trust domain authority issues workload identity
-      credentials for all workloads within that domain.
+   *  Workload identity credentials are issued under the authority of a
+      trust domain, which maps to one or more trust anchors used to
+      validate them.
 
    *  Workload identifiers are URIs that uniquely name a workload within
       a trust domain, as defined in [WIMSE-ID].
 
-   Because a single authority governs each trust domain, WISE events are
-   designed to signal state changes:
+   Because a trust domain acts as the issuing authority for the
+   workloads within it, WISE events are designed to signal state
+   changes:
 
    1.  From a trust domain authority to federated peers, when changes
        affect the ability of external parties to validate or trust
@@ -214,8 +216,6 @@ Lombardo, et al.             Standards Track                    [Page 3]
    Legacy credential types are included to enable security event
    signaling for environments operating heterogeneous credential
    ecosystems or transitioning toward WIMSE-compliant infrastructure.
-
-
 
 
 

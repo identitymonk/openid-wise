@@ -167,7 +167,7 @@ WISE complements the existing RISC and CAEP profiles by addressing the non-human
 
 Modern distributed systems rely on workloads, software entities executing for a specific purpose, to deliver services. These workloads include microservices, containers, virtual machines, serverless functions, and increasingly, AI agents operating autonomously or on behalf of users.
 
-The WIMSE architecture {{WIMSE-ARCH}} establishes the foundational model for workload identity: a trust domain, governed by a single authority, provisions cryptographic credentials to workloads that allow them to authenticate to one another. The credentials are short-lived by design, binding a workload identifier to key material through either Workload Identity Tokens (WIT) at the application layer or Workload Identity Certificates (WIC) at the transport layer, as defined in {{WIMSE-CRED}}.
+The WIMSE architecture {{WIMSE-ARCH}} establishes the foundational model for workload identity: a trust domain, typically governed by a single authority, provisions cryptographic credentials to workloads that allow them to authenticate to one another. The credentials are short-lived by design, binding a workload identifier to key material through either Workload Identity Tokens (WIT) at the application layer or Workload Identity Certificates (WIC) at the transport layer, as defined in {{WIMSE-CRED}}.
 
 The emergence of AI agents as a new category of workload, as described in {{AGENT-AUTH}}, introduces additional security coordination requirements. AI agents interact with tools, services, and other agents across trust domain boundaries, often autonomously. Like any workload, they require identifiers, credentials, and posture evaluation before credentials are issued. The security events defined in this specification apply equally to traditional service workloads and to AI agent workloads.
 
@@ -188,10 +188,10 @@ WISE defines event types that enable:
 This specification aligns with the WIMSE architecture {{WIMSE-ARCH}}, which defines a model where:
 
 - A trust domain is a logical grouping of systems that share a common set of security controls and policies, identified by a fully qualified domain name.
-- A single trust domain authority issues workload identity credentials for all workloads within that domain.
+- Workload identity credentials are issued under the authority of a trust domain, which maps to one or more trust anchors used to validate them.
 - Workload identifiers are URIs that uniquely name a workload within a trust domain, as defined in {{WIMSE-ID}}.
 
-Because a single authority governs each trust domain, WISE events are designed to signal state changes:
+Because a trust domain acts as the issuing authority for the workloads within it, WISE events are designed to signal state changes:
 
 1. From a trust domain authority to federated peers, when changes affect the ability of external parties to validate or trust workloads from that domain.
 2. From a trust domain authority to relying parties within the same domain, for credential and key lifecycle or posture changes that require action.
