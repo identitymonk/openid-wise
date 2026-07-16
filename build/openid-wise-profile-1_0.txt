@@ -859,8 +859,8 @@ Lombardo, et al.             Standards Track                   [Page 15]
       -  x509_ca - X.509 CA certificate(s) used to validate Workload
          Identity Certificates (WIC) or X.509-SVIDs.
 
-      -  jwks - JSON Web Key Set used to validate Workload Identity
-         Tokens (WIT).
+      -  jwks - JSON Web Key Set [RFC7517] used to validate Workload
+         Identity Tokens (WIT).
 
    *  *change_type* - REQUIRED.  The nature of the change.  Possible
       values:

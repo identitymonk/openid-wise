@@ -586,7 +586,7 @@ Attributes:
 
 - **anchor_type** - REQUIRED. The type of trust material that changed. Possible values:
     - `x509_ca` - X.509 CA certificate(s) used to validate Workload Identity Certificates (WIC) or X.509-SVIDs.
-    - `jwks` - JSON Web Key Set used to validate Workload Identity Tokens (WIT).
+    - `jwks` - JSON Web Key Set {{RFC7517}} used to validate Workload Identity Tokens (WIT).
 - **change_type** - REQUIRED. The nature of the change. Possible values:
     - `key-added` - A new key or CA was added to the trust bundle.
     - `key-rotated` - An existing key or CA was replaced.
