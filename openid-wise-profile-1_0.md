@@ -533,15 +533,15 @@ The following example is non-normative.
 ~~~
 {: #fig-bound-key-revoked title="Example: Bound Key Revoked"}
 
-## Workload Identity State Events
+## Workload Lifecycle Events
 
-These events signal changes to the state of a workload identity as managed by the trust domain authority.
+These events signal changes to the lifecycle state of a workload as managed by the trust domain authority.
 
 ### workload-disabled
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-disabled`
 
-The `workload-disabled` event signals that the trust domain authority has suspended a workload identity. The authority will no longer issue credentials for this workload. Existing credentials MAY still be valid until their natural expiry unless explicitly revoked.
+The `workload-disabled` event signals that the trust domain authority has suspended a workload. The authority will no longer issue credentials for this workload, and it cancels the workload's currently valid credentials and bound keys. This event conveys only the lifecycle state change; the resulting credential cancellation is signalled separately through accompanying `credential-revoked` events (and `bound-key-revoked` events for any bound keys). A Transmitter SHOULD emit those credential events together with this event.
 
 Attributes:
 
@@ -556,7 +556,7 @@ Attributes:
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-enabled`
 
-The `workload-enabled` event signals that a previously disabled workload identity is active again. The trust domain authority will resume issuing credentials for this workload.
+The `workload-enabled` event signals that a previously disabled workload is active again. The trust domain authority will resume issuing credentials for this workload. As with disablement, this event conveys only the lifecycle state change; any credential provisioned as a result is signalled separately through an accompanying `credential-issued` event.
 
 Attributes:
 
@@ -566,7 +566,7 @@ Attributes:
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-purged`
 
-The `workload-purged` event signals that a workload identity has been permanently removed from the trust domain. This is irreversible. The identity will not be re-issued. All credentials previously issued for this workload MUST be considered invalid.
+The `workload-purged` event signals that a workload has been permanently removed from the trust domain. This is irreversible. The workload will not be re-provisioned. All credentials previously issued for this workload MUST be considered invalid. As with `workload-disabled`, this event conveys only the lifecycle state change; the resulting credential cancellation is signalled separately through accompanying `credential-revoked` events (and `bound-key-revoked` events for any bound keys).
 
 Attributes:
 
