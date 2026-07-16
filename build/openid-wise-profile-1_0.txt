@@ -249,10 +249,10 @@ Lombardo, et al.             Standards Track                    [Page 4]
          or SVID profiles
 
       -  oauth_private_key_jwt - OAuth 2.0 client authentication using
-         private_key_jwt (RFC 7523)
+         private_key_jwt [RFC7523]
 
-      -  oauth_mtls - OAuth 2.0 mutual TLS client authentication (RFC
-         8705)
+      -  oauth_mtls - OAuth 2.0 mutual TLS client authentication
+         [RFC8705]
 
       -  oauth_client_secret - OAuth 2.0 client_id and client_secret
          credential pair
@@ -1648,10 +1648,21 @@ Lombardo, et al.             Standards Track                   [Page 29]
               RFC 7516, DOI 10.17487/RFC7516, May 2015,
               <https://www.rfc-editor.org/rfc/rfc7516>.
 
+   [RFC7523]  Jones, M., Campbell, B., and C. Mortimore, "JSON Web Token
+              (JWT) Profile for OAuth 2.0 Client Authentication and
+              Authorization Grants", RFC 7523, DOI 10.17487/RFC7523, May
+              2015, <https://www.rfc-editor.org/rfc/rfc7523>.
+
    [RFC8417]  Hunt, P., Ed., Jones, M., Denniss, W., and M. Ansari,
               "Security Event Token (SET)", RFC 8417,
               DOI 10.17487/RFC8417, July 2018,
               <https://www.rfc-editor.org/rfc/rfc8417>.
+
+   [RFC8705]  Campbell, B., Bradley, J., Sakimura, N., and T.
+              Lodderstedt, "OAuth 2.0 Mutual-TLS Client Authentication
+              and Certificate-Bound Access Tokens", RFC 8705,
+              DOI 10.17487/RFC8705, February 2020,
+              <https://www.rfc-editor.org/rfc/rfc8705>.
 
    [RFC9325]  Sheffer, Y., Saint-Andre, P., and T. Fossati,
               "Recommendations for Secure Use of Transport Layer
@@ -1664,6 +1675,13 @@ Lombardo, et al.             Standards Track                   [Page 29]
               DOI 10.17487/RFC9493, December 2023,
               <https://www.rfc-editor.org/rfc/rfc9493>.
 
+
+
+Lombardo, et al.             Standards Track                   [Page 30]
+
+                                 wiseset                       July 2026
+
+
    [SSF]      Tulshibagwale, A., Cappalli, T., Scurtescu, M., Backman,
               A., and J. Bradley, "OpenID Shared Signals Framework
               Specification 1.0", 2024, <https://openid.net/specs/
@@ -1673,14 +1691,6 @@ Lombardo, et al.             Standards Track                   [Page 29]
               Access Evaluation Profile 1.0", 2024,
               <https://openid.net/specs/openid-caep-specification-
               1_0.html>.
-
-
-
-
-Lombardo, et al.             Standards Track                   [Page 30]
-
-                                 wiseset                       July 2026
-
 
    [RISC]     Scurtescu, M., Backman, A., Hunt, P., Bradley, J., Bounev,
               S., and A. Tulshibagwale, "OpenID RISC Profile
@@ -1720,6 +1730,14 @@ Lombardo, et al.             Standards Track                   [Page 30]
    [SPIFFE]   "Secure Production Identity Framework for Everyone", 2024,
               <https://spiffe.io/docs/latest/spiffe-specs/spiffe/>.
 
+
+
+
+Lombardo, et al.             Standards Track                   [Page 31]
+
+                                 wiseset                       July 2026
+
+
    [AGENT-AUTH]
               Kasselman, P., Hardt, D., and A. Schwenkschuster, "AI
               Agent Authentication and Authorization", 2026,
@@ -1729,14 +1747,6 @@ Lombardo, et al.             Standards Track                   [Page 30]
    [CIMD]     Parecki, A., "Client ID Metadata Document", 2025,
               <https://www.ietf.org/archive/id/draft-parecki-oauth-
               client-id-metadata-document-07.html>.
-
-
-
-
-Lombardo, et al.             Standards Track                   [Page 31]
-
-                                 wiseset                       July 2026
-
 
    [VEX]      "Minimum Requirements for Vulnerability Exploitability
               eXchange (VEX)", 2023, <https://www.cisa.gov/resources-
@@ -1776,16 +1786,6 @@ Authors' Addresses
    Sean O'Dell
    CVS Health
    Email: sean.odell@cvshealth.com
-
-
-
-
-
-
-
-
-
-
 
 
 

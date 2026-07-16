@@ -34,7 +34,9 @@ normative:
   RFC2119:
   RFC8174:
   RFC7516:
+  RFC7523:
   RFC8417:
+  RFC8705:
   RFC9325:
   RFC9493:
   SSF:
@@ -233,8 +235,8 @@ Attributes:
     - `wic` - Workload Identity Certificate as defined in {{WIMSE-CRED}}
     - `x509_svid` - X.509-SVID as defined in {{SPIFFE}}
     - `x509_generic` - Generic X.509 certificate not conforming to WIC or SVID profiles
-    - `oauth_private_key_jwt` - OAuth 2.0 client authentication using private_key_jwt (RFC 7523)
-    - `oauth_mtls` - OAuth 2.0 mutual TLS client authentication (RFC 8705)
+    - `oauth_private_key_jwt` - OAuth 2.0 client authentication using private_key_jwt {{RFC7523}}
+    - `oauth_mtls` - OAuth 2.0 mutual TLS client authentication {{RFC8705}}
     - `oauth_client_secret` - OAuth 2.0 client_id and client_secret credential pair
     - `api_key` - Static API key or long-lived bearer token
 - Additional values MAY be defined by profiling specifications or private agreement between Transmitter and Receiver.
