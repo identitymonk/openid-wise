@@ -588,11 +588,11 @@ Attributes:
     - `x509_ca` - X.509 CA certificate(s) used to validate Workload Identity Certificates (WIC) or X.509-SVIDs.
     - `jwks` - JSON Web Key Set {{RFC7517}} used to validate Workload Identity Tokens (WIT).
 - **change_type** - REQUIRED. The nature of the change. Possible values:
-    - `key-added` - A new key or CA was added to the trust bundle.
-    - `key-rotated` - An existing key or CA was replaced.
-    - `key-revoked` - A key or CA was revoked and MUST no longer be trusted.
-    - `key-expired` - A key or CA has expired.
-    - `full-replacement` - The entire trust bundle was replaced.
+    - `key_added` - A new key or CA was added to the trust bundle.
+    - `key_rotated` - An existing key or CA was replaced.
+    - `key_revoked` - A key or CA was revoked and MUST no longer be trusted.
+    - `key_expired` - A key or CA has expired.
+    - `full_replacement` - The entire trust bundle was replaced.
 - **trust_domain** - REQUIRED. The FQDN of the trust domain whose material changed.
 - **effective_at** - OPTIONAL. When the new material becomes (or became) active. JSON number (NumericDate).
 - **old_material_expiry** - OPTIONAL. When the old material will cease to be valid (grace period end). JSON number (NumericDate).
@@ -600,9 +600,9 @@ Attributes:
 - **x509_bundle_uri** - OPTIONAL. When `anchor_type` is `x509_ca`, the URI to fetch the updated CA bundle.
 - **key_id** - OPTIONAL. The specific key affected. For JWKS, the `kid` value. For X.509, the certificate serial number or Subject Key Identifier.
 - **reason** - OPTIONAL. Why the change was made. Possible values:
-    - `scheduled-rotation` - Routine key rotation.
+    - `scheduled_rotation` - Routine key rotation.
     - `compromise` - A key or CA is believed compromised.
-    - `policy-change` - Changed due to updated security policy.
+    - `policy_change` - Changed due to updated security policy.
     - `expiry` - Proactive rotation before scheduled expiry.
 
 The following example is non-normative.
@@ -620,13 +620,13 @@ The following example is non-normative.
         "uri": "wimse://trust.example.com"
       },
       "anchor_type": "jwks",
-      "change_type": "key-rotated",
+      "change_type": "key_rotated",
       "trust_domain": "trust.example.com",
       "effective_at": 1700000000,
       "old_material_expiry": 1700604800,
       "jwks_uri": "https://authority.example.com/.well-known/jwks.json",
       "key_id": "kid:signing-2024-q4",
-      "reason": "scheduled-rotation"
+      "reason": "scheduled_rotation"
     }
   }
 }
@@ -648,7 +648,7 @@ The following example is non-normative.
         "uri": "wimse://trust.example.com"
       },
       "anchor_type": "x509_ca",
-      "change_type": "key-revoked",
+      "change_type": "key_revoked",
       "trust_domain": "trust.example.com",
       "key_id": "serial:CA-ROOT-2023-001",
       "reason": "compromise"
@@ -762,9 +762,9 @@ Attributes:
     - `migration` - Workload moved to a different node, region, or zone.
     - `scaling` - New instances added or removed.
     - `redeployment` - Workload was redeployed (same identity, new instance).
-    - `image-update` - Runtime image or binary was updated.
-    - `config-change` - Configuration affecting identity posture changed.
-    - `node-reassignment` - Underlying compute node changed.
+    - `image_update` - Runtime image or binary was updated.
+    - `config_change` - Configuration affecting identity posture changed.
+    - `node_reassignment` - Underlying compute node changed.
 - **previous_context** - OPTIONAL. JSON object describing the prior environment metadata (structure defined by implementation).
 - **current_context** - OPTIONAL. JSON object describing the new environment metadata.
 - **posture_evaluation_status** - OPTIONAL. Whether posture re-evaluation has occurred. Possible values:

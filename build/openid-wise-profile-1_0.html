@@ -2180,19 +2180,19 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.1-2" cla
               <p id="section-2.4.1-4.2.1"><strong>change_type</strong> - REQUIRED. The nature of the change. Possible values:<a href="#section-2.4.1-4.2.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2.4.1-4.2.2.1">
-                  <p id="section-2.4.1-4.2.2.1.1"><code>key-added</code> - A new key or CA was added to the trust bundle.<a href="#section-2.4.1-4.2.2.1.1" class="pilcrow">¶</a></p>
+                  <p id="section-2.4.1-4.2.2.1.1"><code>key_added</code> - A new key or CA was added to the trust bundle.<a href="#section-2.4.1-4.2.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-2.4.1-4.2.2.2">
-                  <p id="section-2.4.1-4.2.2.2.1"><code>key-rotated</code> - An existing key or CA was replaced.<a href="#section-2.4.1-4.2.2.2.1" class="pilcrow">¶</a></p>
+                  <p id="section-2.4.1-4.2.2.2.1"><code>key_rotated</code> - An existing key or CA was replaced.<a href="#section-2.4.1-4.2.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-2.4.1-4.2.2.3">
-                  <p id="section-2.4.1-4.2.2.3.1"><code>key-revoked</code> - A key or CA was revoked and MUST no longer be trusted.<a href="#section-2.4.1-4.2.2.3.1" class="pilcrow">¶</a></p>
+                  <p id="section-2.4.1-4.2.2.3.1"><code>key_revoked</code> - A key or CA was revoked and MUST no longer be trusted.<a href="#section-2.4.1-4.2.2.3.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-2.4.1-4.2.2.4">
-                  <p id="section-2.4.1-4.2.2.4.1"><code>key-expired</code> - A key or CA has expired.<a href="#section-2.4.1-4.2.2.4.1" class="pilcrow">¶</a></p>
+                  <p id="section-2.4.1-4.2.2.4.1"><code>key_expired</code> - A key or CA has expired.<a href="#section-2.4.1-4.2.2.4.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-2.4.1-4.2.2.5">
-                  <p id="section-2.4.1-4.2.2.5.1"><code>full-replacement</code> - The entire trust bundle was replaced.<a href="#section-2.4.1-4.2.2.5.1" class="pilcrow">¶</a></p>
+                  <p id="section-2.4.1-4.2.2.5.1"><code>full_replacement</code> - The entire trust bundle was replaced.<a href="#section-2.4.1-4.2.2.5.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>
@@ -2218,13 +2218,13 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.1-2" cla
               <p id="section-2.4.1-4.9.1"><strong>reason</strong> - OPTIONAL. Why the change was made. Possible values:<a href="#section-2.4.1-4.9.1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2.4.1-4.9.2.1">
-                  <p id="section-2.4.1-4.9.2.1.1"><code>scheduled-rotation</code> - Routine key rotation.<a href="#section-2.4.1-4.9.2.1.1" class="pilcrow">¶</a></p>
+                  <p id="section-2.4.1-4.9.2.1.1"><code>scheduled_rotation</code> - Routine key rotation.<a href="#section-2.4.1-4.9.2.1.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-2.4.1-4.9.2.2">
                   <p id="section-2.4.1-4.9.2.2.1"><code>compromise</code> - A key or CA is believed compromised.<a href="#section-2.4.1-4.9.2.2.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-2.4.1-4.9.2.3">
-                  <p id="section-2.4.1-4.9.2.3.1"><code>policy-change</code> - Changed due to updated security policy.<a href="#section-2.4.1-4.9.2.3.1" class="pilcrow">¶</a></p>
+                  <p id="section-2.4.1-4.9.2.3.1"><code>policy_change</code> - Changed due to updated security policy.<a href="#section-2.4.1-4.9.2.3.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-2.4.1-4.9.2.4">
                   <p id="section-2.4.1-4.9.2.4.1"><code>expiry</code> - Proactive rotation before scheduled expiry.<a href="#section-2.4.1-4.9.2.4.1" class="pilcrow">¶</a></p>
@@ -2249,13 +2249,13 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.1-2" cla
         "uri": "wimse://trust.example.com"
       },
       "anchor_type": "jwks",
-      "change_type": "key-rotated",
+      "change_type": "key_rotated",
       "trust_domain": "trust.example.com",
       "effective_at": 1700000000,
       "old_material_expiry": 1700604800,
       "jwks_uri": "https://authority.example.com/.well-known/jwks.json",
       "key_id": "kid:signing-2024-q4",
-      "reason": "scheduled-rotation"
+      "reason": "scheduled_rotation"
     }
   }
 }
@@ -2282,7 +2282,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.1-2" cla
         "uri": "wimse://trust.example.com"
       },
       "anchor_type": "x509_ca",
-      "change_type": "key-revoked",
+      "change_type": "key_revoked",
       "trust_domain": "trust.example.com",
       "key_id": "serial:CA-ROOT-2023-001",
       "reason": "compromise"
@@ -2496,13 +2496,13 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.1-2" cla
                   <p id="section-2.6.1-4.1.2.3.1"><code>redeployment</code> - Workload was redeployed (same identity, new instance).<a href="#section-2.6.1-4.1.2.3.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-2.6.1-4.1.2.4">
-                  <p id="section-2.6.1-4.1.2.4.1"><code>image-update</code> - Runtime image or binary was updated.<a href="#section-2.6.1-4.1.2.4.1" class="pilcrow">¶</a></p>
+                  <p id="section-2.6.1-4.1.2.4.1"><code>image_update</code> - Runtime image or binary was updated.<a href="#section-2.6.1-4.1.2.4.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-2.6.1-4.1.2.5">
-                  <p id="section-2.6.1-4.1.2.5.1"><code>config-change</code> - Configuration affecting identity posture changed.<a href="#section-2.6.1-4.1.2.5.1" class="pilcrow">¶</a></p>
+                  <p id="section-2.6.1-4.1.2.5.1"><code>config_change</code> - Configuration affecting identity posture changed.<a href="#section-2.6.1-4.1.2.5.1" class="pilcrow">¶</a></p>
 </li>
                 <li class="normal" id="section-2.6.1-4.1.2.6">
-                  <p id="section-2.6.1-4.1.2.6.1"><code>node-reassignment</code> - Underlying compute node changed.<a href="#section-2.6.1-4.1.2.6.1" class="pilcrow">¶</a></p>
+                  <p id="section-2.6.1-4.1.2.6.1"><code>node_reassignment</code> - Underlying compute node changed.<a href="#section-2.6.1-4.1.2.6.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>

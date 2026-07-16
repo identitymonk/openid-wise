@@ -865,16 +865,16 @@ Lombardo, et al.             Standards Track                   [Page 15]
    *  *change_type* - REQUIRED.  The nature of the change.  Possible
       values:
 
-      -  key-added - A new key or CA was added to the trust bundle.
+      -  key_added - A new key or CA was added to the trust bundle.
 
-      -  key-rotated - An existing key or CA was replaced.
+      -  key_rotated - An existing key or CA was replaced.
 
-      -  key-revoked - A key or CA was revoked and MUST no longer be
+      -  key_revoked - A key or CA was revoked and MUST no longer be
          trusted.
 
-      -  key-expired - A key or CA has expired.
+      -  key_expired - A key or CA has expired.
 
-      -  full-replacement - The entire trust bundle was replaced.
+      -  full_replacement - The entire trust bundle was replaced.
 
    *  *trust_domain* - REQUIRED.  The FQDN of the trust domain whose
       material changed.
@@ -904,11 +904,11 @@ Lombardo, et al.             Standards Track                   [Page 16]
 
    *  *reason* - OPTIONAL.  Why the change was made.  Possible values:
 
-      -  scheduled-rotation - Routine key rotation.
+      -  scheduled_rotation - Routine key rotation.
 
       -  compromise - A key or CA is believed compromised.
 
-      -  policy-change - Changed due to updated security policy.
+      -  policy_change - Changed due to updated security policy.
 
       -  expiry - Proactive rotation before scheduled expiry.
 
@@ -926,13 +926,13 @@ Lombardo, et al.             Standards Track                   [Page 16]
            "uri": "wimse://trust.example.com"
          },
          "anchor_type": "jwks",
-         "change_type": "key-rotated",
+         "change_type": "key_rotated",
          "trust_domain": "trust.example.com",
          "effective_at": 1700000000,
          "old_material_expiry": 1700604800,
          "jwks_uri": "https://authority.example.com/.well-known/jwks.json",
          "key_id": "kid:signing-2024-q4",
-         "reason": "scheduled-rotation"
+         "reason": "scheduled_rotation"
        }
      }
    }
@@ -966,7 +966,7 @@ Lombardo, et al.             Standards Track                   [Page 17]
            "uri": "wimse://trust.example.com"
          },
          "anchor_type": "x509_ca",
-         "change_type": "key-revoked",
+         "change_type": "key_revoked",
          "trust_domain": "trust.example.com",
          "key_id": "serial:CA-ROOT-2023-001",
          "reason": "compromise"
@@ -1188,12 +1188,12 @@ Lombardo, et al.             Standards Track                   [Page 21]
       -  redeployment - Workload was redeployed (same identity, new
          instance).
 
-      -  image-update - Runtime image or binary was updated.
+      -  image_update - Runtime image or binary was updated.
 
-      -  config-change - Configuration affecting identity posture
+      -  config_change - Configuration affecting identity posture
          changed.
 
-      -  node-reassignment - Underlying compute node changed.
+      -  node_reassignment - Underlying compute node changed.
 
    *  *previous_context* - OPTIONAL.  JSON object describing the prior
       environment metadata (structure defined by implementation).
