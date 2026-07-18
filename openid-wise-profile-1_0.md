@@ -244,6 +244,8 @@ credential types are included to enable security event signaling for
 environments operating heterogeneous credential ecosystems or
 transitioning toward WIMSE-compliant infrastructure.
 
+Proof-of-possession credentials bind a key to the workload identity: a WIT carries the public key in its `cnf` claim, and the corresponding private key is used to produce Workload Proof Tokens (WPT) {{WPT}}. WISE does not define separate events for the lifecycle of such keys. Because a bound key has no value once its credential is revoked, a compromised or rotated key is signalled through the credential events in this section: revoke the affected credential (with `reason` set to `key_compromise` where applicable) and, where a replacement is issued, emit `credential-rotated` or `credential-issued`.
+
 ### credential-issued
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/credential-issued`
@@ -264,6 +266,10 @@ Attributes:
 - Additional values MAY be defined by profiling specifications or private agreement between Transmitter and Receiver.
 - **credential_id** - OPTIONAL. An identifier for the credential (e.g., certificate serial number, `jti` claim value).
 - **expiry** - OPTIONAL. The expiration time of the credential as a JSON number (NumericDate per {{RFC7519}}).
+- **key_storage** - OPTIONAL. Where the private key bound to the credential is stored. Possible values:
+    - `hardware` - Key is stored in a hardware security module, TPM, secure enclave, or equivalent tamper-resistant storage.
+    - `software` - Key is stored in software (filesystem, memory, or application-managed keystore).
+- **key_storage_ecosystem** - OPTIONAL. Free-text description of the hardware or software environment protecting the key. Examples: "iPhone 17s, iOS 23 patch 6", "AWS Nitro Enclave", "Azure Confidential VM, AMD SEV-SNP", "FIPS 140-3 Level 3 HSM".
 - **event_timestamp** - OPTIONAL. The time at which the credential was issued. JSON number representing seconds since Unix epoch.
 
 The following example is non-normative.
@@ -339,6 +345,7 @@ Attributes:
 - **credential_id** - OPTIONAL. Identifier of the revoked credential.
 - **reason** - OPTIONAL. Why the credential was revoked. Possible values:
     - `compromise` - The credential is believed compromised.
+    - `key_compromise` - The private key bound to the credential is believed compromised.
     - `superseded` - Replaced by a new credential.
     - `cessation` - The workload no longer operates.
     - `policy_violation` - Revoked due to a policy violation.
@@ -446,117 +453,6 @@ The following example is non-normative.
 ~~~
 {: #fig-credential-renewal-failure title="Example: Credential Renewal Failure"}
 
-## Bound Key Lifecycle Events
-
-Bound keys are proof-of-possession keys cryptographically tied to a workload credential. They have an independent lifecycle from the credential itself. A credential may remain valid while its bound key is rotated or revoked, and a key compromise may be addressed without full credential revocation.
-
-In the WIMSE model, the WIT contains a `cnf` claim binding a public key to the workload identity. The corresponding private key is used to produce Workload Proof Tokens (WPT) {{WPT}}. Bound keys in this context include DPoP proof keys, mTLS certificate-bound keys, and attestation keys used during posture evaluation.
-
-### bound-key-issued
-
-Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/bound-key-issued`
-
-The `bound-key-issued` event signals that a new proof-of-possession key was bound to a workload credential.
-
-Attributes:
-
-- **key_type** - REQUIRED. The type of key binding. Possible values:
-    - `dpop` - DPoP proof-of-possession key
-    - `mtls` - mTLS certificate-bound key
-    - `cnf` - Confirmation key (as per WIT `cnf` claim)
-    - `attestation` - Key used during posture evaluation
-- **key_id** - OPTIONAL. Identifier of the bound key (`kid` or Subject Key Identifier).
-- **credential_id** - OPTIONAL. Identifier of the credential the key is bound to.
-- **key_storage** - OPTIONAL. Where the private key material is stored. Possible values:
-    - `hardware` - Key is stored in a hardware security module, TPM, secure enclave, or equivalent tamper-resistant storage.
-    - `software` - Key is stored in software (filesystem, memory, or application-managed keystore).
-- **key_storage_ecosystem** - OPTIONAL. Free-text description of the hardware or software environment protecting the key. Examples: "iPhone 17s, iOS 23 patch 6", "AWS Nitro Enclave", "Azure Confidential VM, AMD SEV-SNP", "FIPS 140-3 Level 3 HSM".
-- **expiry** - OPTIONAL. Expiration of the bound key. JSON number (NumericDate).
-- **event_timestamp** - OPTIONAL. Time of issuance.
-
-The following example is non-normative.
-
-~~~ json
-{
-  "iss": "https://authority.example.com/",
-  "jti": "wise-evt-010",
-  "iat": 1700000000,
-  "aud": "https://rp.partner.example.net/wise",
-  "events": {
-    "https://schemas.openid.net/secevent/wise/event-type/bound-key-issued": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
-      "key_type": "cnf",
-      "key_id": "kid:wpt-key-2024-11",
-      "credential_id": "jti:wit-2024-q4-002",
-      "key_storage": "hardware",
-      "key_storage_ecosystem": "AWS Nitro Enclave"
-    }
-  }
-}
-~~~
-{: #fig-bound-key-issued title="Example: Bound Key Issued"}
-
-### bound-key-rotated
-
-Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/bound-key-rotated`
-
-The `bound-key-rotated` event signals that the bound key associated with a workload credential was rotated.
-
-Attributes:
-
-- **key_type** - REQUIRED. The type of key binding.
-- **previous_key_id** - OPTIONAL. Identifier of the key being replaced.
-- **new_key_id** - OPTIONAL. Identifier of the new key.
-- **credential_id** - OPTIONAL. Identifier of the associated credential.
-- **key_storage** - OPTIONAL. Where the new key is stored (`hardware` or `software`).
-- **key_storage_ecosystem** - OPTIONAL. Free-text description of the environment protecting the new key.
-- **grace_period_end** - OPTIONAL. Time until which the previous key remains accepted for proof-of-possession validation.
-- **event_timestamp** - OPTIONAL. Time of rotation.
-
-### bound-key-revoked
-
-Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/bound-key-revoked`
-
-The `bound-key-revoked` event signals that a bound key was revoked. The associated credential MAY still be valid, but proof-of-possession using the revoked key MUST be rejected.
-
-Attributes:
-
-- **key_type** - REQUIRED. The type of key binding.
-- **key_id** - OPTIONAL. Identifier of the revoked key.
-- **credential_id** - OPTIONAL. Identifier of the associated credential.
-- **reason** - OPTIONAL. Why the key was revoked. Possible values:
-    - `compromise` - The key material is believed compromised.
-    - `superseded` - Replaced by a new key.
-    - `policy_violation` - Revoked due to policy.
-- **event_timestamp** - OPTIONAL. Time of revocation.
-
-The following example is non-normative.
-
-~~~ json
-{
-  "iss": "https://authority.example.com/",
-  "jti": "wise-evt-012",
-  "iat": 1700000000,
-  "aud": "https://rp.partner.example.net/wise",
-  "events": {
-    "https://schemas.openid.net/secevent/wise/event-type/bound-key-revoked": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
-      "key_type": "cnf",
-      "key_id": "kid:wpt-key-2024-11",
-      "credential_id": "jti:wit-2024-q4-002",
-      "reason": "compromise"
-    }
-  }
-}
-~~~
-{: #fig-bound-key-revoked title="Example: Bound Key Revoked"}
-
 ## Workload Lifecycle Events
 
 These events signal changes to the lifecycle state of a workload as managed by the trust domain authority.
@@ -565,7 +461,7 @@ These events signal changes to the lifecycle state of a workload as managed by t
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-disabled`
 
-The `workload-disabled` event signals that the trust domain authority has suspended a workload. The authority will no longer issue credentials for this workload, and it cancels the workload's currently valid credentials and bound keys. This event conveys only the lifecycle state change; the resulting credential cancellation is signalled separately through accompanying `credential-revoked` events (and `bound-key-revoked` events for any bound keys). A Transmitter SHOULD emit those credential events together with this event.
+The `workload-disabled` event signals that the trust domain authority has suspended a workload. The authority will no longer issue credentials for this workload, and it cancels the workload's currently valid credentials. This event conveys only the lifecycle state change; the resulting credential cancellation is signalled separately through accompanying `credential-revoked` events. A Transmitter SHOULD emit those credential events together with this event.
 
 Attributes:
 
@@ -590,7 +486,7 @@ Attributes:
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-purged`
 
-The `workload-purged` event signals that a workload has been permanently removed from the trust domain. This is irreversible. The workload will not be re-provisioned. All credentials previously issued for this workload MUST be considered invalid. As with `workload-disabled`, this event conveys only the lifecycle state change; the resulting credential cancellation is signalled separately through accompanying `credential-revoked` events (and `bound-key-revoked` events for any bound keys).
+The `workload-purged` event signals that a workload has been permanently removed from the trust domain. This is irreversible. The workload will not be re-provisioned. All credentials previously issued for this workload MUST be considered invalid. As with `workload-disabled`, this event conveys only the lifecycle state change; the resulting credential cancellation is signalled separately through accompanying `credential-revoked` events.
 
 Attributes:
 
@@ -1014,7 +910,7 @@ Access to WISE event streams MUST be authorized. Transmitters MUST verify that R
 
 ## Compromise Response
 
-Upon receiving a `credential-compromise`, `bound-key-revoked` (with reason `compromise`), `trust-anchor-changed` (with reason `compromise`), or `workload-compromised` event, Receivers SHOULD take immediate action to reject the affected credentials, keys, or trust material without waiting for additional confirmation.
+Upon receiving a `credential-compromise`, `credential-revoked` (with reason `compromise` or `key_compromise`), `trust-anchor-changed` (with reason `compromise`), or `workload-compromised` event, Receivers SHOULD take immediate action to reject the affected credentials, keys, or trust material without waiting for additional confirmation.
 
 ## Relationship to Credential Freshness Models
 
@@ -1052,6 +948,7 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 
 -02
 
+- Removed the Bound Key Lifecycle Events (`bound-key-issued`, `bound-key-rotated`, `bound-key-revoked`); key compromise and rotation are now handled through the credential events, and a `key_compromise` reason was added to `credential-revoked`. The `key_storage` and `key_storage_ecosystem` attributes moved to `credential-issued`.
 - Aligned terminology with the WIMSE architecture: replaced "Identity Server" with "Credential Service", and "machine identity lifecycle" with "workload identity lifecycle".
 - Softened the single-authority language and aligned it with WIMSE (a trust domain maps to one or more trust anchors).
 - Renamed "Workload Identity State Events" to "Workload Lifecycle Events" and clarified that credential cancellation and issuance are conveyed by separate companion events.
