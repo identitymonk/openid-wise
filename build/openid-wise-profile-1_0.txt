@@ -5,12 +5,12 @@
 OpenID Shared Signals                                        J. Lombardo
                                                      Amazon Web Services
                                                              D. Sneeggen
-                                                                  Dendro
+                                                                Signicat
                                                                S. O'Dell
                                                               CVS Health
                                                             P. Kasselman
                                                         Defakto Security
-                                                            18 July 2026
+                                                            19 July 2026
 
 
             OpenID WISE Profile Specification 1.0 - draft 02
@@ -1718,8 +1718,8 @@ Authors' Addresses
 
 
    Dag Sneeggen
-   Dendro
-   Email: dag@dendro.systems
+   Signicat
+   Email: dag.sneeggen@signicat.com
 
 
    Sean O'Dell

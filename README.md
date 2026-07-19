@@ -57,8 +57,10 @@ pandoc build/openid-wise-profile-1_0.html -f html -t docx -o build/openid-wise-p
 
 ## Authors
 
-- Jeff Lombardo (Amazon Web Services) - jeff.lombardo@gmail.com
-- Dag Sneeggen (Dendro) - dag@dendro.systems
+- Jeff Lombardo (Amazon Web Services) - jeff@authnopuz.xyz
+- Dag Sneeggen (Signicat) - dag.sneeggen@signicat.com
+- Sean O'Dell (CVS Health) - sean.odell@cvshealth.com
+- Pieter Kasselman (Defakto Security) - pieter@defakto.security
 
 ## Contributing
 
