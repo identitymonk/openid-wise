@@ -31,14 +31,13 @@ $(BUILD)/%.txt: $(BUILD)/%.xml
 $(BUILD)/%.docx: $(BUILD)/%.html
 	pandoc $< -f html -t docx -o $@
 
-# Assemble the directory published to GitHub Pages. The main draft's HTML is
-# copied to index.html so it is served at the site root. Deployment itself is
-# handled by the GitHub Actions workflow (.github/workflows/build.yml).
-publish: all
+# Assemble the directory published to GitHub Pages. The main draft's HTML
+# (build/$(MAIN).html) is published as index.html so it is served at the site
+# root. Deployment itself is handled by the GitHub Actions workflow
+# (.github/workflows/build.yml).
+publish: $(BUILD)/$(MAIN).html
 	rm -rf $(PUBLIC)
 	mkdir -p $(PUBLIC)
-	cp $(addprefix $(BUILD)/,$(addsuffix .html,$(DRAFTS))) $(PUBLIC)/
-	cp $(addprefix $(BUILD)/,$(addsuffix .txt,$(DRAFTS))) $(PUBLIC)/
 	cp $(BUILD)/$(MAIN).html $(PUBLIC)/index.html
 
 clean:
