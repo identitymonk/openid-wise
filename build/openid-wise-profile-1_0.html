@@ -1943,6 +1943,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.2-2" cla
 <a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-workload-lifecycle-events" class="section-name selfRef">Workload Lifecycle Events</a>
         </h3>
 <p id="section-2.3-1">These events signal changes to the lifecycle state of a workload as managed by the trust domain authority.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
+<p id="section-2.3-2">Each of these events conveys only the lifecycle state change; the corresponding credential effect is carried by a separate companion event (<code>credential-revoked</code> or <code>credential-issued</code>). When a Transmitter emits a lifecycle event together with its companion credential event, it SHOULD set the same value in the OPTIONAL <code>txn</code> (transaction identifier) claim <span>[<a href="#RFC8417" class="cite xref">RFC8417</a>]</span> on both SETs, so that a Receiver can reliably associate the lifecycle change with its credential effect.<a href="#section-2.3-2" class="pilcrow">¶</a></p>
 <div id="workload-disabled">
 <section id="section-2.3.1">
           <h4 id="name-workload-disabled">
@@ -2615,10 +2616,10 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.2-2" cla
               </ul>
 </li>
             <li class="normal" id="section-2.6.1-4.2">
-              <p id="section-2.6.1-4.2.1"><strong>previous_context</strong> - OPTIONAL. JSON object describing the prior environment metadata (structure defined by implementation).<a href="#section-2.6.1-4.2.1" class="pilcrow">¶</a></p>
+              <p id="section-2.6.1-4.2.1"><strong>previous_context</strong> - OPTIONAL. A JSON object describing the prior runtime environment. See the guidance below on the interoperable key set and on limiting sensitive detail.<a href="#section-2.6.1-4.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.6.1-4.3">
-              <p id="section-2.6.1-4.3.1"><strong>current_context</strong> - OPTIONAL. JSON object describing the new environment metadata.<a href="#section-2.6.1-4.3.1" class="pilcrow">¶</a></p>
+              <p id="section-2.6.1-4.3.1"><strong>current_context</strong> - OPTIONAL. A JSON object describing the new runtime environment, using the same keys as <code>previous_context</code> so the two can be compared.<a href="#section-2.6.1-4.3.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.6.1-4.4">
               <p id="section-2.6.1-4.4.1"><strong>posture_evaluation_status</strong> - OPTIONAL. Whether posture re-evaluation has occurred. Possible values:<a href="#section-2.6.1-4.4.1" class="pilcrow">¶</a></p>
@@ -2638,10 +2639,30 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.2-2" cla
               <p id="section-2.6.1-4.5.1"><strong>event_timestamp</strong> - OPTIONAL. Time of the change.<a href="#section-2.6.1-4.5.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-2.6.1-5">The following example is non-normative.<a href="#section-2.6.1-5" class="pilcrow">¶</a></p>
+<p id="section-2.6.1-5">For interoperability, when <code>previous_context</code> or <code>current_context</code> is present it MAY include the following keys. Each is OPTIONAL, because the corresponding notion may not exist in every deployment:<a href="#section-2.6.1-5" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2.6.1-6.1">
+              <p id="section-2.6.1-6.1.1"><code>region</code> - The geographic or cloud region.<a href="#section-2.6.1-6.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-2.6.1-6.2">
+              <p id="section-2.6.1-6.2.1"><code>zone</code> - The availability or fault-isolation zone.<a href="#section-2.6.1-6.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-2.6.1-6.3">
+              <p id="section-2.6.1-6.3.1"><code>platform</code> - The runtime platform type (for example, <code>kubernetes</code>, <code>ecs</code>, <code>vm</code>, or <code>serverless</code>).<a href="#section-2.6.1-6.3.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-2.6.1-6.4">
+              <p id="section-2.6.1-6.4.1"><code>cluster</code> - An identifier for the orchestration cluster or scheduling domain.<a href="#section-2.6.1-6.4.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-2.6.1-6.5">
+              <p id="section-2.6.1-6.5.1"><code>image</code> - A reference or digest for the workload image or binary.<a href="#section-2.6.1-6.5.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-2.6.1-7">This set is the minimum interoperable capability: where a Receiver understands these keys, it can compare the prior and new environment without prior agreement. Both objects SHOULD use the same keys so they can be compared. The schema MAY be extended with additional deployment- or profile-specific topology information where a Transmitter sees fit; in that case the Transmitter is responsible for ensuring the Receiver can understand the added fields, and how such understanding is established is out of scope for this profile.<a href="#section-2.6.1-7" class="pilcrow">¶</a></p>
+<p id="section-2.6.1-8">Because these fields can reveal workload infrastructure topology (see <a href="#confidentiality" class="auto internal xref">Section 4.1</a>), a Transmitter SHOULD avoid including detail beyond what the Receiver needs, based on its own evaluation of the privacy risk, particularly for events that may cross a trust-domain boundary. For example, a coarse <code>region</code> is preferable to a specific node or host name.<a href="#section-2.6.1-8" class="pilcrow">¶</a></p>
+<p id="section-2.6.1-9">The following example is non-normative.<a href="#section-2.6.1-9" class="pilcrow">¶</a></p>
 <span id="name-example-workload-baseline-c"></span><div id="fig-baseline-changed">
 <figure id="figure-10">
-            <div class="lang-json sourcecode" id="section-2.6.1-6.1">
+            <div class="lang-json sourcecode" id="section-2.6.1-10.1">
 <pre>
 {
   "iss": "https://authority.example.com/",
@@ -2657,11 +2678,11 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.2-2" cla
       "reason": "migration",
       "previous_context": {
         "region": "us-east-1",
-        "node": "node-abc"
+        "platform": "kubernetes"
       },
       "current_context": {
         "region": "eu-west-1",
-        "node": "node-xyz"
+        "platform": "kubernetes"
       },
       "posture_evaluation_status": "succeeded"
     }
@@ -2681,7 +2702,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.2-2" cla
 <a href="#section-2.6.2" class="section-number selfRef">2.6.2. </a><a href="#name-workload-compromised" class="section-name selfRef">workload-compromised</a>
           </h4>
 <p id="section-2.6.2-1">Event Type URI: <code>https://schemas.openid.net/secevent/wise/event-type/workload-compromised</code><a href="#section-2.6.2-1" class="pilcrow">¶</a></p>
-<p id="section-2.6.2-2">The <code>workload-compromised</code> event signals that a workload is believed to be compromised based on runtime detection. This is a high-severity signal that SHOULD trigger immediate isolation or credential revocation.<a href="#section-2.6.2-2" class="pilcrow">¶</a></p>
+<p id="section-2.6.2-2">The <code>workload-compromised</code> event signals that a workload is believed to be compromised based on runtime detection. This is a high-severity signal that SHOULD trigger immediate isolation or credential revocation. Where the Transmitter is also the credential authority for the workload, it SHOULD emit an accompanying <code>credential-revoked</code> event (with reason <code>compromise</code>), setting the same value in the OPTIONAL <code>txn</code> claim <span>[<a href="#RFC8417" class="cite xref">RFC8417</a>]</span> on both SETs so that a Receiver can correlate them.<a href="#section-2.6.2-2" class="pilcrow">¶</a></p>
 <p id="section-2.6.2-3">Attributes:<a href="#section-2.6.2-3" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2.6.2-4.1">
@@ -2986,8 +3007,9 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.2-2" cla
         <h3 id="name-compromise-response">
 <a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-compromise-response" class="section-name selfRef">Compromise Response</a>
         </h3>
-<p id="section-4.4-1">Upon receiving a <code>credential-compromise</code>, <code>credential-revoked</code> (with reason <code>compromise</code> or <code>key_compromise</code>), <code>trust-anchor-revoked</code> (with reason <code>compromise</code>), or <code>workload-compromised</code> event, Receivers SHOULD take immediate action to reject the affected credentials, keys, or trust material without waiting for additional confirmation.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
-<p id="section-4.4-2">Rejecting credentials only takes effect at the next credential check or proof-of-possession step; neither short credential lifetime nor condition-liveness severs a connection that is already established. A Receiver that holds active connections with, or is actively serving, the affected workload SHOULD therefore also terminate those connections rather than waiting for the next operation. This is best-effort and applies to Receivers, such as gateways or service mesh components, that are able to correlate the workload identifier to live connections.<a href="#section-4.4-2" class="pilcrow">¶</a></p>
+<p id="section-4.4-1">Several WISE events indicate that a credential, key, trust anchor, federation, or workload can no longer be trusted. This is signalled either by an event whose purpose is to report compromise (<code>credential-compromise</code>, <code>workload-compromised</code>) or by any event carrying a <code>reason</code> of <code>compromise</code> or <code>key_compromise</code>. Upon receiving any such event — regardless of event type, including events defined by future revisions or profiling specifications — Receivers SHOULD take immediate action appropriate to the affected object (for example, reject the affected credentials, keys, or trust material, or isolate the affected workload) without waiting for additional confirmation.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
+<p id="section-4.4-2">Events in this document that carry such a signal include <code>credential-compromise</code>; <code>credential-revoked</code> (with reason <code>compromise</code> or <code>key_compromise</code>); <code>trust-anchor-rotated</code> and <code>trust-anchor-revoked</code> (with reason <code>compromise</code>); <code>trust-domain-federation-revoked</code> (with reason <code>compromise</code>); <code>workload-disabled</code> (with reason <code>compromise</code>); and <code>workload-compromised</code>.<a href="#section-4.4-2" class="pilcrow">¶</a></p>
+<p id="section-4.4-3">Rejecting credentials only takes effect at the next credential check or proof-of-possession step; neither short credential lifetime nor condition-liveness severs a connection that is already established. A Receiver that holds active connections with, or is actively serving, the affected workload SHOULD therefore also terminate those connections rather than waiting for the next operation. This is best-effort and applies to Receivers, such as gateways or service mesh components, that are able to correlate the workload identifier to live connections.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="relationship-to-credential-freshness-models">
@@ -3181,6 +3203,15 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.2-2" cla
 </li>
         <li class="normal" id="appendix-B-2.3">
           <p id="appendix-B-2.3.1">Clarified the credential freshness models: added an informative reference for condition-bounded credentials, corrected the description of condition-liveness to state that it removes (rather than reduces) the local deprovisioning window for locally evaluable conditions, and noted in Compromise Response that Receivers should also terminate active connections since credential rejection only acts at the next operation.<a href="#appendix-B-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.4">
+          <p id="appendix-B-2.4.1">Instructed Transmitters to set a shared <code>txn</code> claim across a lifecycle event and its companion credential event so Receivers can correlate them, and added conditional pairing guidance to <code>workload-compromised</code>.<a href="#appendix-B-2.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.5">
+          <p id="appendix-B-2.5.1">Generalised the Compromise Response rule to apply to any event carrying a <code>compromise</code> or <code>key_compromise</code> signal, rather than an enumerated list of event types.<a href="#appendix-B-2.5.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.6">
+          <p id="appendix-B-2.6.1">Defined a minimal interoperable key set (<code>region</code>, <code>zone</code>, <code>platform</code>, <code>cluster</code>, <code>image</code>, each optional) for the <code>previous_context</code>/<code>current_context</code> fields of <code>workload-baseline-changed</code>, allowed profile-specific extension, and added guidance to avoid disclosing fine-grained topology across trust-domain boundaries.<a href="#appendix-B-2.6.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-B-3">-02<a href="#appendix-B-3" class="pilcrow">¶</a></p>

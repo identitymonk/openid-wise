@@ -474,6 +474,8 @@ The following example is non-normative.
 
 These events signal changes to the lifecycle state of a workload as managed by the trust domain authority.
 
+Each of these events conveys only the lifecycle state change; the corresponding credential effect is carried by a separate companion event (`credential-revoked` or `credential-issued`). When a Transmitter emits a lifecycle event together with its companion credential event, it SHOULD set the same value in the OPTIONAL `txn` (transaction identifier) claim {{RFC8417}} on both SETs, so that a Receiver can reliably associate the lifecycle change with its credential effect.
+
 ### workload-disabled
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-disabled`
@@ -838,13 +840,25 @@ Attributes:
     - `image_update` - Runtime image or binary was updated.
     - `config_change` - Configuration affecting identity posture changed.
     - `node_reassignment` - Underlying compute node changed.
-- **previous_context** - OPTIONAL. JSON object describing the prior environment metadata (structure defined by implementation).
-- **current_context** - OPTIONAL. JSON object describing the new environment metadata.
+- **previous_context** - OPTIONAL. A JSON object describing the prior runtime environment. See the guidance below on the interoperable key set and on limiting sensitive detail.
+- **current_context** - OPTIONAL. A JSON object describing the new runtime environment, using the same keys as `previous_context` so the two can be compared.
 - **posture_evaluation_status** - OPTIONAL. Whether posture re-evaluation has occurred. Possible values:
     - `succeeded` - Re-evaluation completed successfully.
     - `pending` - Re-evaluation has not yet occurred.
     - `failed` - Re-evaluation was attempted and failed.
 - **event_timestamp** - OPTIONAL. Time of the change.
+
+For interoperability, when `previous_context` or `current_context` is present it MAY include the following keys. Each is OPTIONAL, because the corresponding notion may not exist in every deployment:
+
+- `region` - The geographic or cloud region.
+- `zone` - The availability or fault-isolation zone.
+- `platform` - The runtime platform type (for example, `kubernetes`, `ecs`, `vm`, or `serverless`).
+- `cluster` - An identifier for the orchestration cluster or scheduling domain.
+- `image` - A reference or digest for the workload image or binary.
+
+This set is the minimum interoperable capability: where a Receiver understands these keys, it can compare the prior and new environment without prior agreement. Both objects SHOULD use the same keys so they can be compared. The schema MAY be extended with additional deployment- or profile-specific topology information where a Transmitter sees fit; in that case the Transmitter is responsible for ensuring the Receiver can understand the added fields, and how such understanding is established is out of scope for this profile.
+
+Because these fields can reveal workload infrastructure topology (see {{confidentiality}}), a Transmitter SHOULD avoid including detail beyond what the Receiver needs, based on its own evaluation of the privacy risk, particularly for events that may cross a trust-domain boundary. For example, a coarse `region` is preferable to a specific node or host name.
 
 The following example is non-normative.
 
@@ -863,11 +877,11 @@ The following example is non-normative.
       "reason": "migration",
       "previous_context": {
         "region": "us-east-1",
-        "node": "node-abc"
+        "platform": "kubernetes"
       },
       "current_context": {
         "region": "eu-west-1",
-        "node": "node-xyz"
+        "platform": "kubernetes"
       },
       "posture_evaluation_status": "succeeded"
     }
@@ -880,7 +894,7 @@ The following example is non-normative.
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-compromised`
 
-The `workload-compromised` event signals that a workload is believed to be compromised based on runtime detection. This is a high-severity signal that SHOULD trigger immediate isolation or credential revocation.
+The `workload-compromised` event signals that a workload is believed to be compromised based on runtime detection. This is a high-severity signal that SHOULD trigger immediate isolation or credential revocation. Where the Transmitter is also the credential authority for the workload, it SHOULD emit an accompanying `credential-revoked` event (with reason `compromise`), setting the same value in the OPTIONAL `txn` claim {{RFC8417}} on both SETs so that a Receiver can correlate them.
 
 Attributes:
 
@@ -1063,7 +1077,9 @@ Access to WISE event streams MUST be authorized. Transmitters MUST verify that R
 
 ## Compromise Response
 
-Upon receiving a `credential-compromise`, `credential-revoked` (with reason `compromise` or `key_compromise`), `trust-anchor-revoked` (with reason `compromise`), or `workload-compromised` event, Receivers SHOULD take immediate action to reject the affected credentials, keys, or trust material without waiting for additional confirmation.
+Several WISE events indicate that a credential, key, trust anchor, federation, or workload can no longer be trusted. This is signalled either by an event whose purpose is to report compromise (`credential-compromise`, `workload-compromised`) or by any event carrying a `reason` of `compromise` or `key_compromise`. Upon receiving any such event — regardless of event type, including events defined by future revisions or profiling specifications — Receivers SHOULD take immediate action appropriate to the affected object (for example, reject the affected credentials, keys, or trust material, or isolate the affected workload) without waiting for additional confirmation.
+
+Events in this document that carry such a signal include `credential-compromise`; `credential-revoked` (with reason `compromise` or `key_compromise`); `trust-anchor-rotated` and `trust-anchor-revoked` (with reason `compromise`); `trust-domain-federation-revoked` (with reason `compromise`); `workload-disabled` (with reason `compromise`); and `workload-compromised`.
 
 Rejecting credentials only takes effect at the next credential check or proof-of-possession step; neither short credential lifetime nor condition-liveness severs a connection that is already established. A Receiver that holds active connections with, or is actively serving, the affected workload SHOULD therefore also terminate those connections rather than waiting for the next operation. This is best-effort and applies to Receivers, such as gateways or service mesh components, that are able to correlate the workload identifier to live connections.
 
@@ -1106,6 +1122,9 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 - Completed the trust and federation lifecycle. Split the omnibus `trust-anchor-changed` event into explicit `trust-anchor-added`, `trust-anchor-rotated`, and `trust-anchor-revoked` events, and added `trust-domain-federation-established` and `trust-domain-federation-updated` to complement `trust-domain-federation-revoked`.
 - Added an optional `key_details` object (`type`, `name`, `use`, aligned with the IANA JOSE registries) to `trust-anchor-added`, supporting the addition of a new algorithm (e.g., ECDSA alongside RSA) without rotation.
 - Clarified the credential freshness models: added an informative reference for condition-bounded credentials, corrected the description of condition-liveness to state that it removes (rather than reduces) the local deprovisioning window for locally evaluable conditions, and noted in Compromise Response that Receivers should also terminate active connections since credential rejection only acts at the next operation.
+- Instructed Transmitters to set a shared `txn` claim across a lifecycle event and its companion credential event so Receivers can correlate them, and added conditional pairing guidance to `workload-compromised`.
+- Generalised the Compromise Response rule to apply to any event carrying a `compromise` or `key_compromise` signal, rather than an enumerated list of event types.
+- Defined a minimal interoperable key set (`region`, `zone`, `platform`, `cluster`, `image`, each optional) for the `previous_context`/`current_context` fields of `workload-baseline-changed`, allowed profile-specific extension, and added guidance to avoid disclosing fine-grained topology across trust-domain boundaries.
 
 -02
 
