@@ -287,9 +287,15 @@ Attributes:
 - Additional values MAY be defined by profiling specifications or private agreement between Transmitter and Receiver.
 - **credential_id** - OPTIONAL. An identifier for the credential (e.g., certificate serial number, `jti` claim value).
 - **expiry** - OPTIONAL. The expiration time of the credential as a JSON number (NumericDate per {{RFC7519}}).
-- **key_storage** - OPTIONAL. Where the private key bound to the credential is stored. Possible values:
-    - `hardware` - Key is stored in a hardware security module, TPM, secure enclave, or equivalent tamper-resistant storage.
-    - `software` - Key is stored in software (filesystem, memory, or application-managed keystore).
+- **key_storage** - OPTIONAL. Where the private key bound to the credential is stored. A Receiver MAY use this to inform its trust decision, for example whether to require additional assurance before relying on the credential. Possible values:
+    - `software` - Key is held in software with no additional at-rest protection (filesystem, process memory, or an application-managed keystore).
+    - `software_encrypted` - Key is held in software but encrypted at rest (for example, an OS keychain or an encrypted keystore) rather than in tamper-resistant hardware.
+    - `hardware_tpm` - Key is protected by a Trusted Platform Module (TPM).
+    - `hardware_hsm` - Key is protected by a Hardware Security Module (HSM).
+    - `hardware_secure_enclave` - Key is protected by a secure enclave or an equivalent platform trusted-execution environment (for example, a mobile secure element or a TEE-backed keystore).
+    - `vaulted` - Key is held by a secrets manager or vault and is never released to the workload in plaintext; the workload calls the vault to perform key operations.
+    - `unknown` - The storage mechanism is not known to the Transmitter.
+    - Additional values MAY be defined by profiling specifications or private agreement between Transmitter and Receiver.
 - **key_storage_ecosystem** - OPTIONAL. Free-text description of the hardware or software environment protecting the key. Examples: "iPhone 17s, iOS 23 patch 6", "AWS Nitro Enclave", "Azure Confidential VM, AMD SEV-SNP", "FIPS 140-3 Level 3 HSM".
 - **event_timestamp** - OPTIONAL. The time at which the credential was issued. JSON number representing seconds since Unix epoch.
 
@@ -1131,6 +1137,7 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 - Added a general "Correlating Related Events" rule: a Transmitter SHOULD set a shared `txn` claim across all SETs describing one underlying occurrence, regardless of event type (replacing the per-event guidance). Added conditional pairing guidance to `workload-compromised`.
 - Generalised the Compromise Response rule to apply to any event carrying a `compromise` or `key_compromise` signal, rather than an enumerated list of event types.
 - Defined a minimal interoperable key set (`region`, `zone`, `platform`, `cluster`, `image`, each optional) for the `previous_context`/`current_context` fields of `workload-baseline-changed`, allowed profile-specific extension, and added guidance to avoid disclosing fine-grained topology across trust-domain boundaries.
+- Expanded the `key_storage` values on `credential-issued` from the binary `hardware`/`software` to `software`, `software_encrypted`, `hardware_tpm`, `hardware_hsm`, `hardware_secure_enclave`, `vaulted`, and `unknown`, so a Receiver can distinguish key-protection strength when making a trust decision.
 
 -02
 
