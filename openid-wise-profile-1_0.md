@@ -159,6 +159,17 @@ informative:
     title: "Minimum Requirements for Vulnerability Exploitability eXchange (VEX)"
     target: https://www.cisa.gov/resources-tools/resources/minimum-requirements-vulnerability-exploitability-exchange-vex
     date: 2023
+  WIMSE-CBC:
+    title: "Condition-Bounded Credentials for Workload and Agent Identity: Non-Exfiltratable Keys and Validity by Presence"
+    target: https://datatracker.ietf.org/doc/draft-winmagic-wimse-condition-bounded-credentials/
+    author:
+      - ins: T. Nguyen-Huu
+        name: Thi Nguyen-Huu
+      - ins: S. Nikitin
+        name: Sergei Nikitin
+      - ins: J. O'Leary
+        name: John O'Leary
+    date: 2026
   IANA.JOSE:
     title: "JSON Object Signing and Encryption (JOSE)"
     target: https://www.iana.org/assignments/jose
@@ -1054,15 +1065,17 @@ Access to WISE event streams MUST be authorized. Transmitters MUST verify that R
 
 Upon receiving a `credential-compromise`, `credential-revoked` (with reason `compromise` or `key_compromise`), `trust-anchor-revoked` (with reason `compromise`), or `workload-compromised` event, Receivers SHOULD take immediate action to reject the affected credentials, keys, or trust material without waiting for additional confirmation.
 
+Rejecting credentials only takes effect at the next credential check or proof-of-possession step; neither short credential lifetime nor condition-liveness severs a connection that is already established. A Receiver that holds active connections with, or is actively serving, the affected workload SHOULD therefore also terminate those connections rather than waiting for the next operation. This is best-effort and applies to Receivers, such as gateways or service mesh components, that are able to correlate the workload identifier to live connections.
+
 ## Relationship to Credential Freshness Models
 
 Deployments use different mechanisms to limit the exposure window of a compromised or deprovisioned workload:
 
 - Issuer-side status signalling, where the trust domain authority communicates lifecycle changes to relying parties through an event channel. The events defined in this specification serve this purpose.
 - Short credential lifetime, where the remaining validity period bounds the exposure window. In the WIMSE model, credentials are intentionally short-lived to force posture evaluation before re-issuance.
-- Condition-liveness, where a locally observable condition (hardware release policy, TEE state, platform integrity measurement) gates each key operation. Failure of the condition prevents the next presentation or handshake step without requiring a remote signal.
+- Condition-liveness, as realised by condition-bounded credentials {{WIMSE-CBC}}, where a locally observable condition (hardware release policy, TEE state, platform integrity measurement) gates each key operation. Failure of the condition prevents the next presentation or handshake step without requiring a remote signal.
 
-These mechanisms are complementary, not mutually exclusive. Condition-bounded credentials reduce the local deprovisioning window but cannot observe externally originated changes: issuer policy withdrawal, trust anchor rotation, cross-domain incident response, or administrative decisions to terminate an established connection. WISE events address these cases. Deployments combining short-lived credentials with condition-liveness properties still benefit from issuer-side signalling for lifecycle changes that no local mechanism can detect.
+These mechanisms are complementary, not mutually exclusive. Condition-bounded credentials {{WIMSE-CBC}} remove the local deprovisioning window for conditions the endpoint can evaluate itself, but cannot observe externally originated changes: issuer policy withdrawal, trust anchor rotation, cross-domain incident response, or administrative decisions to terminate an established connection. WISE events address these cases. Deployments combining short-lived credentials with condition-liveness properties still benefit from issuer-side signalling for lifecycle changes that no local mechanism can detect.
 
 ## Supply Chain Signals
 
@@ -1092,6 +1105,7 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 
 - Completed the trust and federation lifecycle. Split the omnibus `trust-anchor-changed` event into explicit `trust-anchor-added`, `trust-anchor-rotated`, and `trust-anchor-revoked` events, and added `trust-domain-federation-established` and `trust-domain-federation-updated` to complement `trust-domain-federation-revoked`.
 - Added an optional `key_details` object (`type`, `name`, `use`, aligned with the IANA JOSE registries) to `trust-anchor-added`, supporting the addition of a new algorithm (e.g., ECDSA alongside RSA) without rotation.
+- Clarified the credential freshness models: added an informative reference for condition-bounded credentials, corrected the description of condition-liveness to state that it removes (rather than reduces) the local deprovisioning window for locally evaluable conditions, and noted in Compromise Response that Receivers should also terminate active connections since credential rejection only acts at the next operation.
 
 -02
 
