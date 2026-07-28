@@ -7,7 +7,7 @@ wg: OpenID Shared Signals
 
 docname: openid-wise-profile-1_0
 
-title: "OpenID WISE Profile Specification 1.0 - draft 02"
+title: "OpenID WISE Profile Specification 1.0 - draft 03"
 abbrev: wiseset
 lang: en
 kw:
@@ -159,6 +159,12 @@ informative:
     title: "Minimum Requirements for Vulnerability Exploitability eXchange (VEX)"
     target: https://www.cisa.gov/resources-tools/resources/minimum-requirements-vulnerability-exploitability-exchange-vex
     date: 2023
+  IANA.JOSE:
+    title: "JSON Object Signing and Encryption (JOSE)"
+    target: https://www.iana.org/assignments/jose
+    author:
+      - org: IANA
+    date: false
 
 --- abstract
 
@@ -494,36 +500,35 @@ Attributes:
 
 ## Trust and Federation Events
 
-These events signal changes to the trust material that federated peers and relying parties use to validate workload identity credentials from a trust domain.
+These events signal changes to the trust material and federation relationships that federated peers and relying parties use to validate workload identity credentials from a trust domain.
 
-### trust-anchor-changed
+Two related lifecycles are covered, each modelled with explicit create, update, and delete events. The trust anchors (keys and CAs) that validate a trust domain's credentials are managed through `trust-anchor-added`, `trust-anchor-rotated`, and `trust-anchor-revoked`. The federation relationship between trust domains, which determines whether one domain accepts credentials issued by another, is managed through `trust-domain-federation-established`, `trust-domain-federation-updated`, and `trust-domain-federation-revoked`. Replacing an entire trust bundle in a single operation is conveyed as the corresponding set of `trust-anchor-added` and `trust-anchor-revoked` events.
 
-Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/trust-anchor-changed`
+### trust-anchor-added
 
-The `trust-anchor-changed` event signals that the trust anchors for a trust domain have changed. Relying parties and federated peers MUST update their validation material accordingly.
+Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/trust-anchor-added`
+
+The `trust-anchor-added` event signals that a new trust anchor was added for a trust domain, alongside any existing anchors. Examples include pre-staging a new signing key ahead of a rotation, or bringing online a new data center, region, or cloud provider that operates under the same trust domain. Relying parties and federated peers MUST add the new material to the set they accept for the domain.
 
 Attributes:
 
-- **anchor_type** - REQUIRED. The type of trust material that changed. Possible values:
+- **anchor_type** - REQUIRED. The type of trust material. Possible values:
     - `x509_ca` - X.509 CA certificate(s) used to validate Workload Identity Certificates (WIC) or X.509-SVIDs.
     - `jwks` - JSON Web Key Set {{RFC7517}} used to validate Workload Identity Tokens (WIT).
-- **change_type** - REQUIRED. The nature of the change. Possible values:
-    - `key_added` - A new key or CA was added to the trust bundle.
-    - `key_rotated` - An existing key or CA was replaced.
-    - `key_revoked` - A key or CA was revoked and MUST no longer be trusted.
-    - `key_expired` - A key or CA has expired.
-    - `full_replacement` - The entire trust bundle was replaced.
-- **trust_domain** - REQUIRED. The FQDN of the trust domain whose material changed.
-- **effective_at** - OPTIONAL. When the new material becomes (or became) active. JSON number (NumericDate).
-- **old_material_expiry** - OPTIONAL. When the old material will cease to be valid (grace period end). JSON number (NumericDate).
+- **trust_domain** - REQUIRED. The FQDN of the trust domain the anchor belongs to.
+- **key_id** - OPTIONAL. Identifier of the added anchor. For JWKS, the `kid` value. For X.509, the certificate serial number or Subject Key Identifier.
+- **key_details** - OPTIONAL. A JSON object describing the added key, so a receiver can act (for example, recognise support for a new signature algorithm such as ECDSA alongside RSA) without fetching and diffing the bundle. When present, its members SHOULD use values from the JSON Object Signing and Encryption (JOSE) registries {{IANA.JOSE}}:
+    - `type` - The key type, using a value from the "JSON Web Key Types" registry (e.g., `EC`, `RSA`, `OKP`, `oct`).
+    - `name` - The algorithm, using an "Algorithm Name" from the "JSON Web Signature and Encryption Algorithms" registry (e.g., `RS256`, `ES256`, `EdDSA`).
+    - `use` - The public key use, using a value from the "JSON Web Key Use" registry (e.g., `sig`, `enc`).
 - **jwks_uri** - OPTIONAL. When `anchor_type` is `jwks`, the URI to fetch the updated JWK Set.
 - **x509_bundle_uri** - OPTIONAL. When `anchor_type` is `x509_ca`, the URI to fetch the updated CA bundle.
-- **key_id** - OPTIONAL. The specific key affected. For JWKS, the `kid` value. For X.509, the certificate serial number or Subject Key Identifier.
-- **reason** - OPTIONAL. Why the change was made. Possible values:
-    - `scheduled_rotation` - Routine key rotation.
-    - `compromise` - A key or CA is believed compromised.
-    - `policy_change` - Changed due to updated security policy.
-    - `expiry` - Proactive rotation before scheduled expiry.
+- **effective_at** - OPTIONAL. When the new anchor becomes active. JSON number (NumericDate).
+- **reason** - OPTIONAL. Why the anchor was added. Possible values:
+    - `new_environment` - A new environment (data center, region, or cloud provider) under the same trust domain was brought online.
+    - `additional_key` - An additional concurrent anchor was introduced (for example, to support a new signature algorithm alongside an existing one).
+    - `scheduled_rotation` - A new key was pre-staged ahead of a scheduled rotation.
+- **event_timestamp** - OPTIONAL. Time the anchor was added.
 
 The following example is non-normative.
 
@@ -534,24 +539,50 @@ The following example is non-normative.
   "iat": 1700000000,
   "aud": "https://federation-peer.example.net/wise",
   "events": {
-    "https://schemas.openid.net/secevent/wise/event-type/trust-anchor-changed": {
+    "https://schemas.openid.net/secevent/wise/event-type/trust-anchor-added": {
       "subject": {
         "format": "uri",
         "uri": "wimse://trust.example.com"
       },
       "anchor_type": "jwks",
-      "change_type": "key_rotated",
       "trust_domain": "trust.example.com",
-      "effective_at": 1700000000,
-      "old_material_expiry": 1700604800,
       "jwks_uri": "https://authority.example.com/.well-known/jwks.json",
-      "key_id": "kid:signing-2024-q4",
-      "reason": "scheduled_rotation"
+      "key_id": "kid:ecdsa-2026",
+      "key_details": {
+        "type": "EC",
+        "name": "ES256",
+        "use": "sig"
+      },
+      "effective_at": 1700000000,
+      "reason": "additional_key"
     }
   }
 }
 ~~~
-{: #fig-trust-anchor-jwks title="Example: Trust Anchor Changed (JWKS Rotation)"}
+{: #fig-trust-anchor-added title="Example: Trust Anchor Added"}
+
+### trust-anchor-rotated
+
+Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/trust-anchor-rotated`
+
+The `trust-anchor-rotated` event signals that an existing trust anchor for a trust domain was replaced by new material. Relying parties and federated peers MUST begin accepting the new anchor and SHOULD stop accepting the previous one once any grace period ends.
+
+Attributes:
+
+- **anchor_type** - REQUIRED. The type of trust material. Same values as in {{trust-anchor-added}}.
+- **trust_domain** - REQUIRED. The FQDN of the trust domain whose anchor was rotated.
+- **previous_key_id** - OPTIONAL. Identifier of the anchor being replaced.
+- **new_key_id** - OPTIONAL. Identifier of the replacement anchor.
+- **jwks_uri** - OPTIONAL. When `anchor_type` is `jwks`, the URI to fetch the updated JWK Set.
+- **x509_bundle_uri** - OPTIONAL. When `anchor_type` is `x509_ca`, the URI to fetch the updated CA bundle.
+- **effective_at** - OPTIONAL. When the new material becomes active. JSON number (NumericDate).
+- **old_material_expiry** - OPTIONAL. When the previous material ceases to be valid (grace period end). JSON number (NumericDate).
+- **reason** - OPTIONAL. Why the rotation occurred. Possible values:
+    - `scheduled_rotation` - Routine key rotation.
+    - `compromise` - The previous anchor is believed compromised.
+    - `policy_change` - Rotated due to updated security policy.
+    - `expiry` - Proactive rotation before scheduled expiry.
+- **event_timestamp** - OPTIONAL. Time of rotation.
 
 The following example is non-normative.
 
@@ -562,13 +593,61 @@ The following example is non-normative.
   "iat": 1700000000,
   "aud": "https://federation-peer.example.net/wise",
   "events": {
-    "https://schemas.openid.net/secevent/wise/event-type/trust-anchor-changed": {
+    "https://schemas.openid.net/secevent/wise/event-type/trust-anchor-rotated": {
+      "subject": {
+        "format": "uri",
+        "uri": "wimse://trust.example.com"
+      },
+      "anchor_type": "jwks",
+      "trust_domain": "trust.example.com",
+      "previous_key_id": "kid:signing-2024-q4",
+      "new_key_id": "kid:signing-2025-q1",
+      "jwks_uri": "https://authority.example.com/.well-known/jwks.json",
+      "effective_at": 1700000000,
+      "old_material_expiry": 1700604800,
+      "reason": "scheduled_rotation"
+    }
+  }
+}
+~~~
+{: #fig-trust-anchor-rotated title="Example: Trust Anchor Rotated (JWKS Rotation)"}
+
+### trust-anchor-revoked
+
+Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/trust-anchor-revoked`
+
+The `trust-anchor-revoked` event signals that a trust anchor for a trust domain was withdrawn and MUST no longer be used to validate credentials. This covers both explicit revocation (for example, a compromised CA) and removal of an anchor that has reached end of life.
+
+Attributes:
+
+- **anchor_type** - REQUIRED. The type of trust material. Same values as in {{trust-anchor-added}}.
+- **trust_domain** - REQUIRED. The FQDN of the trust domain whose anchor was revoked.
+- **key_id** - OPTIONAL. Identifier of the revoked anchor. For JWKS, the `kid` value. For X.509, the certificate serial number or Subject Key Identifier.
+- **jwks_uri** - OPTIONAL. When `anchor_type` is `jwks`, the URI to fetch the JWK Set reflecting the removal.
+- **x509_bundle_uri** - OPTIONAL. When `anchor_type` is `x509_ca`, the URI to fetch the CA bundle reflecting the removal.
+- **effective_at** - OPTIONAL. When the revocation takes effect. JSON number (NumericDate).
+- **reason** - OPTIONAL. Why the anchor was revoked. Possible values:
+    - `compromise` - The anchor is believed compromised.
+    - `policy_change` - Revoked due to updated security policy.
+    - `superseded` - Replaced by other material and no longer needed.
+    - `expiry` - The anchor reached end of life.
+- **event_timestamp** - OPTIONAL. Time of revocation.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-022",
+  "iat": 1700000000,
+  "aud": "https://federation-peer.example.net/wise",
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/trust-anchor-revoked": {
       "subject": {
         "format": "uri",
         "uri": "wimse://trust.example.com"
       },
       "anchor_type": "x509_ca",
-      "change_type": "key_revoked",
       "trust_domain": "trust.example.com",
       "key_id": "serial:CA-ROOT-2023-001",
       "reason": "compromise"
@@ -576,7 +655,70 @@ The following example is non-normative.
   }
 }
 ~~~
-{: #fig-trust-anchor-x509 title="Example: Trust Anchor Changed (CA Compromise)"}
+{: #fig-trust-anchor-revoked title="Example: Trust Anchor Revoked (CA Compromise)"}
+
+### trust-domain-federation-established
+
+Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/trust-domain-federation-established`
+
+The `trust-domain-federation-established` event signals that a new trust domain has been federated. Relying parties and federated peers MAY begin accepting workload credentials originating from the specified trust domain, validated against the associated trust anchors. This is the counterpart to `trust-domain-federation-revoked`, and typically accompanies the trust material for the new domain (either inline via `jwks_uri` / `x509_bundle_uri` or through subsequent `trust-anchor-added` events).
+
+Attributes:
+
+- **trust_domain** - REQUIRED. The FQDN of the newly federated trust domain.
+- **anchor_type** - OPTIONAL. The type of trust material used to validate credentials from the new domain. Same values as in {{trust-anchor-added}}: `x509_ca` or `jwks`.
+- **jwks_uri** - OPTIONAL. When `anchor_type` is `jwks`, the URI to fetch the JWK Set {{RFC7517}} for the federated domain.
+- **x509_bundle_uri** - OPTIONAL. When `anchor_type` is `x509_ca`, the URI to fetch the CA bundle for the federated domain.
+- **effective_at** - OPTIONAL. When the federation becomes active. JSON number (NumericDate).
+- **reason** - OPTIONAL. Why federation was established. Possible values:
+    - `onboarding` - A new organization joined the federation.
+    - `expansion` - A new data center, region, or cloud provider was added to the enterprise.
+    - `administrative` - Administrative decision to establish federation.
+    - `contractual` - A new business relationship was established.
+- **event_timestamp** - OPTIONAL. Time the decision was made.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-023",
+  "iat": 1700000000,
+  "aud": "https://federation-peer.example.net/wise",
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/trust-domain-federation-established": {
+      "subject": {
+        "format": "uri",
+        "uri": "wimse://newpartner.example.org"
+      },
+      "trust_domain": "newpartner.example.org",
+      "anchor_type": "jwks",
+      "jwks_uri": "https://authority.newpartner.example.org/.well-known/jwks.json",
+      "effective_at": 1700000000,
+      "reason": "onboarding"
+    }
+  }
+}
+~~~
+{: #fig-federation-established title="Example: Trust Domain Federation Established"}
+
+### trust-domain-federation-updated
+
+Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/trust-domain-federation-updated`
+
+The `trust-domain-federation-updated` event signals that the terms of an existing federation with a trust domain changed without revoking it. Examples include a change to the set of workloads or name constraints that are trusted, or a change to which trust anchors validate the federated domain. Relying parties MUST update their federation configuration accordingly while continuing to trust the domain.
+
+Attributes:
+
+- **trust_domain** - REQUIRED. The FQDN of the federated trust domain whose federation terms changed.
+- **change_description** - OPTIONAL. Human-readable description of what changed.
+- **effective_at** - OPTIONAL. When the updated terms take effect. JSON number (NumericDate).
+- **reason** - OPTIONAL. Why the federation was updated. Possible values:
+    - `policy_change` - Updated due to a change in federation policy.
+    - `anchor_update` - The trust anchors used to validate the federated domain changed.
+    - `administrative` - Administrative decision.
+    - `contractual` - Business relationship terms changed.
+- **event_timestamp** - OPTIONAL. Time the decision was made.
 
 ### trust-domain-federation-revoked
 
@@ -883,7 +1025,7 @@ The following example is non-normative.
 
 ## Trust Domain Subject
 
-For events that apply to an entire trust domain (e.g., `trust-anchor-changed`, `trust-domain-federation-revoked`), the subject identifies the trust domain itself using its Workload Identifier Origin as defined in {{WIMSE-ID}}:
+For events that apply to an entire trust domain (e.g., the `trust-anchor-*` and `trust-domain-federation-*` events), the subject identifies the trust domain itself using its Workload Identifier Origin as defined in {{WIMSE-ID}}:
 
 The following example is non-normative.
 
@@ -910,7 +1052,7 @@ Access to WISE event streams MUST be authorized. Transmitters MUST verify that R
 
 ## Compromise Response
 
-Upon receiving a `credential-compromise`, `credential-revoked` (with reason `compromise` or `key_compromise`), `trust-anchor-changed` (with reason `compromise`), or `workload-compromised` event, Receivers SHOULD take immediate action to reject the affected credentials, keys, or trust material without waiting for additional confirmation.
+Upon receiving a `credential-compromise`, `credential-revoked` (with reason `compromise` or `key_compromise`), `trust-anchor-revoked` (with reason `compromise`), or `workload-compromised` event, Receivers SHOULD take immediate action to reject the affected credentials, keys, or trust material without waiting for additional confirmation.
 
 ## Relationship to Credential Freshness Models
 
@@ -945,6 +1087,11 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 
 # Document History
 {:numbered="false"}
+
+-03
+
+- Completed the trust and federation lifecycle. Split the omnibus `trust-anchor-changed` event into explicit `trust-anchor-added`, `trust-anchor-rotated`, and `trust-anchor-revoked` events, and added `trust-domain-federation-established` and `trust-domain-federation-updated` to complement `trust-domain-federation-revoked`.
+- Added an optional `key_details` object (`type`, `name`, `use`, aligned with the IANA JOSE registries) to `trust-anchor-added`, supporting the addition of a new algorithm (e.g., ECDSA alongside RSA) without rotation.
 
 -02
 
