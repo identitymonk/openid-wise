@@ -1678,12 +1678,12 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
   "jti": "wise-evt-001",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/credential-issued": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "credential_type": "wic",
       "credential_id": "serial:ABC123DEF456",
       "expiry": 1700086400
@@ -1733,12 +1733,12 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
   "jti": "wise-evt-002",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/credential-rotated": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "credential_type": "wit",
       "previous_credential_id": "jti:wit-2024-q4-001",
       "new_credential_id": "jti:wit-2024-q4-002",
@@ -1803,12 +1803,12 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
   "jti": "wise-evt-003",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/credential-revoked": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "credential_type": "wic",
       "credential_id": "serial:ABC123DEF456",
       "reason": "compromise"
@@ -1855,12 +1855,12 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
   "jti": "wise-evt-004",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/credential-compromise": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "credential_type": "wit",
       "credential_id": "jti:wit-signing-key-2024-q4",
       "reason_admin": {
@@ -1926,12 +1926,12 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
   "jti": "wise-evt-005",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/credential-renewal-failure": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "credential_type": "wit",
       "current_expiry": 1700003600,
       "failure_reason": "posture_evaluation_failed"
@@ -2103,12 +2103,12 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
   "jti": "wise-evt-020",
   "iat": 1700000000,
   "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/trust-anchor-added": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com"
-      },
       "anchor_type": "jwks",
       "trust_domain": "trust.example.com",
       "jwks_uri": "https://authority.example.com/.well-known/jwks.json",
@@ -2195,12 +2195,12 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
   "jti": "wise-evt-021",
   "iat": 1700000000,
   "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/trust-anchor-rotated": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com"
-      },
       "anchor_type": "jwks",
       "trust_domain": "trust.example.com",
       "previous_key_id": "kid:signing-2024-q4",
@@ -2278,12 +2278,12 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
   "jti": "wise-evt-022",
   "iat": 1700000000,
   "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/trust-anchor-revoked": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com"
-      },
       "anchor_type": "x509_ca",
       "trust_domain": "trust.example.com",
       "key_id": "serial:CA-ROOT-2023-001",
@@ -2354,12 +2354,12 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
   "jti": "wise-evt-023",
   "iat": 1700000000,
   "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://newpartner.example.org"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/trust-domain-federation-established": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://newpartner.example.org"
-      },
       "trust_domain": "newpartner.example.org",
       "anchor_type": "jwks",
       "jwks_uri": "https://authority.newpartner.example.org/.well-known/jwks.json",
@@ -2389,7 +2389,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.5.5-4.1.1"><strong>trust_domain</strong> - REQUIRED. The FQDN of the federated trust domain whose federation terms changed.<a href="#section-2.5.5-4.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.5.5-4.2">
-              <p id="section-2.5.5-4.2.1"><strong>change_description</strong> - OPTIONAL. Human-readable description of what changed.<a href="#section-2.5.5-4.2.1" class="pilcrow">¶</a></p>
+              <p id="section-2.5.5-4.2.1"><strong>reason_admin</strong>, <strong>reason_user</strong> - OPTIONAL. Localizable description of the change, as defined in the Common Optional Claims (<a href="#common-optional-claims" class="auto internal xref">Section 2.2</a>).<a href="#section-2.5.5-4.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.5.5-4.3">
               <p id="section-2.5.5-4.3.1"><strong>effective_at</strong> - OPTIONAL. When the updated terms take effect. JSON number (NumericDate).<a href="#section-2.5.5-4.3.1" class="pilcrow">¶</a></p>
@@ -2477,7 +2477,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.6.1-4.1.1"><strong>policy_id</strong> - OPTIONAL. Identifier of the policy that changed.<a href="#section-2.6.1-4.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.6.1-4.2">
-              <p id="section-2.6.1-4.2.1"><strong>change_description</strong> - OPTIONAL. Human-readable description of the change.<a href="#section-2.6.1-4.2.1" class="pilcrow">¶</a></p>
+              <p id="section-2.6.1-4.2.1"><strong>reason_admin</strong>, <strong>reason_user</strong> - OPTIONAL. Localizable description of the change, as defined in the Common Optional Claims (<a href="#common-optional-claims" class="auto internal xref">Section 2.2</a>).<a href="#section-2.6.1-4.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.6.1-4.3">
               <p id="section-2.6.1-4.3.1"><strong>effective_at</strong> - OPTIONAL. When the new policy takes effect.<a href="#section-2.6.1-4.3.1" class="pilcrow">¶</a></p>
@@ -2501,7 +2501,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.6.2-4.1.1"><strong>policy_id</strong> - OPTIONAL. Identifier of the policy that changed.<a href="#section-2.6.2-4.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.6.2-4.2">
-              <p id="section-2.6.2-4.2.1"><strong>change_description</strong> - OPTIONAL. Human-readable description.<a href="#section-2.6.2-4.2.1" class="pilcrow">¶</a></p>
+              <p id="section-2.6.2-4.2.1"><strong>reason_admin</strong>, <strong>reason_user</strong> - OPTIONAL. Localizable description of the change, as defined in the Common Optional Claims (<a href="#common-optional-claims" class="auto internal xref">Section 2.2</a>).<a href="#section-2.6.2-4.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.6.2-4.3">
               <p id="section-2.6.2-4.3.1"><strong>effective_at</strong> - OPTIONAL. When the new policy takes effect.<a href="#section-2.6.2-4.3.1" class="pilcrow">¶</a></p>
@@ -2525,7 +2525,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.6.3-4.1.1"><strong>policy_id</strong> - OPTIONAL. Identifier of the policy that changed.<a href="#section-2.6.3-4.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.6.3-4.2">
-              <p id="section-2.6.3-4.2.1"><strong>change_description</strong> - OPTIONAL. Human-readable description.<a href="#section-2.6.3-4.2.1" class="pilcrow">¶</a></p>
+              <p id="section-2.6.3-4.2.1"><strong>reason_admin</strong>, <strong>reason_user</strong> - OPTIONAL. Localizable description of the change, as defined in the Common Optional Claims (<a href="#common-optional-claims" class="auto internal xref">Section 2.2</a>).<a href="#section-2.6.3-4.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.6.3-4.3">
               <p id="section-2.6.3-4.3.1"><strong>effective_at</strong> - OPTIONAL. When the new policy takes effect.<a href="#section-2.6.3-4.3.1" class="pilcrow">¶</a></p>
@@ -2680,12 +2680,12 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
   "jti": "wise-evt-030",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/workload-baseline-changed": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "reason": "migration",
       "previous_context": {
         "region": "us-east-1",
@@ -2823,12 +2823,12 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
   "jti": "wise-evt-040",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/workload-provenance-changed": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "change_type": "revoked",
       "provenance_uri": "https://provenance.example.com/payment-service/attestation",
       "reason_admin": {
@@ -2897,12 +2897,12 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
   "jti": "wise-evt-041",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/workload-vulnerability-status-changed": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "vulnerability_id": "CVE-2026-12345",
       "status": "affected",
       "severity": "critical",
@@ -2927,7 +2927,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
       <h2 id="name-subject-identifiers-for-wor">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-subject-identifiers-for-wor" class="section-name selfRef">Subject Identifiers for Workload Events</a>
       </h2>
-<p id="section-3-1">WISE events use subject identifiers as defined in <span>[<a href="#RFC9493" class="cite xref">RFC9493</a>]</span>. Workload identities in the WIMSE model are expressed as URIs following the format defined in <span>[<a href="#WIMSE-ID" class="cite xref">WIMSE-ID</a>]</span>.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-1">Following the Shared Signals Framework <span>[<a href="#SSF" class="cite xref">SSF</a>]</span>, every WISE event conveys its subject in a top-level <code>sub_id</code> claim — a sibling of <code>iss</code>, <code>jti</code>, <code>iat</code>, <code>aud</code>, and <code>events</code>, not a member of the event-specific payload. The value of <code>sub_id</code> is a Subject Identifier as defined in <span>[<a href="#RFC9493" class="cite xref">RFC9493</a>]</span>. WISE uses the <code>uri</code> format, carrying a Workload Identifier expressed as a URI following <span>[<a href="#WIMSE-ID" class="cite xref">WIMSE-ID</a>]</span>.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <div id="uri-format">
 <section id="section-3.1">
         <h3 id="name-uri-format">
@@ -2970,7 +2970,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
         <h3 id="name-trust-domain-subject">
 <a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-trust-domain-subject" class="section-name selfRef">Trust Domain Subject</a>
         </h3>
-<p id="section-3.2-1">For events that apply to an entire trust domain (e.g., the <code>trust-anchor-*</code> and <code>trust-domain-federation-*</code> events), the subject identifies the trust domain itself using its Workload Identifier Origin as defined in <span>[<a href="#WIMSE-ID" class="cite xref">WIMSE-ID</a>]</span>:<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-1">For events that apply to an entire trust domain rather than to a single workload — the <code>trust-anchor-*</code> and <code>trust-domain-federation-*</code> events, and the policy events (<code>issuance-policy-changed</code>, <code>posture-evaluation-policy-changed</code>, <code>validation-policy-changed</code>) — the <code>sub_id</code> identifies the trust domain itself using its Workload Identifier Origin as defined in <span>[<a href="#WIMSE-ID" class="cite xref">WIMSE-ID</a>]</span>:<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.2-2">The following example is non-normative.<a href="#section-3.2-2" class="pilcrow">¶</a></p>
 <div class="lang-json sourcecode" id="section-3.2-3">
 <pre>
@@ -3229,6 +3229,12 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 </li>
         <li class="normal" id="appendix-B-2.8">
           <p id="appendix-B-2.8.1">Defined a minimal interoperable key set (<code>region</code>, <code>zone</code>, <code>platform</code>, <code>cluster</code>, <code>image</code>, each optional) for the <code>previous_context</code>/<code>current_context</code> fields of <code>workload-baseline-changed</code>, allowed profile-specific extension, and added guidance to avoid disclosing fine-grained topology across trust-domain boundaries.<a href="#appendix-B-2.8.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.9">
+          <p id="appendix-B-2.9.1">Replaced the free-form <code>change_description</code> field on <code>trust-domain-federation-updated</code> and the policy-change events with the localizable <code>reason_admin</code>/<code>reason_user</code> common claims, for consistency with the CAEP-aligned pattern.<a href="#appendix-B-2.9.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.10">
+          <p id="appendix-B-2.10.1">Carried the subject in the top-level <code>sub_id</code> claim (RFC 9493 format, per SSF) instead of a nonstandard nested <code>subject</code> member, updating every example; and specified that policy events take the trust-domain subject.<a href="#appendix-B-2.10.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-B-3">-02<a href="#appendix-B-3" class="pilcrow">¶</a></p>

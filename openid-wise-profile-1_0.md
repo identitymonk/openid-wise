@@ -301,12 +301,12 @@ The following example is non-normative.
   "jti": "wise-evt-001",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/credential-issued": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "credential_type": "wic",
       "credential_id": "serial:ABC123DEF456",
       "expiry": 1700086400
@@ -338,12 +338,12 @@ The following example is non-normative.
   "jti": "wise-evt-002",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/credential-rotated": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "credential_type": "wit",
       "previous_credential_id": "jti:wit-2024-q4-001",
       "new_credential_id": "jti:wit-2024-q4-002",
@@ -380,12 +380,12 @@ The following example is non-normative.
   "jti": "wise-evt-003",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/credential-revoked": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "credential_type": "wic",
       "credential_id": "serial:ABC123DEF456",
       "reason": "compromise"
@@ -416,12 +416,12 @@ The following example is non-normative.
   "jti": "wise-evt-004",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/credential-compromise": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "credential_type": "wit",
       "credential_id": "jti:wit-signing-key-2024-q4",
       "reason_admin": {
@@ -459,12 +459,12 @@ The following example is non-normative.
   "jti": "wise-evt-005",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/credential-renewal-failure": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "credential_type": "wit",
       "current_expiry": 1700003600,
       "failure_reason": "posture_evaluation_failed"
@@ -555,12 +555,12 @@ The following example is non-normative.
   "jti": "wise-evt-020",
   "iat": 1700000000,
   "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/trust-anchor-added": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com"
-      },
       "anchor_type": "jwks",
       "trust_domain": "trust.example.com",
       "jwks_uri": "https://authority.example.com/.well-known/jwks.json",
@@ -609,12 +609,12 @@ The following example is non-normative.
   "jti": "wise-evt-021",
   "iat": 1700000000,
   "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/trust-anchor-rotated": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com"
-      },
       "anchor_type": "jwks",
       "trust_domain": "trust.example.com",
       "previous_key_id": "kid:signing-2024-q4",
@@ -658,12 +658,12 @@ The following example is non-normative.
   "jti": "wise-evt-022",
   "iat": 1700000000,
   "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/trust-anchor-revoked": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com"
-      },
       "anchor_type": "x509_ca",
       "trust_domain": "trust.example.com",
       "key_id": "serial:CA-ROOT-2023-001",
@@ -702,12 +702,12 @@ The following example is non-normative.
   "jti": "wise-evt-023",
   "iat": 1700000000,
   "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://newpartner.example.org"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/trust-domain-federation-established": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://newpartner.example.org"
-      },
       "trust_domain": "newpartner.example.org",
       "anchor_type": "jwks",
       "jwks_uri": "https://authority.newpartner.example.org/.well-known/jwks.json",
@@ -728,7 +728,7 @@ The `trust-domain-federation-updated` event signals that the terms of an existin
 Attributes:
 
 - **trust_domain** - REQUIRED. The FQDN of the federated trust domain whose federation terms changed.
-- **change_description** - OPTIONAL. Human-readable description of what changed.
+- **reason_admin**, **reason_user** - OPTIONAL. Localizable description of the change, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **effective_at** - OPTIONAL. When the updated terms take effect. JSON number (NumericDate).
 - **reason** - OPTIONAL. Why the federation was updated. Possible values:
     - `policy_change` - Updated due to a change in federation policy.
@@ -769,7 +769,7 @@ The `issuance-policy-changed` event signals that the policy governing credential
 Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
-- **change_description** - OPTIONAL. Human-readable description of the change.
+- **reason_admin**, **reason_user** - OPTIONAL. Localizable description of the change, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
 
@@ -782,7 +782,7 @@ The `posture-evaluation-policy-changed` event signals that the posture evaluatio
 Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
-- **change_description** - OPTIONAL. Human-readable description.
+- **reason_admin**, **reason_user** - OPTIONAL. Localizable description of the change, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
 
@@ -795,7 +795,7 @@ The `validation-policy-changed` event signals that the policy used to validate w
 Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
-- **change_description** - OPTIONAL. Human-readable description.
+- **reason_admin**, **reason_user** - OPTIONAL. Localizable description of the change, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
 
@@ -872,12 +872,12 @@ The following example is non-normative.
   "jti": "wise-evt-030",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/workload-baseline-changed": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "reason": "migration",
       "previous_context": {
         "region": "us-east-1",
@@ -953,12 +953,12 @@ The following example is non-normative.
   "jti": "wise-evt-040",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/workload-provenance-changed": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "change_type": "revoked",
       "provenance_uri": "https://provenance.example.com/payment-service/attestation",
       "reason_admin": {
@@ -997,12 +997,12 @@ The following example is non-normative.
   "jti": "wise-evt-041",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/workload-vulnerability-status-changed": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "vulnerability_id": "CVE-2026-12345",
       "status": "affected",
       "severity": "critical",
@@ -1015,7 +1015,7 @@ The following example is non-normative.
 
 # Subject Identifiers for Workload Events
 
-WISE events use subject identifiers as defined in {{RFC9493}}. Workload identities in the WIMSE model are expressed as URIs following the format defined in {{WIMSE-ID}}.
+Following the Shared Signals Framework {{SSF}}, every WISE event conveys its subject in a top-level `sub_id` claim — a sibling of `iss`, `jti`, `iat`, `aud`, and `events`, not a member of the event-specific payload. The value of `sub_id` is a Subject Identifier as defined in {{RFC9493}}. WISE uses the `uri` format, carrying a Workload Identifier expressed as a URI following {{WIMSE-ID}}.
 
 ## URI Format
 
@@ -1054,7 +1054,7 @@ The following example is non-normative.
 
 ## Trust Domain Subject
 
-For events that apply to an entire trust domain (e.g., the `trust-anchor-*` and `trust-domain-federation-*` events), the subject identifies the trust domain itself using its Workload Identifier Origin as defined in {{WIMSE-ID}}:
+For events that apply to an entire trust domain rather than to a single workload — the `trust-anchor-*` and `trust-domain-federation-*` events, and the policy events (`issuance-policy-changed`, `posture-evaluation-policy-changed`, `validation-policy-changed`) — the `sub_id` identifies the trust domain itself using its Workload Identifier Origin as defined in {{WIMSE-ID}}:
 
 The following example is non-normative.
 
@@ -1131,6 +1131,8 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 - Added a general "Correlating Related Events" rule: a Transmitter SHOULD set a shared `txn` claim across all SETs describing one underlying occurrence, regardless of event type (replacing the per-event guidance). Added conditional pairing guidance to `workload-compromised`.
 - Generalised the Compromise Response rule to apply to any event carrying a `compromise` or `key_compromise` signal, rather than an enumerated list of event types.
 - Defined a minimal interoperable key set (`region`, `zone`, `platform`, `cluster`, `image`, each optional) for the `previous_context`/`current_context` fields of `workload-baseline-changed`, allowed profile-specific extension, and added guidance to avoid disclosing fine-grained topology across trust-domain boundaries.
+- Replaced the free-form `change_description` field on `trust-domain-federation-updated` and the policy-change events with the localizable `reason_admin`/`reason_user` common claims, for consistency with the CAEP-aligned pattern.
+- Carried the subject in the top-level `sub_id` claim (RFC 9493 format, per SSF) instead of a nonstandard nested `subject` member, updating every example; and specified that policy events take the trust-domain subject.
 
 -02
 
