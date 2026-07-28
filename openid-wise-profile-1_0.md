@@ -230,6 +230,10 @@ The base URI for WISE event types is:
 https://schemas.openid.net/secevent/wise/event-type/
 ~~~
 
+## Correlating Related Events {#correlating-related-events}
+
+A single underlying occurrence may cause a Transmitter to emit more than one SET — for example, a lifecycle change and its companion credential event, a runtime compromise and a resulting credential revocation, a posture failure and a resulting renewal failure, or a new federation and the trust anchors that accompany it. When a Transmitter emits multiple SETs that describe the same underlying occurrence, it SHOULD set the same value in the OPTIONAL `txn` (transaction identifier) claim {{RFC8417}} on each of them, so that a Receiver can recognise that the events share a cause. This applies regardless of event type.
+
 ## Common Optional Claims {#common-optional-claims}
 
 Unless stated otherwise, any WISE event MAY include the common optional claims defined in Section 2 of {{CAEP}}. In particular:
@@ -474,7 +478,7 @@ The following example is non-normative.
 
 These events signal changes to the lifecycle state of a workload as managed by the trust domain authority.
 
-Each of these events conveys only the lifecycle state change; the corresponding credential effect is carried by a separate companion event (`credential-revoked` or `credential-issued`). When a Transmitter emits a lifecycle event together with its companion credential event, it SHOULD set the same value in the OPTIONAL `txn` (transaction identifier) claim {{RFC8417}} on both SETs, so that a Receiver can reliably associate the lifecycle change with its credential effect.
+Each of these events conveys only the lifecycle state change; the corresponding credential effect is carried by a separate companion event (`credential-revoked` or `credential-issued`), correlated using the `txn` claim as described in {{correlating-related-events}}.
 
 ### workload-disabled
 
@@ -894,7 +898,7 @@ The following example is non-normative.
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-compromised`
 
-The `workload-compromised` event signals that a workload is believed to be compromised based on runtime detection. This is a high-severity signal that SHOULD trigger immediate isolation or credential revocation. Where the Transmitter is also the credential authority for the workload, it SHOULD emit an accompanying `credential-revoked` event (with reason `compromise`), setting the same value in the OPTIONAL `txn` claim {{RFC8417}} on both SETs so that a Receiver can correlate them.
+The `workload-compromised` event signals that a workload is believed to be compromised based on runtime detection. This is a high-severity signal that SHOULD trigger immediate isolation or credential revocation. Where the Transmitter is also the credential authority for the workload, it SHOULD emit an accompanying `credential-revoked` event (with reason `compromise`), correlated using the `txn` claim as described in {{correlating-related-events}}.
 
 Attributes:
 
@@ -1121,8 +1125,10 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 
 - Completed the trust and federation lifecycle. Split the omnibus `trust-anchor-changed` event into explicit `trust-anchor-added`, `trust-anchor-rotated`, and `trust-anchor-revoked` events, and added `trust-domain-federation-established` and `trust-domain-federation-updated` to complement `trust-domain-federation-revoked`.
 - Added an optional `key_details` object (`type`, `name`, `use`, aligned with the IANA JOSE registries) to `trust-anchor-added`, supporting the addition of a new algorithm (e.g., ECDSA alongside RSA) without rotation.
-- Clarified the credential freshness models: added an informative reference for condition-bounded credentials, corrected the description of condition-liveness to state that it removes (rather than reduces) the local deprovisioning window for locally evaluable conditions, and noted in Compromise Response that Receivers should also terminate active connections since credential rejection only acts at the next operation.
-- Instructed Transmitters to set a shared `txn` claim across a lifecycle event and its companion credential event so Receivers can correlate them, and added conditional pairing guidance to `workload-compromised`.
+- Added an informative reference for condition-bounded credentials and cited it in the credential freshness models discussion.
+- Corrected the description of condition-liveness to state that it removes (rather than reduces) the local deprovisioning window for conditions the endpoint can evaluate itself.
+- Noted in Compromise Response that credential rejection only takes effect at the next operation, so Receivers holding active connections with an affected workload should also terminate them (best-effort).
+- Added a general "Correlating Related Events" rule: a Transmitter SHOULD set a shared `txn` claim across all SETs describing one underlying occurrence, regardless of event type (replacing the per-event guidance). Added conditional pairing guidance to `workload-compromised`.
 - Generalised the Compromise Response rule to apply to any event carrying a `compromise` or `key_compromise` signal, rather than an enumerated list of event types.
 - Defined a minimal interoperable key set (`region`, `zone`, `platform`, `cluster`, `image`, each optional) for the `previous_context`/`current_context` fields of `workload-baseline-changed`, allowed profile-specific extension, and added guidance to avoid disclosing fine-grained topology across trust-domain boundaries.
 
