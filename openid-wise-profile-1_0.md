@@ -540,7 +540,6 @@ Attributes:
     - `use` - The public key use, using a value from the "JSON Web Key Use" registry (e.g., `sig`, `enc`).
 - **jwks_uri** - OPTIONAL. When `anchor_type` is `jwks`, the URI to fetch the updated JWK Set.
 - **x509_bundle_uri** - OPTIONAL. When `anchor_type` is `x509_ca`, the URI to fetch the updated CA bundle.
-- **effective_at** - OPTIONAL. When the new anchor becomes active. JSON number (NumericDate).
 - **reason** - OPTIONAL. Why the anchor was added. Possible values:
     - `new_environment` - A new environment (data center, region, or cloud provider) under the same trust domain was brought online.
     - `additional_key` - An additional concurrent anchor was introduced (for example, to support a new signature algorithm alongside an existing one).
@@ -570,7 +569,6 @@ The following example is non-normative.
         "name": "ES256",
         "use": "sig"
       },
-      "effective_at": 1700000000,
       "reason": "additional_key"
     }
   }
@@ -592,7 +590,6 @@ Attributes:
 - **new_key_id** - OPTIONAL. Identifier of the replacement anchor.
 - **jwks_uri** - OPTIONAL. When `anchor_type` is `jwks`, the URI to fetch the updated JWK Set.
 - **x509_bundle_uri** - OPTIONAL. When `anchor_type` is `x509_ca`, the URI to fetch the updated CA bundle.
-- **effective_at** - OPTIONAL. When the new material becomes active. JSON number (NumericDate).
 - **old_material_expiry** - OPTIONAL. When the previous material ceases to be valid (grace period end). JSON number (NumericDate).
 - **reason** - OPTIONAL. Why the rotation occurred. Possible values:
     - `scheduled_rotation` - Routine key rotation.
@@ -620,7 +617,6 @@ The following example is non-normative.
       "previous_key_id": "kid:signing-2024-q4",
       "new_key_id": "kid:signing-2025-q1",
       "jwks_uri": "https://authority.example.com/.well-known/jwks.json",
-      "effective_at": 1700000000,
       "old_material_expiry": 1700604800,
       "reason": "scheduled_rotation"
     }
@@ -642,7 +638,6 @@ Attributes:
 - **key_id** - OPTIONAL. Identifier of the revoked anchor. For JWKS, the `kid` value. For X.509, the certificate serial number or Subject Key Identifier.
 - **jwks_uri** - OPTIONAL. When `anchor_type` is `jwks`, the URI to fetch the JWK Set reflecting the removal.
 - **x509_bundle_uri** - OPTIONAL. When `anchor_type` is `x509_ca`, the URI to fetch the CA bundle reflecting the removal.
-- **effective_at** - OPTIONAL. When the revocation takes effect. JSON number (NumericDate).
 - **reason** - OPTIONAL. Why the anchor was revoked. Possible values:
     - `compromise` - The anchor is believed compromised.
     - `policy_change` - Revoked due to updated security policy.
@@ -686,7 +681,6 @@ Attributes:
 - **anchor_type** - OPTIONAL. The type of trust material used to validate credentials from the new domain. Same values as in {{trust-anchor-added}}: `x509_ca` or `jwks`.
 - **jwks_uri** - OPTIONAL. When `anchor_type` is `jwks`, the URI to fetch the JWK Set {{RFC7517}} for the federated domain.
 - **x509_bundle_uri** - OPTIONAL. When `anchor_type` is `x509_ca`, the URI to fetch the CA bundle for the federated domain.
-- **effective_at** - OPTIONAL. When the federation becomes active. JSON number (NumericDate).
 - **reason** - OPTIONAL. Why federation was established. Possible values:
     - `onboarding` - A new organization joined the federation.
     - `expansion` - A new data center, region, or cloud provider was added to the enterprise.
@@ -711,7 +705,6 @@ The following example is non-normative.
       "trust_domain": "newpartner.example.org",
       "anchor_type": "jwks",
       "jwks_uri": "https://authority.newpartner.example.org/.well-known/jwks.json",
-      "effective_at": 1700000000,
       "reason": "onboarding"
     }
   }
@@ -729,7 +722,6 @@ Attributes:
 
 - **trust_domain** - REQUIRED. The FQDN of the federated trust domain whose federation terms changed.
 - **change_description** - OPTIONAL. Human-readable description of what changed.
-- **effective_at** - OPTIONAL. When the updated terms take effect. JSON number (NumericDate).
 - **reason** - OPTIONAL. Why the federation was updated. Possible values:
     - `policy_change` - Updated due to a change in federation policy.
     - `anchor_update` - The trust anchors used to validate the federated domain changed.
@@ -751,7 +743,6 @@ Attributes:
     - `policy_violation` - Federation revoked due to policy.
     - `administrative` - Administrative decision to end federation.
     - `contractual` - Business relationship ended.
-- **effective_at** - OPTIONAL. When the revocation takes effect. JSON number (NumericDate).
 - **event_timestamp** - OPTIONAL. Time the decision was made.
 
 ## Policy and Posture Evaluation Events
@@ -770,7 +761,6 @@ Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
 - **change_description** - OPTIONAL. Human-readable description of the change.
-- **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
 
 ### posture-evaluation-policy-changed
@@ -783,7 +773,6 @@ Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
 - **change_description** - OPTIONAL. Human-readable description.
-- **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
 
 ### validation-policy-changed
@@ -796,7 +785,6 @@ Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
 - **change_description** - OPTIONAL. Human-readable description.
-- **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
 
 ### posture-evaluation-failed
@@ -1131,6 +1119,7 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 - Added a general "Correlating Related Events" rule: a Transmitter SHOULD set a shared `txn` claim across all SETs describing one underlying occurrence, regardless of event type (replacing the per-event guidance). Added conditional pairing guidance to `workload-compromised`.
 - Generalised the Compromise Response rule to apply to any event carrying a `compromise` or `key_compromise` signal, rather than an enumerated list of event types.
 - Defined a minimal interoperable key set (`region`, `zone`, `platform`, `cluster`, `image`, each optional) for the `previous_context`/`current_context` fields of `workload-baseline-changed`, allowed profile-specific extension, and added guidance to avoid disclosing fine-grained topology across trust-domain boundaries.
+- Removed the `effective_at` attribute from the trust-anchor, federation, and policy events. A SET reports a fact that has occurred, not a future-dated plan (which may be cancelled and cannot be cleanly retracted); a Transmitter therefore emits the event when the change actually takes effect, using `event_timestamp`. Fixed expiries of already-issued material (`old_material_expiry`, `expiry`, `current_expiry`, `grace_period_end`) are retained.
 
 -02
 
