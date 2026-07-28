@@ -240,7 +240,8 @@ Unless stated otherwise, any WISE event MAY include the common optional claims d
 
 - **reason_admin** - OPTIONAL. A localizable administrative message intended for logging and auditing, as defined in {{CAEP}}. Its value is a JSON object containing one or more key/value pairs, where each key is a BCP 47 {{RFC5646}} language tag and each value is the locale-specific message.
 - **reason_user** - OPTIONAL. A localizable, user-facing message, as defined in {{CAEP}}. Its value follows the same JSON object structure as `reason_admin`.
-- **initiating_entity** - OPTIONAL. A JSON string describing what triggered the event, as defined in {{CAEP}}: one of `admin`, `user`, `policy`, or `system`.
+- **initiating_entity** - OPTIONAL. A JSON string describing what triggered the event. In addition to the values defined in {{CAEP}} (`admin`, `user`, `policy`, `system`), WISE defines the value `workload` to indicate that another workload or agent initiated the event, for example an agent acting autonomously or on behalf of a user. A Receiver that does not recognise `workload` SHOULD treat it as `system`.
+- **event_timestamp** - OPTIONAL, but RECOMMENDED where known. A JSON number giving the time at which the described event, change, or detection actually occurred, expressed as seconds since the Unix epoch. This is distinct from the SET `iat` claim {{RFC8417}}: `event_timestamp` is when the underlying occurrence happened, whereas `iat` is when the Transmitter minted the SET. Individual event definitions in this document do not repeat `event_timestamp`; it applies uniformly to every WISE event as defined here.
 
 When a WISE event includes `reason_admin` or `reason_user`, the claim MUST use the localizable JSON object structure defined above rather than a plain string. The following is a non-normative example:
 
@@ -291,7 +292,6 @@ Attributes:
     - `hardware` - Key is stored in a hardware security module, TPM, secure enclave, or equivalent tamper-resistant storage.
     - `software` - Key is stored in software (filesystem, memory, or application-managed keystore).
 - **key_storage_ecosystem** - OPTIONAL. Free-text description of the hardware or software environment protecting the key. Examples: "iPhone 17s, iOS 23 patch 6", "AWS Nitro Enclave", "Azure Confidential VM, AMD SEV-SNP", "FIPS 140-3 Level 3 HSM".
-- **event_timestamp** - OPTIONAL. The time at which the credential was issued. JSON number representing seconds since Unix epoch.
 
 The following example is non-normative.
 
@@ -328,7 +328,6 @@ Attributes:
 - **previous_credential_id** - OPTIONAL. Identifier of the credential being replaced.
 - **new_credential_id** - OPTIONAL. Identifier of the newly issued credential.
 - **grace_period_end** - OPTIONAL. The time until which the previous credential remains valid. JSON number (NumericDate).
-- **event_timestamp** - OPTIONAL. The time at which the rotation occurred.
 
 The following example is non-normative.
 
@@ -370,7 +369,6 @@ Attributes:
     - `superseded` - Replaced by a new credential.
     - `cessation` - The workload no longer operates.
     - `policy_violation` - Revoked due to a policy violation.
-- **event_timestamp** - OPTIONAL. The time at which revocation occurred.
 
 The following example is non-normative.
 
@@ -405,7 +403,6 @@ Attributes:
 
 - **credential_type** - REQUIRED. The type of credential compromised.
 - **credential_id** - OPTIONAL. Identifier of the compromised credential.
-- **event_timestamp** - OPTIONAL. The time at which the compromise was detected.
 - **reason_admin** - OPTIONAL. Localizable administrative description of the compromise, as defined in the Common Optional Claims ({{common-optional-claims}}).
 
 The following example is non-normative.
@@ -449,7 +446,6 @@ Attributes:
     - `posture_evaluation_failed` - The workload did not pass posture evaluation.
     - `policy_denied` - Issuance policy denied renewal.
     - `internal_error` - Internal error in the provisioning pipeline.
-- **event_timestamp** - OPTIONAL. Time the failure was detected.
 
 The following example is non-normative.
 
@@ -493,7 +489,6 @@ Attributes:
     - `policy_violation` - Suspended due to a policy violation.
     - `administrative` - Disabled by an administrator.
     - `maintenance` - Temporarily disabled for maintenance.
-- **event_timestamp** - OPTIONAL. Time of disablement.
 
 ### workload-enabled
 
@@ -501,9 +496,7 @@ Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-en
 
 The `workload-enabled` event signals that a previously disabled workload is active again. The trust domain authority will resume issuing credentials for this workload. As with disablement, this event conveys only the lifecycle state change; any credential provisioned as a result is signalled separately through an accompanying `credential-issued` event.
 
-Attributes:
-
-- **event_timestamp** - OPTIONAL. Time of re-enablement.
+This event carries no attributes beyond the common claims ({{common-optional-claims}}).
 
 ### workload-purged
 
@@ -511,9 +504,7 @@ Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-pu
 
 The `workload-purged` event signals that a workload has been permanently removed from the trust domain. This is irreversible. The workload will not be re-provisioned. All credentials previously issued for this workload MUST be considered invalid. As with `workload-disabled`, this event conveys only the lifecycle state change; the resulting credential cancellation is signalled separately through accompanying `credential-revoked` events.
 
-Attributes:
-
-- **event_timestamp** - OPTIONAL. Time of removal.
+This event carries no attributes beyond the common claims ({{common-optional-claims}}).
 
 ## Trust and Federation Events
 
@@ -545,7 +536,6 @@ Attributes:
     - `new_environment` - A new environment (data center, region, or cloud provider) under the same trust domain was brought online.
     - `additional_key` - An additional concurrent anchor was introduced (for example, to support a new signature algorithm alongside an existing one).
     - `scheduled_rotation` - A new key was pre-staged ahead of a scheduled rotation.
-- **event_timestamp** - OPTIONAL. Time the anchor was added.
 
 The following example is non-normative.
 
@@ -599,7 +589,6 @@ Attributes:
     - `compromise` - The previous anchor is believed compromised.
     - `policy_change` - Rotated due to updated security policy.
     - `expiry` - Proactive rotation before scheduled expiry.
-- **event_timestamp** - OPTIONAL. Time of rotation.
 
 The following example is non-normative.
 
@@ -648,7 +637,6 @@ Attributes:
     - `policy_change` - Revoked due to updated security policy.
     - `superseded` - Replaced by other material and no longer needed.
     - `expiry` - The anchor reached end of life.
-- **event_timestamp** - OPTIONAL. Time of revocation.
 
 The following example is non-normative.
 
@@ -692,7 +680,6 @@ Attributes:
     - `expansion` - A new data center, region, or cloud provider was added to the enterprise.
     - `administrative` - Administrative decision to establish federation.
     - `contractual` - A new business relationship was established.
-- **event_timestamp** - OPTIONAL. Time the decision was made.
 
 The following example is non-normative.
 
@@ -735,7 +722,6 @@ Attributes:
     - `anchor_update` - The trust anchors used to validate the federated domain changed.
     - `administrative` - Administrative decision.
     - `contractual` - Business relationship terms changed.
-- **event_timestamp** - OPTIONAL. Time the decision was made.
 
 ### trust-domain-federation-revoked
 
@@ -752,7 +738,6 @@ Attributes:
     - `administrative` - Administrative decision to end federation.
     - `contractual` - Business relationship ended.
 - **effective_at** - OPTIONAL. When the revocation takes effect. JSON number (NumericDate).
-- **event_timestamp** - OPTIONAL. Time the decision was made.
 
 ## Policy and Posture Evaluation Events
 
@@ -771,7 +756,6 @@ Attributes:
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
 - **change_description** - OPTIONAL. Human-readable description of the change.
 - **effective_at** - OPTIONAL. When the new policy takes effect.
-- **event_timestamp** - OPTIONAL. Time the change was made.
 
 ### posture-evaluation-policy-changed
 
@@ -784,7 +768,6 @@ Attributes:
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
 - **change_description** - OPTIONAL. Human-readable description.
 - **effective_at** - OPTIONAL. When the new policy takes effect.
-- **event_timestamp** - OPTIONAL. Time the change was made.
 
 ### validation-policy-changed
 
@@ -797,7 +780,6 @@ Attributes:
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
 - **change_description** - OPTIONAL. Human-readable description.
 - **effective_at** - OPTIONAL. When the new policy takes effect.
-- **event_timestamp** - OPTIONAL. Time the change was made.
 
 ### posture-evaluation-failed
 
@@ -812,7 +794,6 @@ Attributes:
     - `workload` - Workload-level evaluation (e.g., binary identity, image hash).
     - `runtime` - Runtime environment evaluation (e.g., configuration compliance, network posture).
 - **reason** - OPTIONAL. Why the evaluation failed.
-- **event_timestamp** - OPTIONAL. Time of the failure.
 
 ### posture-evaluation-succeeded
 
@@ -825,7 +806,6 @@ This event does not imply that a prior failure occurred. It is generated each ti
 Attributes:
 
 - **evaluation_type** - OPTIONAL. The scope of evaluation that succeeded.
-- **event_timestamp** - OPTIONAL. Time of successful evaluation.
 
 ## Runtime Posture Events
 
@@ -850,7 +830,6 @@ Attributes:
     - `succeeded` - Re-evaluation completed successfully.
     - `pending` - Re-evaluation has not yet occurred.
     - `failed` - Re-evaluation was attempted and failed.
-- **event_timestamp** - OPTIONAL. Time of the change.
 
 For interoperability, when `previous_context` or `current_context` is present it MAY include the following keys. Each is OPTIONAL, because the corresponding notion may not exist in every deployment:
 
@@ -904,7 +883,6 @@ Attributes:
 
 - **detection_method** - OPTIONAL. How the compromise was detected.
 - **reason_admin** - OPTIONAL. Localizable administrative description, as defined in the Common Optional Claims ({{common-optional-claims}}).
-- **event_timestamp** - OPTIONAL. Time of detection.
 
 ### anomalous-behavior-detected
 
@@ -921,7 +899,6 @@ Attributes:
     - `high`
     - `critical`
 - **reason_admin** - OPTIONAL. Localizable administrative description, as defined in the Common Optional Claims ({{common-optional-claims}}).
-- **event_timestamp** - OPTIONAL. Time of detection.
 
 ## Supply Chain Events
 
@@ -943,7 +920,6 @@ Attributes:
 - **provenance_format** - OPTIONAL. A hint indicating the kind of document referenced, for example `sbom` or `attestation`.
 - **artifact_digest** - OPTIONAL. A digest of the workload artifact (such as a container image) that the provenance describes, allowing the relying party to correlate the event with what is running.
 - **reason_admin** - OPTIONAL. Localizable administrative description of the change, as defined in the Common Optional Claims ({{common-optional-claims}}).
-- **event_timestamp** - OPTIONAL. The time the change occurred.
 
 The following example is non-normative.
 
@@ -987,7 +963,6 @@ Attributes:
 - **severity** - OPTIONAL. A qualitative severity to help the relying party prioritise. Possible values: `low`, `medium`, `high`, `critical`.
 - **advisory_uri** - OPTIONAL. A URI at which a full advisory or VEX statement can be retrieved.
 - **reason_admin** - OPTIONAL. Localizable administrative description, as defined in the Common Optional Claims ({{common-optional-claims}}).
-- **event_timestamp** - OPTIONAL. The time the status changed.
 
 The following example is non-normative.
 
@@ -1131,6 +1106,8 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 - Added a general "Correlating Related Events" rule: a Transmitter SHOULD set a shared `txn` claim across all SETs describing one underlying occurrence, regardless of event type (replacing the per-event guidance). Added conditional pairing guidance to `workload-compromised`.
 - Generalised the Compromise Response rule to apply to any event carrying a `compromise` or `key_compromise` signal, rather than an enumerated list of event types.
 - Defined a minimal interoperable key set (`region`, `zone`, `platform`, `cluster`, `image`, each optional) for the `previous_context`/`current_context` fields of `workload-baseline-changed`, allowed profile-specific extension, and added guidance to avoid disclosing fine-grained topology across trust-domain boundaries.
+- Added `workload` as an `initiating_entity` value (alongside the CAEP `admin`/`user`/`policy`/`system`) so an event can indicate that another workload or agent initiated it; a Receiver that does not recognise it treats it as `system`.
+- Promoted `event_timestamp` to a common optional claim, defined once in the Common Optional Claims section with guidance distinguishing it from the SET `iat`, and removed the per-event repetitions.
 
 -02
 
