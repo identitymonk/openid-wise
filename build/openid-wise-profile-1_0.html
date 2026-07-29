@@ -3447,6 +3447,17 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre><a href="#section-3.1-9" class="pilcrow">¶</a>
 </div>
+<p id="section-3.1-10">Deployments identifying workloads primarily by their immutable cryptographic artifacts, such as a compiled binary hash or container image digest, MAY express the workload subject using the Named Information (<code>ni</code>) URI scheme defined in <span>[<a href="#RFC6920" class="cite xref">RFC6920</a>]</span>. This lets relying parties cryptographically bind security events directly to a workload's build provenance or artifact registry digest, and is particularly useful for supply-chain events and for external monitoring or intelligence platforms that key off artifact hashes rather than the full trust-domain context.<a href="#section-3.1-10" class="pilcrow">¶</a></p>
+<p id="section-3.1-11">A digest identifies an artifact — and therefore potentially every instance built from it — rather than a single running workload or its Workload Identifier. The <code>ni</code> form is therefore best suited to artifact-scoped signals and as a correlation aid; the Workload Identifier <code>uri</code> form remains the primary subject for per-workload and credential events.<a href="#section-3.1-11" class="pilcrow">¶</a></p>
+<p id="section-3.1-12">The following example is non-normative.<a href="#section-3.1-12" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="section-3.1-13">
+<pre>
+{
+  "format": "uri",
+  "uri": "ni://trust.example.com/sha-256;f4OxZX_x_FO5LcGBSKHWXfwtSx-j1ncoSt3SABJtkGk"
+}
+</pre><a href="#section-3.1-13" class="pilcrow">¶</a>
+</div>
 </section>
 </div>
 <div id="trust-domain-subject">
@@ -3956,6 +3967,10 @@ https://schemas.openid.net/secevent/wise/event-type/
 <a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
+<dt id="RFC6920">[RFC6920]</dt>
+        <dd>
+<span class="refAuthor">Farrell, S.</span>, <span class="refAuthor">Kutscher, D.</span>, <span class="refAuthor">Dannewitz, C.</span>, <span class="refAuthor">Ohlman, B.</span>, <span class="refAuthor">Keranen, A.</span>, and <span class="refAuthor">P. Hallam-Baker</span>, <span class="refTitle">"Naming Things with Hashes"</span>, <span class="seriesInfo">RFC 6920</span>, <span class="seriesInfo">DOI 10.17487/RFC6920</span>, <time datetime="2013-04" class="refDate">April 2013</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6920">https://www.rfc-editor.org/rfc/rfc6920</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="RFC7519">[RFC7519]</dt>
         <dd>
 <span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">N. Sakimura</span>, <span class="refTitle">"JSON Web Token (JWT)"</span>, <span class="seriesInfo">RFC 7519</span>, <span class="seriesInfo">DOI 10.17487/RFC7519</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7519">https://www.rfc-editor.org/rfc/rfc7519</a>&gt;</span>. </dd>
@@ -4057,10 +4072,13 @@ https://schemas.openid.net/secevent/wise/event-type/
           <p id="appendix-B-2.16.1">Added <code>workload-degraded</code> and <code>workload-restored</code> events for adaptive resilience: an advisory, coarse graduated <code>trust_level</code> signal for intentionally reducing a workload's trust without suspension, and its reverse. Clarified their complementarity with <code>anomalous-behavior-detected</code>, <code>workload-compromised</code>, and <code>workload-disabled</code>.<a href="#appendix-B-2.16.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.17">
-          <p id="appendix-B-2.17.1">Replaced the free-form <code>change_description</code> field on <code>trust-domain-federation-updated</code> and the policy-change events with the localizable <code>reason_admin</code>/<code>reason_user</code> common claims, for consistency with the CAEP-aligned pattern.<a href="#appendix-B-2.17.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.17.1">Added the Named Information (<code>ni</code>) URI scheme (RFC 6920) as an optional subject identifier for identifying workloads by build/image digest, with a note that a digest identifies an artifact rather than a single workload instance.<a href="#appendix-B-2.17.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.18">
-          <p id="appendix-B-2.18.1">Carried the subject in the top-level <code>sub_id</code> claim (RFC 9493 format, per SSF) instead of a nonstandard nested <code>subject</code> member, updating every example; and specified that policy events take the trust-domain subject.<a href="#appendix-B-2.18.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.18.1">Replaced the free-form <code>change_description</code> field on <code>trust-domain-federation-updated</code> and the policy-change events with the localizable <code>reason_admin</code>/<code>reason_user</code> common claims, for consistency with the CAEP-aligned pattern.<a href="#appendix-B-2.18.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.19">
+          <p id="appendix-B-2.19.1">Carried the subject in the top-level <code>sub_id</code> claim (RFC 9493 format, per SSF) instead of a nonstandard nested <code>subject</code> member, updating every example; and specified that policy events take the trust-domain subject.<a href="#appendix-B-2.19.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-B-3">-02<a href="#appendix-B-3" class="pilcrow">¶</a></p>

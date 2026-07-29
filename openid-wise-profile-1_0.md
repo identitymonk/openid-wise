@@ -132,6 +132,7 @@ normative:
     date: 2026
 
 informative:
+  RFC6920:
   RFC7519:
   RFC7517:
   SPIFFE:
@@ -1408,6 +1409,19 @@ The following example is non-normative.
 }
 ~~~
 
+Deployments identifying workloads primarily by their immutable cryptographic artifacts, such as a compiled binary hash or container image digest, MAY express the workload subject using the Named Information (`ni`) URI scheme defined in {{RFC6920}}. This lets relying parties cryptographically bind security events directly to a workload's build provenance or artifact registry digest, and is particularly useful for supply-chain events and for external monitoring or intelligence platforms that key off artifact hashes rather than the full trust-domain context.
+
+A digest identifies an artifact — and therefore potentially every instance built from it — rather than a single running workload or its Workload Identifier. The `ni` form is therefore best suited to artifact-scoped signals and as a correlation aid; the Workload Identifier `uri` form remains the primary subject for per-workload and credential events.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "format": "uri",
+  "uri": "ni://trust.example.com/sha-256;f4OxZX_x_FO5LcGBSKHWXfwtSx-j1ncoSt3SABJtkGk"
+}
+~~~
+
 ## Trust Domain Subject
 
 For events that apply to an entire trust domain rather than to a single workload — the `trust-anchor-*` and `trust-domain-federation-*` events, and the policy events (`issuance-policy-changed`, `posture-evaluation-policy-changed`, `validation-policy-changed`) — the `sub_id` identifies the trust domain itself using its Workload Identifier Origin as defined in {{WIMSE-ID}}:
@@ -1678,6 +1692,7 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 - Added a non-normative example to every event that lacked one, so all event types now have consistent example coverage (and confirmed policy events use the trust-domain subject).
 - Established a "WISE Event Types" IANA registry (Specification Required) with all defined event types as initial registrations, replacing the "no new registrations" statement.
 - Added `workload-degraded` and `workload-restored` events for adaptive resilience: an advisory, coarse graduated `trust_level` signal for intentionally reducing a workload's trust without suspension, and its reverse. Clarified their complementarity with `anomalous-behavior-detected`, `workload-compromised`, and `workload-disabled`.
+- Added the Named Information (`ni`) URI scheme (RFC 6920) as an optional subject identifier for identifying workloads by build/image digest, with a note that a digest identifies an artifact rather than a single workload instance.
 - Replaced the free-form `change_description` field on `trust-domain-federation-updated` and the policy-change events with the localizable `reason_admin`/`reason_user` common claims, for consistency with the CAEP-aligned pattern.
 - Carried the subject in the top-level `sub_id` claim (RFC 9493 format, per SSF) instead of a nonstandard nested `subject` member, updating every example; and specified that policy events take the trust-domain subject.
 
