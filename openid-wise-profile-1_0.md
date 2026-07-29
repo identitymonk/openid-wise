@@ -552,6 +552,93 @@ The following example is non-normative.
 ~~~
 {: #fig-workload-enabled title="Example: Workload Enabled"}
 
+### workload-degraded
+
+Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-degraded`
+
+The `workload-degraded` event signals that the trust domain authority has intentionally reduced a workload's trust level without suspending or purging it, so the workload can keep operating with fewer privileges. This supports adaptive resilience: gracefully degrading a workload (for example, revoking database write access or enforcing network quarantine) rather than executing a catastrophic shutdown during an active threat or compliance drift.
+
+This event is advisory. It conveys a reduced trust level; each Receiver maps that level to concrete privilege changes according to its own policy. WISE does not prescribe the enforcement actions a Receiver takes.
+
+Attributes:
+
+- **trust_level** - REQUIRED. The workload's current trust level after degradation, on a coarse graduated scale (from highest to lowest):
+    - `reduced` - Minor reduction; most privileges retained.
+    - `restricted` - Significant reduction; only limited operations should be permitted.
+    - `minimal` - Near-zero trust; only essential operations should be permitted, short of full suspension.
+- **previous_trust_level** - OPTIONAL. The trust level before this change, using the same scale, plus `full` for a workload previously at full trust. If omitted, the Receiver MUST NOT assume a particular prior level.
+- **reason** - OPTIONAL. Why the workload was degraded. Possible values:
+    - `anomaly_detected` - Anomalous behavior was observed for the workload.
+    - `policy_drift` - The workload drifted from its required policy or configuration.
+    - `missing_provenance` - Required provenance was missing or could not be verified.
+    - `posture_degraded` - Posture evaluation indicated a degraded but non-failing state.
+    - `compliance_drift` - The workload drifted from a compliance requirement.
+- **event_timestamp** - OPTIONAL. Time the degradation took effect.
+
+This event is complementary to, and does not overlap with, the related runtime and lifecycle events. `anomalous-behavior-detected` reports an observation (something unusual was seen) and is purely advisory; `workload-degraded` reports a decision by the authority to reduce trust, which may follow such an observation. `workload-compromised` and `workload-disabled` represent the fully-untrusted end of the range — a believed compromise or a suspension — whereas `workload-degraded` keeps the workload operational at a reduced trust level between full trust and suspension. A workload returns to full trust through `workload-restored`.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-013",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-degraded": {
+      "trust_level": "restricted",
+      "previous_trust_level": "full",
+      "reason": "anomaly_detected",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-workload-degraded title="Example: Workload Degraded"}
+
+### workload-restored
+
+Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-restored`
+
+The `workload-restored` event signals that a previously degraded workload has been returned to full trust. It is the reverse of `workload-degraded`. Like `workload-degraded`, it is advisory: Receivers restore privileges according to their own policy.
+
+Attributes:
+
+- **previous_trust_level** - OPTIONAL. The trust level the workload held before restoration (`reduced`, `restricted`, or `minimal`), using the scale defined for `workload-degraded`.
+- **reason** - OPTIONAL. Why trust was restored. Possible values:
+    - `remediated` - The condition that caused degradation was remediated.
+    - `posture_restored` - Posture evaluation returned to a satisfactory state.
+    - `administrative` - Restored by an administrator.
+- **event_timestamp** - OPTIONAL. Time the restoration took effect.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-014",
+  "iat": 1700003600,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-restored": {
+      "previous_trust_level": "restricted",
+      "reason": "remediated",
+      "event_timestamp": 1700003600
+    }
+  }
+}
+~~~
+{: #fig-workload-restored title="Example: Workload Restored"}
+
 ### workload-purged
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-purged`
@@ -1456,6 +1543,18 @@ Description:
 : A workload was permanently removed from the trust domain.
 
 Event Type:
+: `workload-degraded`
+
+Description:
+: A workload's trust level was intentionally reduced without suspending it.
+
+Event Type:
+: `workload-restored`
+
+Description:
+: A previously degraded workload was returned to full trust.
+
+Event Type:
 : `trust-anchor-added`
 
 Description:
@@ -1576,8 +1675,9 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 - Made `reason_admin`/`reason_user` usage consistent: removed the redundant per-event listings and rely on the Common Optional Claims section, which now states the claims are not repeated per event and any event MAY carry them.
 - Replaced the free-text `reason` on `posture-evaluation-failed` with an enum (`platform_integrity_failed`, `attestation_invalid`, `image_mismatch`, `configuration_noncompliant`, `policy_denied`), matching the enum style of sibling events.
 - Renamed the `credential-compromise` event to `credential-compromised` for tense consistency with the other credential events (`-issued`, `-rotated`, `-revoked`) and `workload-compromised`.
-- Added a non-normative example to every event that lacked one, so all 24 event types now have consistent example coverage (and confirmed policy events use the trust-domain subject).
-- Established a "WISE Event Types" IANA registry (Specification Required) with the 24 event types as initial registrations, replacing the "no new registrations" statement.
+- Added a non-normative example to every event that lacked one, so all event types now have consistent example coverage (and confirmed policy events use the trust-domain subject).
+- Established a "WISE Event Types" IANA registry (Specification Required) with all defined event types as initial registrations, replacing the "no new registrations" statement.
+- Added `workload-degraded` and `workload-restored` events for adaptive resilience: an advisory, coarse graduated `trust_level` signal for intentionally reducing a workload's trust without suspension, and its reverse. Clarified their complementarity with `anomalous-behavior-detected`, `workload-compromised`, and `workload-disabled`.
 - Replaced the free-form `change_description` field on `trust-domain-federation-updated` and the policy-change events with the localizable `reason_admin`/`reason_user` common claims, for consistency with the CAEP-aligned pattern.
 - Carried the subject in the top-level `sub_id` claim (RFC 9493 format, per SSF) instead of a nonstandard nested `subject` member, updating every example; and specified that policy events take the trust-domain subject.
 

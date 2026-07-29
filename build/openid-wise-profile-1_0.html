@@ -1326,7 +1326,13 @@ li > p:last-of-type:only-child {
                     <p id="section-toc.1-1.2.2.4.2.2.1"><a href="#section-2.4.2" class="auto internal xref">2.4.2</a>.  <a href="#name-workload-enabled" class="internal xref">workload-enabled</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.4.2.3">
-                    <p id="section-toc.1-1.2.2.4.2.3.1"><a href="#section-2.4.3" class="auto internal xref">2.4.3</a>.  <a href="#name-workload-purged" class="internal xref">workload-purged</a></p>
+                    <p id="section-toc.1-1.2.2.4.2.3.1"><a href="#section-2.4.3" class="auto internal xref">2.4.3</a>.  <a href="#name-workload-degraded" class="internal xref">workload-degraded</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.4.2.4">
+                    <p id="section-toc.1-1.2.2.4.2.4.1"><a href="#section-2.4.4" class="auto internal xref">2.4.4</a>.  <a href="#name-workload-restored" class="internal xref">workload-restored</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.4.2.5">
+                    <p id="section-toc.1-1.2.2.4.2.5.1"><a href="#section-2.4.5" class="auto internal xref">2.4.5</a>.  <a href="#name-workload-purged" class="internal xref">workload-purged</a></p>
 </li>
                 </ul>
 </li>
@@ -2070,23 +2076,166 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 </div>
 </section>
 </div>
-<div id="workload-purged">
+<div id="workload-degraded">
 <section id="section-2.4.3">
-          <h4 id="name-workload-purged">
-<a href="#section-2.4.3" class="section-number selfRef">2.4.3. </a><a href="#name-workload-purged" class="section-name selfRef">workload-purged</a>
+          <h4 id="name-workload-degraded">
+<a href="#section-2.4.3" class="section-number selfRef">2.4.3. </a><a href="#name-workload-degraded" class="section-name selfRef">workload-degraded</a>
           </h4>
-<p id="section-2.4.3-1">Event Type URI: <code>https://schemas.openid.net/secevent/wise/event-type/workload-purged</code><a href="#section-2.4.3-1" class="pilcrow">¶</a></p>
-<p id="section-2.4.3-2">The <code>workload-purged</code> event signals that a workload has been permanently removed from the trust domain. This is irreversible. The workload will not be re-provisioned. All credentials previously issued for this workload MUST be considered invalid. As with <code>workload-disabled</code>, this event conveys only the lifecycle state change; the resulting credential cancellation is signalled separately through accompanying <code>credential-revoked</code> events.<a href="#section-2.4.3-2" class="pilcrow">¶</a></p>
-<p id="section-2.4.3-3">Attributes:<a href="#section-2.4.3-3" class="pilcrow">¶</a></p>
+<p id="section-2.4.3-1">Event Type URI: <code>https://schemas.openid.net/secevent/wise/event-type/workload-degraded</code><a href="#section-2.4.3-1" class="pilcrow">¶</a></p>
+<p id="section-2.4.3-2">The <code>workload-degraded</code> event signals that the trust domain authority has intentionally reduced a workload's trust level without suspending or purging it, so the workload can keep operating with fewer privileges. This supports adaptive resilience: gracefully degrading a workload (for example, revoking database write access or enforcing network quarantine) rather than executing a catastrophic shutdown during an active threat or compliance drift.<a href="#section-2.4.3-2" class="pilcrow">¶</a></p>
+<p id="section-2.4.3-3">This event is advisory. It conveys a reduced trust level; each Receiver maps that level to concrete privilege changes according to its own policy. WISE does not prescribe the enforcement actions a Receiver takes.<a href="#section-2.4.3-3" class="pilcrow">¶</a></p>
+<p id="section-2.4.3-4">Attributes:<a href="#section-2.4.3-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.4.3-4.1">
-              <p id="section-2.4.3-4.1.1"><strong>event_timestamp</strong> - OPTIONAL. Time of removal.<a href="#section-2.4.3-4.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-2.4.3-5.1">
+              <p id="section-2.4.3-5.1.1"><strong>trust_level</strong> - REQUIRED. The workload's current trust level after degradation, on a coarse graduated scale (from highest to lowest):<a href="#section-2.4.3-5.1.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2.4.3-5.1.2.1">
+                  <p id="section-2.4.3-5.1.2.1.1"><code>reduced</code> - Minor reduction; most privileges retained.<a href="#section-2.4.3-5.1.2.1.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-2.4.3-5.1.2.2">
+                  <p id="section-2.4.3-5.1.2.2.1"><code>restricted</code> - Significant reduction; only limited operations should be permitted.<a href="#section-2.4.3-5.1.2.2.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-2.4.3-5.1.2.3">
+                  <p id="section-2.4.3-5.1.2.3.1"><code>minimal</code> - Near-zero trust; only essential operations should be permitted, short of full suspension.<a href="#section-2.4.3-5.1.2.3.1" class="pilcrow">¶</a></p>
+</li>
+              </ul>
+</li>
+            <li class="normal" id="section-2.4.3-5.2">
+              <p id="section-2.4.3-5.2.1"><strong>previous_trust_level</strong> - OPTIONAL. The trust level before this change, using the same scale, plus <code>full</code> for a workload previously at full trust. If omitted, the Receiver MUST NOT assume a particular prior level.<a href="#section-2.4.3-5.2.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-2.4.3-5.3">
+              <p id="section-2.4.3-5.3.1"><strong>reason</strong> - OPTIONAL. Why the workload was degraded. Possible values:<a href="#section-2.4.3-5.3.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2.4.3-5.3.2.1">
+                  <p id="section-2.4.3-5.3.2.1.1"><code>anomaly_detected</code> - Anomalous behavior was observed for the workload.<a href="#section-2.4.3-5.3.2.1.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-2.4.3-5.3.2.2">
+                  <p id="section-2.4.3-5.3.2.2.1"><code>policy_drift</code> - The workload drifted from its required policy or configuration.<a href="#section-2.4.3-5.3.2.2.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-2.4.3-5.3.2.3">
+                  <p id="section-2.4.3-5.3.2.3.1"><code>missing_provenance</code> - Required provenance was missing or could not be verified.<a href="#section-2.4.3-5.3.2.3.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-2.4.3-5.3.2.4">
+                  <p id="section-2.4.3-5.3.2.4.1"><code>posture_degraded</code> - Posture evaluation indicated a degraded but non-failing state.<a href="#section-2.4.3-5.3.2.4.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-2.4.3-5.3.2.5">
+                  <p id="section-2.4.3-5.3.2.5.1"><code>compliance_drift</code> - The workload drifted from a compliance requirement.<a href="#section-2.4.3-5.3.2.5.1" class="pilcrow">¶</a></p>
+</li>
+              </ul>
+</li>
+            <li class="normal" id="section-2.4.3-5.4">
+              <p id="section-2.4.3-5.4.1"><strong>event_timestamp</strong> - OPTIONAL. Time the degradation took effect.<a href="#section-2.4.3-5.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-2.4.3-5">The following example is non-normative.<a href="#section-2.4.3-5" class="pilcrow">¶</a></p>
-<span id="name-example-workload-purged"></span><div id="fig-workload-purged">
+<p id="section-2.4.3-6">This event is complementary to, and does not overlap with, the related runtime and lifecycle events. <code>anomalous-behavior-detected</code> reports an observation (something unusual was seen) and is purely advisory; <code>workload-degraded</code> reports a decision by the authority to reduce trust, which may follow such an observation. <code>workload-compromised</code> and <code>workload-disabled</code> represent the fully-untrusted end of the range — a believed compromise or a suspension — whereas <code>workload-degraded</code> keeps the workload operational at a reduced trust level between full trust and suspension. A workload returns to full trust through <code>workload-restored</code>.<a href="#section-2.4.3-6" class="pilcrow">¶</a></p>
+<p id="section-2.4.3-7">The following example is non-normative.<a href="#section-2.4.3-7" class="pilcrow">¶</a></p>
+<span id="name-example-workload-degraded"></span><div id="fig-workload-degraded">
 <figure id="figure-8">
-            <div class="lang-json sourcecode" id="section-2.4.3-6.1">
+            <div class="lang-json sourcecode" id="section-2.4.3-8.1">
+<pre>
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-013",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-degraded": {
+      "trust_level": "restricted",
+      "previous_trust_level": "full",
+      "reason": "anomaly_detected",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+</pre>
+</div>
+<figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
+<a href="#name-example-workload-degraded" class="selfRef">Example: Workload Degraded</a>
+            </figcaption></figure>
+</div>
+</section>
+</div>
+<div id="workload-restored">
+<section id="section-2.4.4">
+          <h4 id="name-workload-restored">
+<a href="#section-2.4.4" class="section-number selfRef">2.4.4. </a><a href="#name-workload-restored" class="section-name selfRef">workload-restored</a>
+          </h4>
+<p id="section-2.4.4-1">Event Type URI: <code>https://schemas.openid.net/secevent/wise/event-type/workload-restored</code><a href="#section-2.4.4-1" class="pilcrow">¶</a></p>
+<p id="section-2.4.4-2">The <code>workload-restored</code> event signals that a previously degraded workload has been returned to full trust. It is the reverse of <code>workload-degraded</code>. Like <code>workload-degraded</code>, it is advisory: Receivers restore privileges according to their own policy.<a href="#section-2.4.4-2" class="pilcrow">¶</a></p>
+<p id="section-2.4.4-3">Attributes:<a href="#section-2.4.4-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2.4.4-4.1">
+              <p id="section-2.4.4-4.1.1"><strong>previous_trust_level</strong> - OPTIONAL. The trust level the workload held before restoration (<code>reduced</code>, <code>restricted</code>, or <code>minimal</code>), using the scale defined for <code>workload-degraded</code>.<a href="#section-2.4.4-4.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-2.4.4-4.2">
+              <p id="section-2.4.4-4.2.1"><strong>reason</strong> - OPTIONAL. Why trust was restored. Possible values:<a href="#section-2.4.4-4.2.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2.4.4-4.2.2.1">
+                  <p id="section-2.4.4-4.2.2.1.1"><code>remediated</code> - The condition that caused degradation was remediated.<a href="#section-2.4.4-4.2.2.1.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-2.4.4-4.2.2.2">
+                  <p id="section-2.4.4-4.2.2.2.1"><code>posture_restored</code> - Posture evaluation returned to a satisfactory state.<a href="#section-2.4.4-4.2.2.2.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-2.4.4-4.2.2.3">
+                  <p id="section-2.4.4-4.2.2.3.1"><code>administrative</code> - Restored by an administrator.<a href="#section-2.4.4-4.2.2.3.1" class="pilcrow">¶</a></p>
+</li>
+              </ul>
+</li>
+            <li class="normal" id="section-2.4.4-4.3">
+              <p id="section-2.4.4-4.3.1"><strong>event_timestamp</strong> - OPTIONAL. Time the restoration took effect.<a href="#section-2.4.4-4.3.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-2.4.4-5">The following example is non-normative.<a href="#section-2.4.4-5" class="pilcrow">¶</a></p>
+<span id="name-example-workload-restored"></span><div id="fig-workload-restored">
+<figure id="figure-9">
+            <div class="lang-json sourcecode" id="section-2.4.4-6.1">
+<pre>
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-014",
+  "iat": 1700003600,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-restored": {
+      "previous_trust_level": "restricted",
+      "reason": "remediated",
+      "event_timestamp": 1700003600
+    }
+  }
+}
+</pre>
+</div>
+<figcaption><a href="#figure-9" class="selfRef">Figure 9</a>:
+<a href="#name-example-workload-restored" class="selfRef">Example: Workload Restored</a>
+            </figcaption></figure>
+</div>
+</section>
+</div>
+<div id="workload-purged">
+<section id="section-2.4.5">
+          <h4 id="name-workload-purged">
+<a href="#section-2.4.5" class="section-number selfRef">2.4.5. </a><a href="#name-workload-purged" class="section-name selfRef">workload-purged</a>
+          </h4>
+<p id="section-2.4.5-1">Event Type URI: <code>https://schemas.openid.net/secevent/wise/event-type/workload-purged</code><a href="#section-2.4.5-1" class="pilcrow">¶</a></p>
+<p id="section-2.4.5-2">The <code>workload-purged</code> event signals that a workload has been permanently removed from the trust domain. This is irreversible. The workload will not be re-provisioned. All credentials previously issued for this workload MUST be considered invalid. As with <code>workload-disabled</code>, this event conveys only the lifecycle state change; the resulting credential cancellation is signalled separately through accompanying <code>credential-revoked</code> events.<a href="#section-2.4.5-2" class="pilcrow">¶</a></p>
+<p id="section-2.4.5-3">Attributes:<a href="#section-2.4.5-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2.4.5-4.1">
+              <p id="section-2.4.5-4.1.1"><strong>event_timestamp</strong> - OPTIONAL. Time of removal.<a href="#section-2.4.5-4.1.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-2.4.5-5">The following example is non-normative.<a href="#section-2.4.5-5" class="pilcrow">¶</a></p>
+<span id="name-example-workload-purged"></span><div id="fig-workload-purged">
+<figure id="figure-10">
+            <div class="lang-json sourcecode" id="section-2.4.5-6.1">
 <pre>
 {
   "iss": "https://authority.example.com/",
@@ -2105,7 +2254,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
+<figcaption><a href="#figure-10" class="selfRef">Figure 10</a>:
 <a href="#name-example-workload-purged" class="selfRef">Example: Workload Purged</a>
             </figcaption></figure>
 </div>
@@ -2189,7 +2338,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.5.1-5">The following example is non-normative.<a href="#section-2.5.1-5" class="pilcrow">¶</a></p>
 <span id="name-example-trust-anchor-added"></span><div id="fig-trust-anchor-added">
-<figure id="figure-9">
+<figure id="figure-11">
             <div class="lang-json sourcecode" id="section-2.5.1-6.1">
 <pre>
 {
@@ -2219,7 +2368,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-9" class="selfRef">Figure 9</a>:
+<figcaption><a href="#figure-11" class="selfRef">Figure 11</a>:
 <a href="#name-example-trust-anchor-added" class="selfRef">Example: Trust Anchor Added</a>
             </figcaption></figure>
 </div>
@@ -2281,7 +2430,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.5.2-5">The following example is non-normative.<a href="#section-2.5.2-5" class="pilcrow">¶</a></p>
 <span id="name-example-trust-anchor-rotate"></span><div id="fig-trust-anchor-rotated">
-<figure id="figure-10">
+<figure id="figure-12">
             <div class="lang-json sourcecode" id="section-2.5.2-6.1">
 <pre>
 {
@@ -2308,7 +2457,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-10" class="selfRef">Figure 10</a>:
+<figcaption><a href="#figure-12" class="selfRef">Figure 12</a>:
 <a href="#name-example-trust-anchor-rotate" class="selfRef">Example: Trust Anchor Rotated (JWKS Rotation)</a>
             </figcaption></figure>
 </div>
@@ -2364,7 +2513,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.5.3-5">The following example is non-normative.<a href="#section-2.5.3-5" class="pilcrow">¶</a></p>
 <span id="name-example-trust-anchor-revoke"></span><div id="fig-trust-anchor-revoked">
-<figure id="figure-11">
+<figure id="figure-13">
             <div class="lang-json sourcecode" id="section-2.5.3-6.1">
 <pre>
 {
@@ -2387,7 +2536,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-11" class="selfRef">Figure 11</a>:
+<figcaption><a href="#figure-13" class="selfRef">Figure 13</a>:
 <a href="#name-example-trust-anchor-revoke" class="selfRef">Example: Trust Anchor Revoked (CA Compromise)</a>
             </figcaption></figure>
 </div>
@@ -2440,7 +2589,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.5.4-5">The following example is non-normative.<a href="#section-2.5.4-5" class="pilcrow">¶</a></p>
 <span id="name-example-trust-domain-federa"></span><div id="fig-federation-established">
-<figure id="figure-12">
+<figure id="figure-14">
             <div class="lang-json sourcecode" id="section-2.5.4-6.1">
 <pre>
 {
@@ -2464,7 +2613,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-12" class="selfRef">Figure 12</a>:
+<figcaption><a href="#figure-14" class="selfRef">Figure 14</a>:
 <a href="#name-example-trust-domain-federa" class="selfRef">Example: Trust Domain Federation Established</a>
             </figcaption></figure>
 </div>
@@ -2508,7 +2657,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.5.5-5">The following example is non-normative.<a href="#section-2.5.5-5" class="pilcrow">¶</a></p>
 <span id="name-example-trust-domain-federat"></span><div id="fig-federation-updated">
-<figure id="figure-13">
+<figure id="figure-15">
             <div class="lang-json sourcecode" id="section-2.5.5-6.1">
 <pre>
 {
@@ -2530,7 +2679,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-13" class="selfRef">Figure 13</a>:
+<figcaption><a href="#figure-15" class="selfRef">Figure 15</a>:
 <a href="#name-example-trust-domain-federat" class="selfRef">Example: Trust Domain Federation Updated</a>
             </figcaption></figure>
 </div>
@@ -2574,7 +2723,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.5.6-5">The following example is non-normative.<a href="#section-2.5.6-5" class="pilcrow">¶</a></p>
 <span id="name-example-trust-domain-federati"></span><div id="fig-federation-revoked">
-<figure id="figure-14">
+<figure id="figure-16">
             <div class="lang-json sourcecode" id="section-2.5.6-6.1">
 <pre>
 {
@@ -2596,7 +2745,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-14" class="selfRef">Figure 14</a>:
+<figcaption><a href="#figure-16" class="selfRef">Figure 16</a>:
 <a href="#name-example-trust-domain-federati" class="selfRef">Example: Trust Domain Federation Revoked</a>
             </figcaption></figure>
 </div>
@@ -2632,7 +2781,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.6.1-5">The following example is non-normative.<a href="#section-2.6.1-5" class="pilcrow">¶</a></p>
 <span id="name-example-issuance-policy-cha"></span><div id="fig-issuance-policy-changed">
-<figure id="figure-15">
+<figure id="figure-17">
             <div class="lang-json sourcecode" id="section-2.6.1-6.1">
 <pre>
 {
@@ -2653,7 +2802,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-15" class="selfRef">Figure 15</a>:
+<figcaption><a href="#figure-17" class="selfRef">Figure 17</a>:
 <a href="#name-example-issuance-policy-cha" class="selfRef">Example: Issuance Policy Changed</a>
             </figcaption></figure>
 </div>
@@ -2680,7 +2829,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.6.2-5">The following example is non-normative.<a href="#section-2.6.2-5" class="pilcrow">¶</a></p>
 <span id="name-example-posture-evaluation-"></span><div id="fig-posture-evaluation-policy-changed">
-<figure id="figure-16">
+<figure id="figure-18">
             <div class="lang-json sourcecode" id="section-2.6.2-6.1">
 <pre>
 {
@@ -2701,7 +2850,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-16" class="selfRef">Figure 16</a>:
+<figcaption><a href="#figure-18" class="selfRef">Figure 18</a>:
 <a href="#name-example-posture-evaluation-" class="selfRef">Example: Posture Evaluation Policy Changed</a>
             </figcaption></figure>
 </div>
@@ -2728,7 +2877,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.6.3-5">The following example is non-normative.<a href="#section-2.6.3-5" class="pilcrow">¶</a></p>
 <span id="name-example-validation-policy-c"></span><div id="fig-validation-policy-changed">
-<figure id="figure-17">
+<figure id="figure-19">
             <div class="lang-json sourcecode" id="section-2.6.3-6.1">
 <pre>
 {
@@ -2749,7 +2898,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-17" class="selfRef">Figure 17</a>:
+<figcaption><a href="#figure-19" class="selfRef">Figure 19</a>:
 <a href="#name-example-validation-policy-c" class="selfRef">Example: Validation Policy Changed</a>
             </figcaption></figure>
 </div>
@@ -2805,7 +2954,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.6.4-6">The following example is non-normative.<a href="#section-2.6.4-6" class="pilcrow">¶</a></p>
 <span id="name-example-posture-evaluation-f"></span><div id="fig-posture-evaluation-failed">
-<figure id="figure-18">
+<figure id="figure-20">
             <div class="lang-json sourcecode" id="section-2.6.4-7.1">
 <pre>
 {
@@ -2827,7 +2976,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-18" class="selfRef">Figure 18</a>:
+<figcaption><a href="#figure-20" class="selfRef">Figure 20</a>:
 <a href="#name-example-posture-evaluation-f" class="selfRef">Example: Posture Evaluation Failed</a>
             </figcaption></figure>
 </div>
@@ -2852,7 +3001,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.6.5-6">The following example is non-normative.<a href="#section-2.6.5-6" class="pilcrow">¶</a></p>
 <span id="name-example-posture-evaluation-s"></span><div id="fig-posture-evaluation-succeeded">
-<figure id="figure-19">
+<figure id="figure-21">
             <div class="lang-json sourcecode" id="section-2.6.5-7.1">
 <pre>
 {
@@ -2873,7 +3022,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-19" class="selfRef">Figure 19</a>:
+<figcaption><a href="#figure-21" class="selfRef">Figure 21</a>:
 <a href="#name-example-posture-evaluation-s" class="selfRef">Example: Posture Evaluation Succeeded</a>
             </figcaption></figure>
 </div>
@@ -2964,7 +3113,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 <p id="section-2.7.1-8">These fields can reveal workload infrastructure topology; see <a href="#privacy-considerations" class="auto internal xref">Section 5</a> for guidance on limiting the detail disclosed.<a href="#section-2.7.1-8" class="pilcrow">¶</a></p>
 <p id="section-2.7.1-9">The following example is non-normative.<a href="#section-2.7.1-9" class="pilcrow">¶</a></p>
 <span id="name-example-workload-baseline-c"></span><div id="fig-baseline-changed">
-<figure id="figure-20">
+<figure id="figure-22">
             <div class="lang-json sourcecode" id="section-2.7.1-10.1">
 <pre>
 {
@@ -2993,7 +3142,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-20" class="selfRef">Figure 20</a>:
+<figcaption><a href="#figure-22" class="selfRef">Figure 22</a>:
 <a href="#name-example-workload-baseline-c" class="selfRef">Example: Workload Baseline Changed (Migration)</a>
             </figcaption></figure>
 </div>
@@ -3017,7 +3166,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.7.2-5">The following example is non-normative.<a href="#section-2.7.2-5" class="pilcrow">¶</a></p>
 <span id="name-example-workload-compromise"></span><div id="fig-workload-compromised">
-<figure id="figure-21">
+<figure id="figure-23">
             <div class="lang-json sourcecode" id="section-2.7.2-6.1">
 <pre>
 {
@@ -3038,7 +3187,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-21" class="selfRef">Figure 21</a>:
+<figcaption><a href="#figure-23" class="selfRef">Figure 23</a>:
 <a href="#name-example-workload-compromise" class="selfRef">Example: Workload Compromised</a>
             </figcaption></figure>
 </div>
@@ -3079,7 +3228,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.7.3-5">The following example is non-normative.<a href="#section-2.7.3-5" class="pilcrow">¶</a></p>
 <span id="name-example-anomalous-behavior-"></span><div id="fig-anomalous-behavior-detected">
-<figure id="figure-22">
+<figure id="figure-24">
             <div class="lang-json sourcecode" id="section-2.7.3-6.1">
 <pre>
 {
@@ -3101,7 +3250,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-22" class="selfRef">Figure 22</a>:
+<figcaption><a href="#figure-24" class="selfRef">Figure 24</a>:
 <a href="#name-example-anomalous-behavior-" class="selfRef">Example: Anomalous Behavior Detected</a>
             </figcaption></figure>
 </div>
@@ -3153,7 +3302,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.8.1-5">The following example is non-normative.<a href="#section-2.8.1-5" class="pilcrow">¶</a></p>
 <span id="name-example-workload-provenance"></span><div id="fig-provenance-changed">
-<figure id="figure-23">
+<figure id="figure-25">
             <div class="lang-json sourcecode" id="section-2.8.1-6.1">
 <pre>
 {
@@ -3177,7 +3326,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-23" class="selfRef">Figure 23</a>:
+<figcaption><a href="#figure-25" class="selfRef">Figure 25</a>:
 <a href="#name-example-workload-provenance" class="selfRef">Example: Workload Provenance Changed</a>
             </figcaption></figure>
 </div>
@@ -3224,7 +3373,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.8.2-5">The following example is non-normative.<a href="#section-2.8.2-5" class="pilcrow">¶</a></p>
 <span id="name-example-workload-vulnerabil"></span><div id="fig-vulnerability-status-changed">
-<figure id="figure-24">
+<figure id="figure-26">
             <div class="lang-json sourcecode" id="section-2.8.2-6.1">
 <pre>
 {
@@ -3247,7 +3396,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-24" class="selfRef">Figure 24</a>:
+<figcaption><a href="#figure-26" class="selfRef">Figure 26</a>:
 <a href="#name-example-workload-vulnerabil" class="selfRef">Example: Workload Vulnerability Status Changed</a>
             </figcaption></figure>
 </div>
@@ -3534,162 +3683,182 @@ https://schemas.openid.net/secevent/wise/event-type/
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.33">Event Type:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.34">
-              <p id="section-6.1.3-2.34.1"><code>trust-anchor-added</code><a href="#section-6.1.3-2.34.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.34.1"><code>workload-degraded</code><a href="#section-6.1.3-2.34.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.35">Description:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.36">
-              <p id="section-6.1.3-2.36.1">A new trust anchor was added for a trust domain.<a href="#section-6.1.3-2.36.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.36.1">A workload's trust level was intentionally reduced without suspending it.<a href="#section-6.1.3-2.36.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.37">Event Type:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.38">
-              <p id="section-6.1.3-2.38.1"><code>trust-anchor-rotated</code><a href="#section-6.1.3-2.38.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.38.1"><code>workload-restored</code><a href="#section-6.1.3-2.38.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.39">Description:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.40">
-              <p id="section-6.1.3-2.40.1">An existing trust anchor was replaced.<a href="#section-6.1.3-2.40.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.40.1">A previously degraded workload was returned to full trust.<a href="#section-6.1.3-2.40.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.41">Event Type:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.42">
-              <p id="section-6.1.3-2.42.1"><code>trust-anchor-revoked</code><a href="#section-6.1.3-2.42.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.42.1"><code>trust-anchor-added</code><a href="#section-6.1.3-2.42.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.43">Description:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.44">
-              <p id="section-6.1.3-2.44.1">A trust anchor was withdrawn and must no longer be used.<a href="#section-6.1.3-2.44.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.44.1">A new trust anchor was added for a trust domain.<a href="#section-6.1.3-2.44.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.45">Event Type:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.46">
-              <p id="section-6.1.3-2.46.1"><code>trust-domain-federation-established</code><a href="#section-6.1.3-2.46.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.46.1"><code>trust-anchor-rotated</code><a href="#section-6.1.3-2.46.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.47">Description:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.48">
-              <p id="section-6.1.3-2.48.1">A new trust domain was federated.<a href="#section-6.1.3-2.48.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.48.1">An existing trust anchor was replaced.<a href="#section-6.1.3-2.48.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.49">Event Type:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.50">
-              <p id="section-6.1.3-2.50.1"><code>trust-domain-federation-updated</code><a href="#section-6.1.3-2.50.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.50.1"><code>trust-anchor-revoked</code><a href="#section-6.1.3-2.50.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.51">Description:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.52">
-              <p id="section-6.1.3-2.52.1">The terms of an existing federation changed.<a href="#section-6.1.3-2.52.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.52.1">A trust anchor was withdrawn and must no longer be used.<a href="#section-6.1.3-2.52.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.53">Event Type:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.54">
-              <p id="section-6.1.3-2.54.1"><code>trust-domain-federation-revoked</code><a href="#section-6.1.3-2.54.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.54.1"><code>trust-domain-federation-established</code><a href="#section-6.1.3-2.54.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.55">Description:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.56">
-              <p id="section-6.1.3-2.56.1">A previously federated trust domain is no longer trusted.<a href="#section-6.1.3-2.56.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.56.1">A new trust domain was federated.<a href="#section-6.1.3-2.56.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.57">Event Type:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.58">
-              <p id="section-6.1.3-2.58.1"><code>issuance-policy-changed</code><a href="#section-6.1.3-2.58.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.58.1"><code>trust-domain-federation-updated</code><a href="#section-6.1.3-2.58.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.59">Description:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.60">
-              <p id="section-6.1.3-2.60.1">The credential issuance policy changed.<a href="#section-6.1.3-2.60.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.60.1">The terms of an existing federation changed.<a href="#section-6.1.3-2.60.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.61">Event Type:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.62">
-              <p id="section-6.1.3-2.62.1"><code>posture-evaluation-policy-changed</code><a href="#section-6.1.3-2.62.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.62.1"><code>trust-domain-federation-revoked</code><a href="#section-6.1.3-2.62.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.63">Description:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.64">
-              <p id="section-6.1.3-2.64.1">The posture evaluation policy changed.<a href="#section-6.1.3-2.64.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.64.1">A previously federated trust domain is no longer trusted.<a href="#section-6.1.3-2.64.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.65">Event Type:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.66">
-              <p id="section-6.1.3-2.66.1"><code>validation-policy-changed</code><a href="#section-6.1.3-2.66.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.66.1"><code>issuance-policy-changed</code><a href="#section-6.1.3-2.66.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.67">Description:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.68">
-              <p id="section-6.1.3-2.68.1">The credential validation policy changed.<a href="#section-6.1.3-2.68.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.68.1">The credential issuance policy changed.<a href="#section-6.1.3-2.68.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.69">Event Type:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.70">
-              <p id="section-6.1.3-2.70.1"><code>posture-evaluation-failed</code><a href="#section-6.1.3-2.70.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.70.1"><code>posture-evaluation-policy-changed</code><a href="#section-6.1.3-2.70.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.71">Description:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.72">
-              <p id="section-6.1.3-2.72.1">A workload did not pass posture evaluation.<a href="#section-6.1.3-2.72.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.72.1">The posture evaluation policy changed.<a href="#section-6.1.3-2.72.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.73">Event Type:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.74">
-              <p id="section-6.1.3-2.74.1"><code>posture-evaluation-succeeded</code><a href="#section-6.1.3-2.74.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.74.1"><code>validation-policy-changed</code><a href="#section-6.1.3-2.74.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.75">Description:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.76">
-              <p id="section-6.1.3-2.76.1">A workload passed posture evaluation.<a href="#section-6.1.3-2.76.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.76.1">The credential validation policy changed.<a href="#section-6.1.3-2.76.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.77">Event Type:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.78">
-              <p id="section-6.1.3-2.78.1"><code>workload-baseline-changed</code><a href="#section-6.1.3-2.78.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.78.1"><code>posture-evaluation-failed</code><a href="#section-6.1.3-2.78.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.79">Description:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.80">
-              <p id="section-6.1.3-2.80.1">A workload's runtime environment or deployment context changed.<a href="#section-6.1.3-2.80.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.80.1">A workload did not pass posture evaluation.<a href="#section-6.1.3-2.80.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.81">Event Type:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.82">
-              <p id="section-6.1.3-2.82.1"><code>workload-compromised</code><a href="#section-6.1.3-2.82.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.82.1"><code>posture-evaluation-succeeded</code><a href="#section-6.1.3-2.82.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.83">Description:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.84">
-              <p id="section-6.1.3-2.84.1">A workload is believed to be compromised based on runtime detection.<a href="#section-6.1.3-2.84.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.84.1">A workload passed posture evaluation.<a href="#section-6.1.3-2.84.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.85">Event Type:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.86">
-              <p id="section-6.1.3-2.86.1"><code>anomalous-behavior-detected</code><a href="#section-6.1.3-2.86.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.86.1"><code>workload-baseline-changed</code><a href="#section-6.1.3-2.86.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.87">Description:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.88">
-              <p id="section-6.1.3-2.88.1">Unusual behavior was observed for a workload.<a href="#section-6.1.3-2.88.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.88.1">A workload's runtime environment or deployment context changed.<a href="#section-6.1.3-2.88.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.89">Event Type:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.90">
-              <p id="section-6.1.3-2.90.1"><code>workload-provenance-changed</code><a href="#section-6.1.3-2.90.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.90.1"><code>workload-compromised</code><a href="#section-6.1.3-2.90.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.91">Description:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.92">
-              <p id="section-6.1.3-2.92.1">The provenance of a workload changed.<a href="#section-6.1.3-2.92.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.92.1">A workload is believed to be compromised based on runtime detection.<a href="#section-6.1.3-2.92.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.93">Event Type:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.94">
-              <p id="section-6.1.3-2.94.1"><code>workload-vulnerability-status-changed</code><a href="#section-6.1.3-2.94.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.94.1"><code>anomalous-behavior-detected</code><a href="#section-6.1.3-2.94.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.3-2.95">Description:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.3-2.96">
-              <p id="section-6.1.3-2.96.1">The vulnerability status of a workload changed.<a href="#section-6.1.3-2.96.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.3-2.96.1">Unusual behavior was observed for a workload.<a href="#section-6.1.3-2.96.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-6.1.3-2.97">Event Type:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.3-2.98">
+              <p id="section-6.1.3-2.98.1"><code>workload-provenance-changed</code><a href="#section-6.1.3-2.98.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-6.1.3-2.99">Description:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.3-2.100">
+              <p id="section-6.1.3-2.100.1">The provenance of a workload changed.<a href="#section-6.1.3-2.100.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-6.1.3-2.101">Event Type:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.3-2.102">
+              <p id="section-6.1.3-2.102.1"><code>workload-vulnerability-status-changed</code><a href="#section-6.1.3-2.102.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-6.1.3-2.103">Description:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.3-2.104">
+              <p id="section-6.1.3-2.104.1">The vulnerability status of a workload changed.<a href="#section-6.1.3-2.104.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 </dl>
@@ -3879,16 +4048,19 @@ https://schemas.openid.net/secevent/wise/event-type/
           <p id="appendix-B-2.13.1">Renamed the <code>credential-compromise</code> event to <code>credential-compromised</code> for tense consistency with the other credential events (<code>-issued</code>, <code>-rotated</code>, <code>-revoked</code>) and <code>workload-compromised</code>.<a href="#appendix-B-2.13.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.14">
-          <p id="appendix-B-2.14.1">Added a non-normative example to every event that lacked one, so all 24 event types now have consistent example coverage (and confirmed policy events use the trust-domain subject).<a href="#appendix-B-2.14.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.14.1">Added a non-normative example to every event that lacked one, so all event types now have consistent example coverage (and confirmed policy events use the trust-domain subject).<a href="#appendix-B-2.14.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.15">
-          <p id="appendix-B-2.15.1">Established a "WISE Event Types" IANA registry (Specification Required) with the 24 event types as initial registrations, replacing the "no new registrations" statement.<a href="#appendix-B-2.15.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.15.1">Established a "WISE Event Types" IANA registry (Specification Required) with all defined event types as initial registrations, replacing the "no new registrations" statement.<a href="#appendix-B-2.15.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.16">
-          <p id="appendix-B-2.16.1">Replaced the free-form <code>change_description</code> field on <code>trust-domain-federation-updated</code> and the policy-change events with the localizable <code>reason_admin</code>/<code>reason_user</code> common claims, for consistency with the CAEP-aligned pattern.<a href="#appendix-B-2.16.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.16.1">Added <code>workload-degraded</code> and <code>workload-restored</code> events for adaptive resilience: an advisory, coarse graduated <code>trust_level</code> signal for intentionally reducing a workload's trust without suspension, and its reverse. Clarified their complementarity with <code>anomalous-behavior-detected</code>, <code>workload-compromised</code>, and <code>workload-disabled</code>.<a href="#appendix-B-2.16.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.17">
-          <p id="appendix-B-2.17.1">Carried the subject in the top-level <code>sub_id</code> claim (RFC 9493 format, per SSF) instead of a nonstandard nested <code>subject</code> member, updating every example; and specified that policy events take the trust-domain subject.<a href="#appendix-B-2.17.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.17.1">Replaced the free-form <code>change_description</code> field on <code>trust-domain-federation-updated</code> and the policy-change events with the localizable <code>reason_admin</code>/<code>reason_user</code> common claims, for consistency with the CAEP-aligned pattern.<a href="#appendix-B-2.17.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.18">
+          <p id="appendix-B-2.18.1">Carried the subject in the top-level <code>sub_id</code> claim (RFC 9493 format, per SSF) instead of a nonstandard nested <code>subject</code> member, updating every example; and specified that policy events take the trust-domain subject.<a href="#appendix-B-2.18.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-B-3">-02<a href="#appendix-B-3" class="pilcrow">¶</a></p>
