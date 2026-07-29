@@ -1884,42 +1884,43 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </h4>
 <p id="section-2.3.5-1">Event Type URI: <code>https://schemas.openid.net/secevent/wise/event-type/credential-renewal-failure</code><a href="#section-2.3.5-1" class="pilcrow">¶</a></p>
 <p id="section-2.3.5-2">The <code>credential-renewal-failure</code> event signals that the credential provisioning pipeline failed to renew a workload's credential. In the WIMSE model, credentials are intentionally short-lived to force regular posture evaluation before re-issuance. Under normal operation, renewal happens automatically. This event indicates that the renewal process has failed, and the workload may lose its ability to authenticate once the current credential expires.<a href="#section-2.3.5-2" class="pilcrow">¶</a></p>
-<p id="section-2.3.5-3">Attributes:<a href="#section-2.3.5-3" class="pilcrow">¶</a></p>
+<p id="section-2.3.5-3">This event reports the operational outcome of a failed renewal, which can have several causes (see <code>failure_reason</code> below) — the Credential Service being unreachable, a policy denial, an internal error, or a failed posture evaluation. It is distinct from <code>posture-evaluation-failed</code>, which reports a posture failure as a security signal in its own right. Failed posture evaluation is only one possible cause of a renewal failure, and a renewal failure is only one possible consequence of a posture failure. When a renewal fails specifically because of posture evaluation, a Transmitter emits <code>credential-renewal-failure</code> with <code>failure_reason</code> <code>posture_evaluation_failed</code> and MAY also emit <code>posture-evaluation-failed</code>, correlated using the <code>txn</code> claim (see <a href="#correlating-related-events" class="auto internal xref">Section 2.1</a>).<a href="#section-2.3.5-3" class="pilcrow">¶</a></p>
+<p id="section-2.3.5-4">Attributes:<a href="#section-2.3.5-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.3.5-4.1">
-              <p id="section-2.3.5-4.1.1"><strong>credential_type</strong> - REQUIRED. The type of credential that failed to renew.<a href="#section-2.3.5-4.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-2.3.5-5.1">
+              <p id="section-2.3.5-5.1.1"><strong>credential_type</strong> - REQUIRED. The type of credential that failed to renew.<a href="#section-2.3.5-5.1.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-2.3.5-4.2">
-              <p id="section-2.3.5-4.2.1"><strong>credential_id</strong> - OPTIONAL. Identifier of the credential that was not renewed.<a href="#section-2.3.5-4.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-2.3.5-5.2">
+              <p id="section-2.3.5-5.2.1"><strong>credential_id</strong> - OPTIONAL. Identifier of the credential that was not renewed.<a href="#section-2.3.5-5.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-2.3.5-4.3">
-              <p id="section-2.3.5-4.3.1"><strong>current_expiry</strong> - OPTIONAL. Expiration of the current (last valid) credential. JSON number (NumericDate).<a href="#section-2.3.5-4.3.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-2.3.5-5.3">
+              <p id="section-2.3.5-5.3.1"><strong>current_expiry</strong> - OPTIONAL. Expiration of the current (last valid) credential. JSON number (NumericDate).<a href="#section-2.3.5-5.3.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-2.3.5-4.4">
-              <p id="section-2.3.5-4.4.1"><strong>failure_reason</strong> - OPTIONAL. Why renewal failed. Possible values:<a href="#section-2.3.5-4.4.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-2.3.5-5.4">
+              <p id="section-2.3.5-5.4.1"><strong>failure_reason</strong> - OPTIONAL. Why renewal failed. Possible values:<a href="#section-2.3.5-5.4.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.3.5-4.4.2.1">
-                  <p id="section-2.3.5-4.4.2.1.1"><code>credential_service_unreachable</code> - Cannot reach the Credential Service (Section 3.2.1 of <span>[<a href="#WIMSE-ARCH" class="cite xref">WIMSE-ARCH</a>]</span>).<a href="#section-2.3.5-4.4.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-2.3.5-5.4.2.1">
+                  <p id="section-2.3.5-5.4.2.1.1"><code>credential_service_unreachable</code> - Cannot reach the Credential Service (Section 3.2.1 of <span>[<a href="#WIMSE-ARCH" class="cite xref">WIMSE-ARCH</a>]</span>).<a href="#section-2.3.5-5.4.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-2.3.5-4.4.2.2">
-                  <p id="section-2.3.5-4.4.2.2.1"><code>posture_evaluation_failed</code> - The workload did not pass posture evaluation.<a href="#section-2.3.5-4.4.2.2.1" class="pilcrow">¶</a></p>
+                <li class="normal" id="section-2.3.5-5.4.2.2">
+                  <p id="section-2.3.5-5.4.2.2.1"><code>posture_evaluation_failed</code> - The workload did not pass posture evaluation.<a href="#section-2.3.5-5.4.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-2.3.5-4.4.2.3">
-                  <p id="section-2.3.5-4.4.2.3.1"><code>policy_denied</code> - Issuance policy denied renewal.<a href="#section-2.3.5-4.4.2.3.1" class="pilcrow">¶</a></p>
+                <li class="normal" id="section-2.3.5-5.4.2.3">
+                  <p id="section-2.3.5-5.4.2.3.1"><code>policy_denied</code> - Issuance policy denied renewal.<a href="#section-2.3.5-5.4.2.3.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-2.3.5-4.4.2.4">
-                  <p id="section-2.3.5-4.4.2.4.1"><code>internal_error</code> - Internal error in the provisioning pipeline.<a href="#section-2.3.5-4.4.2.4.1" class="pilcrow">¶</a></p>
+                <li class="normal" id="section-2.3.5-5.4.2.4">
+                  <p id="section-2.3.5-5.4.2.4.1"><code>internal_error</code> - Internal error in the provisioning pipeline.<a href="#section-2.3.5-5.4.2.4.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>
-            <li class="normal" id="section-2.3.5-4.5">
-              <p id="section-2.3.5-4.5.1"><strong>event_timestamp</strong> - OPTIONAL. Time the failure was detected.<a href="#section-2.3.5-4.5.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-2.3.5-5.5">
+              <p id="section-2.3.5-5.5.1"><strong>event_timestamp</strong> - OPTIONAL. Time the failure was detected.<a href="#section-2.3.5-5.5.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
-<p id="section-2.3.5-5">The following example is non-normative.<a href="#section-2.3.5-5" class="pilcrow">¶</a></p>
+<p id="section-2.3.5-6">The following example is non-normative.<a href="#section-2.3.5-6" class="pilcrow">¶</a></p>
 <span id="name-example-credential-renewal-"></span><div id="fig-credential-renewal-failure">
 <figure id="figure-5">
-            <div class="lang-json sourcecode" id="section-2.3.5-6.1">
+            <div class="lang-json sourcecode" id="section-2.3.5-7.1">
 <pre>
 {
   "iss": "https://authority.example.com/",
@@ -2543,27 +2544,28 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </h4>
 <p id="section-2.6.4-1">Event Type URI: <code>https://schemas.openid.net/secevent/wise/event-type/posture-evaluation-failed</code><a href="#section-2.6.4-1" class="pilcrow">¶</a></p>
 <p id="section-2.6.4-2">The <code>posture-evaluation-failed</code> event signals that a workload did not pass posture evaluation. The Credential Service determined that the workload's runtime environment, software integrity, or deployment context did not meet the requirements for credential issuance.<a href="#section-2.6.4-2" class="pilcrow">¶</a></p>
-<p id="section-2.6.4-3">Attributes:<a href="#section-2.6.4-3" class="pilcrow">¶</a></p>
+<p id="section-2.6.4-3">Posture evaluation is a security-critical checkpoint, so its failure warrants a dedicated event rather than being buried inside another outcome. It may occur at initial issuance, at renewal, or during continuous re-evaluation, and this event reports the posture failure itself independently of any particular credential operation. A posture failure does not necessarily cause a <code>credential-renewal-failure</code> (for example, it may occur outside a renewal), and a <code>credential-renewal-failure</code> may occur for reasons unrelated to posture. When a renewal fails because of posture evaluation, the two events are emitted together and correlated using the <code>txn</code> claim (see <a href="#correlating-related-events" class="auto internal xref">Section 2.1</a>).<a href="#section-2.6.4-3" class="pilcrow">¶</a></p>
+<p id="section-2.6.4-4">Attributes:<a href="#section-2.6.4-4" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.6.4-4.1">
-              <p id="section-2.6.4-4.1.1"><strong>evaluation_type</strong> - OPTIONAL. The scope of evaluation that failed. Possible values:<a href="#section-2.6.4-4.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-2.6.4-5.1">
+              <p id="section-2.6.4-5.1.1"><strong>evaluation_type</strong> - OPTIONAL. The scope of evaluation that failed. Possible values:<a href="#section-2.6.4-5.1.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.6.4-4.1.2.1">
-                  <p id="section-2.6.4-4.1.2.1.1"><code>platform</code> - Platform-level evaluation (e.g., node integrity, TEE verification).<a href="#section-2.6.4-4.1.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-2.6.4-5.1.2.1">
+                  <p id="section-2.6.4-5.1.2.1.1"><code>platform</code> - Platform-level evaluation (e.g., node integrity, TEE verification).<a href="#section-2.6.4-5.1.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-2.6.4-4.1.2.2">
-                  <p id="section-2.6.4-4.1.2.2.1"><code>workload</code> - Workload-level evaluation (e.g., binary identity, image hash).<a href="#section-2.6.4-4.1.2.2.1" class="pilcrow">¶</a></p>
+                <li class="normal" id="section-2.6.4-5.1.2.2">
+                  <p id="section-2.6.4-5.1.2.2.1"><code>workload</code> - Workload-level evaluation (e.g., binary identity, image hash).<a href="#section-2.6.4-5.1.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-2.6.4-4.1.2.3">
-                  <p id="section-2.6.4-4.1.2.3.1"><code>runtime</code> - Runtime environment evaluation (e.g., configuration compliance, network posture).<a href="#section-2.6.4-4.1.2.3.1" class="pilcrow">¶</a></p>
+                <li class="normal" id="section-2.6.4-5.1.2.3">
+                  <p id="section-2.6.4-5.1.2.3.1"><code>runtime</code> - Runtime environment evaluation (e.g., configuration compliance, network posture).<a href="#section-2.6.4-5.1.2.3.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>
-            <li class="normal" id="section-2.6.4-4.2">
-              <p id="section-2.6.4-4.2.1"><strong>reason</strong> - OPTIONAL. Why the evaluation failed.<a href="#section-2.6.4-4.2.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-2.6.4-5.2">
+              <p id="section-2.6.4-5.2.1"><strong>reason</strong> - OPTIONAL. Why the evaluation failed.<a href="#section-2.6.4-5.2.1" class="pilcrow">¶</a></p>
 </li>
-            <li class="normal" id="section-2.6.4-4.3">
-              <p id="section-2.6.4-4.3.1"><strong>event_timestamp</strong> - OPTIONAL. Time of the failure.<a href="#section-2.6.4-4.3.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-2.6.4-5.3">
+              <p id="section-2.6.4-5.3.1"><strong>event_timestamp</strong> - OPTIONAL. Time of the failure.<a href="#section-2.6.4-5.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -3235,10 +3237,13 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           <p id="appendix-B-2.9.1">Added a single Privacy Considerations note covering over-disclosure in all free-form/descriptive fields (<code>key_storage_ecosystem</code>, <code>previous_context</code>, <code>current_context</code>), replacing per-field guidance.<a href="#appendix-B-2.9.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.10">
-          <p id="appendix-B-2.10.1">Replaced the free-form <code>change_description</code> field on <code>trust-domain-federation-updated</code> and the policy-change events with the localizable <code>reason_admin</code>/<code>reason_user</code> common claims, for consistency with the CAEP-aligned pattern.<a href="#appendix-B-2.10.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.10.1">Clarified the distinction between <code>credential-renewal-failure</code> (operational outcome, multiple causes) and <code>posture-evaluation-failed</code> (a security-critical signal in its own right), and how the two relate when posture is the cause of a renewal failure.<a href="#appendix-B-2.10.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.11">
-          <p id="appendix-B-2.11.1">Carried the subject in the top-level <code>sub_id</code> claim (RFC 9493 format, per SSF) instead of a nonstandard nested <code>subject</code> member, updating every example; and specified that policy events take the trust-domain subject.<a href="#appendix-B-2.11.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.11.1">Replaced the free-form <code>change_description</code> field on <code>trust-domain-federation-updated</code> and the policy-change events with the localizable <code>reason_admin</code>/<code>reason_user</code> common claims, for consistency with the CAEP-aligned pattern.<a href="#appendix-B-2.11.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.12">
+          <p id="appendix-B-2.12.1">Carried the subject in the top-level <code>sub_id</code> claim (RFC 9493 format, per SSF) instead of a nonstandard nested <code>subject</code> member, updating every example; and specified that policy events take the trust-domain subject.<a href="#appendix-B-2.12.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-B-3">-02<a href="#appendix-B-3" class="pilcrow">¶</a></p>

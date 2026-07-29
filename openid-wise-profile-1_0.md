@@ -439,6 +439,8 @@ Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/credential-
 
 The `credential-renewal-failure` event signals that the credential provisioning pipeline failed to renew a workload's credential. In the WIMSE model, credentials are intentionally short-lived to force regular posture evaluation before re-issuance. Under normal operation, renewal happens automatically. This event indicates that the renewal process has failed, and the workload may lose its ability to authenticate once the current credential expires.
 
+This event reports the operational outcome of a failed renewal, which can have several causes (see `failure_reason` below) — the Credential Service being unreachable, a policy denial, an internal error, or a failed posture evaluation. It is distinct from `posture-evaluation-failed`, which reports a posture failure as a security signal in its own right. Failed posture evaluation is only one possible cause of a renewal failure, and a renewal failure is only one possible consequence of a posture failure. When a renewal fails specifically because of posture evaluation, a Transmitter emits `credential-renewal-failure` with `failure_reason` `posture_evaluation_failed` and MAY also emit `posture-evaluation-failed`, correlated using the `txn` claim (see {{correlating-related-events}}).
+
 Attributes:
 
 - **credential_type** - REQUIRED. The type of credential that failed to renew.
@@ -805,6 +807,8 @@ Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/posture-eva
 
 The `posture-evaluation-failed` event signals that a workload did not pass posture evaluation. The Credential Service determined that the workload's runtime environment, software integrity, or deployment context did not meet the requirements for credential issuance.
 
+Posture evaluation is a security-critical checkpoint, so its failure warrants a dedicated event rather than being buried inside another outcome. It may occur at initial issuance, at renewal, or during continuous re-evaluation, and this event reports the posture failure itself independently of any particular credential operation. A posture failure does not necessarily cause a `credential-renewal-failure` (for example, it may occur outside a renewal), and a `credential-renewal-failure` may occur for reasons unrelated to posture. When a renewal fails because of posture evaluation, the two events are emitted together and correlated using the `txn` claim (see {{correlating-related-events}}).
+
 Attributes:
 
 - **evaluation_type** - OPTIONAL. The scope of evaluation that failed. Possible values:
@@ -1134,6 +1138,7 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 - Generalised the Compromise Response rule to apply to any event carrying a `compromise` or `key_compromise` signal, rather than an enumerated list of event types.
 - Defined a minimal interoperable key set (`region`, `zone`, `platform`, `cluster`, `image`, each optional) for the `previous_context`/`current_context` fields of `workload-baseline-changed`, and allowed profile-specific extension.
 - Added a single Privacy Considerations note covering over-disclosure in all free-form/descriptive fields (`key_storage_ecosystem`, `previous_context`, `current_context`), replacing per-field guidance.
+- Clarified the distinction between `credential-renewal-failure` (operational outcome, multiple causes) and `posture-evaluation-failed` (a security-critical signal in its own right), and how the two relate when posture is the cause of a renewal failure.
 - Replaced the free-form `change_description` field on `trust-domain-federation-updated` and the policy-change events with the localizable `reason_admin`/`reason_user` common claims, for consistency with the CAEP-aligned pattern.
 - Carried the subject in the top-level `sub_id` claim (RFC 9493 format, per SSF) instead of a nonstandard nested `subject` member, updating every example; and specified that policy events take the trust-domain subject.
 
