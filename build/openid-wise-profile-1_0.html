@@ -2548,7 +2548,24 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               </ul>
 </li>
             <li class="normal" id="section-2.6.4-5.2">
-              <p id="section-2.6.4-5.2.1"><strong>reason</strong> - OPTIONAL. Why the evaluation failed.<a href="#section-2.6.4-5.2.1" class="pilcrow">¶</a></p>
+              <p id="section-2.6.4-5.2.1"><strong>reason</strong> - OPTIONAL. Why the evaluation failed. Possible values:<a href="#section-2.6.4-5.2.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2.6.4-5.2.2.1">
+                  <p id="section-2.6.4-5.2.2.1.1"><code>platform_integrity_failed</code> - Platform integrity or TEE verification did not pass.<a href="#section-2.6.4-5.2.2.1.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-2.6.4-5.2.2.2">
+                  <p id="section-2.6.4-5.2.2.2.1"><code>attestation_invalid</code> - Attestation evidence was missing, malformed, or could not be verified.<a href="#section-2.6.4-5.2.2.2.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-2.6.4-5.2.2.3">
+                  <p id="section-2.6.4-5.2.2.3.1"><code>image_mismatch</code> - The workload's binary or image did not match the expected measurement.<a href="#section-2.6.4-5.2.2.3.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-2.6.4-5.2.2.4">
+                  <p id="section-2.6.4-5.2.2.4.1"><code>configuration_noncompliant</code> - The runtime configuration did not meet policy.<a href="#section-2.6.4-5.2.2.4.1" class="pilcrow">¶</a></p>
+</li>
+                <li class="normal" id="section-2.6.4-5.2.2.5">
+                  <p id="section-2.6.4-5.2.2.5.1"><code>policy_denied</code> - Posture evaluation policy denied the workload.<a href="#section-2.6.4-5.2.2.5.1" class="pilcrow">¶</a></p>
+</li>
+              </ul>
 </li>
             <li class="normal" id="section-2.6.4-5.3">
               <p id="section-2.6.4-5.3.1"><strong>event_timestamp</strong> - OPTIONAL. Time of the failure.<a href="#section-2.6.4-5.3.1" class="pilcrow">¶</a></p>
@@ -3217,10 +3234,13 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           <p id="appendix-B-2.11.1">Made <code>reason_admin</code>/<code>reason_user</code> usage consistent: removed the redundant per-event listings and rely on the Common Optional Claims section, which now states the claims are not repeated per event and any event MAY carry them.<a href="#appendix-B-2.11.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.12">
-          <p id="appendix-B-2.12.1">Replaced the free-form <code>change_description</code> field on <code>trust-domain-federation-updated</code> and the policy-change events with the localizable <code>reason_admin</code>/<code>reason_user</code> common claims, for consistency with the CAEP-aligned pattern.<a href="#appendix-B-2.12.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.12.1">Replaced the free-text <code>reason</code> on <code>posture-evaluation-failed</code> with an enum (<code>platform_integrity_failed</code>, <code>attestation_invalid</code>, <code>image_mismatch</code>, <code>configuration_noncompliant</code>, <code>policy_denied</code>), matching the enum style of sibling events.<a href="#appendix-B-2.12.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.13">
-          <p id="appendix-B-2.13.1">Carried the subject in the top-level <code>sub_id</code> claim (RFC 9493 format, per SSF) instead of a nonstandard nested <code>subject</code> member, updating every example; and specified that policy events take the trust-domain subject.<a href="#appendix-B-2.13.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.13.1">Replaced the free-form <code>change_description</code> field on <code>trust-domain-federation-updated</code> and the policy-change events with the localizable <code>reason_admin</code>/<code>reason_user</code> common claims, for consistency with the CAEP-aligned pattern.<a href="#appendix-B-2.13.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.14">
+          <p id="appendix-B-2.14.1">Carried the subject in the top-level <code>sub_id</code> claim (RFC 9493 format, per SSF) instead of a nonstandard nested <code>subject</code> member, updating every example; and specified that policy events take the trust-domain subject.<a href="#appendix-B-2.14.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-B-3">-02<a href="#appendix-B-3" class="pilcrow">¶</a></p>

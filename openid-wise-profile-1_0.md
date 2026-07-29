@@ -812,7 +812,12 @@ Attributes:
     - `platform` - Platform-level evaluation (e.g., node integrity, TEE verification).
     - `workload` - Workload-level evaluation (e.g., binary identity, image hash).
     - `runtime` - Runtime environment evaluation (e.g., configuration compliance, network posture).
-- **reason** - OPTIONAL. Why the evaluation failed.
+- **reason** - OPTIONAL. Why the evaluation failed. Possible values:
+    - `platform_integrity_failed` - Platform integrity or TEE verification did not pass.
+    - `attestation_invalid` - Attestation evidence was missing, malformed, or could not be verified.
+    - `image_mismatch` - The workload's binary or image did not match the expected measurement.
+    - `configuration_noncompliant` - The runtime configuration did not meet policy.
+    - `policy_denied` - Posture evaluation policy denied the workload.
 - **event_timestamp** - OPTIONAL. Time of the failure.
 
 ### posture-evaluation-succeeded
@@ -1133,6 +1138,7 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 - Added a single Privacy Considerations note covering over-disclosure in all free-form/descriptive fields (`key_storage_ecosystem`, `previous_context`, `current_context`), replacing per-field guidance.
 - Clarified the distinction between `credential-renewal-failure` (operational outcome, multiple causes) and `posture-evaluation-failed` (a security-critical signal in its own right), and how the two relate when posture is the cause of a renewal failure.
 - Made `reason_admin`/`reason_user` usage consistent: removed the redundant per-event listings and rely on the Common Optional Claims section, which now states the claims are not repeated per event and any event MAY carry them.
+- Replaced the free-text `reason` on `posture-evaluation-failed` with an enum (`platform_integrity_failed`, `attestation_invalid`, `image_mismatch`, `configuration_noncompliant`, `policy_denied`), matching the enum style of sibling events.
 - Replaced the free-form `change_description` field on `trust-domain-federation-updated` and the policy-change events with the localizable `reason_admin`/`reason_user` common claims, for consistency with the CAEP-aligned pattern.
 - Carried the subject in the top-level `sub_id` claim (RFC 9493 format, per SSF) instead of a nonstandard nested `subject` member, updating every example; and specified that policy events take the trust-domain subject.
 
