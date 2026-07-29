@@ -1477,10 +1477,13 @@ li > p:last-of-type:only-child {
             <p id="section-toc.1-1.8.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-document-history" class="internal xref">Document History</a></p>
+            <p id="section-toc.1-1.9.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-reviewers-and-contributors" class="internal xref">Reviewers and Contributors</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-document-history" class="internal xref">Document History</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#appendix-D" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -4016,117 +4019,136 @@ https://schemas.openid.net/secevent/wise/event-type/
 <p id="appendix-A-1">The authors would like to thank the members of the OpenID Foundation Shared Signals Working Group and the IETF WIMSE Working Group for their contributions to this specification.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="document-history">
+<div id="reviewers-and-contributors">
 <section id="appendix-B">
+      <h2 id="name-reviewers-and-contributors">
+<a href="#name-reviewers-and-contributors" class="section-name selfRef">Reviewers and Contributors</a>
+      </h2>
+<p id="appendix-B-1">The authors want to recognize the contributions and reviews of the following individuals (in alphabetical order):<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="appendix-B-2.1">
+          <p id="appendix-B-2.1.1">Apoorva Deshpande<a href="#appendix-B-2.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.2">
+          <p id="appendix-B-2.2.1">Matt Topper<a href="#appendix-B-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.3">
+          <p id="appendix-B-2.3.1">Tom Sato<a href="#appendix-B-2.3.1" class="pilcrow">¶</a></p>
+</li>
+      </ul>
+</section>
+</div>
+<div id="document-history">
+<section id="appendix-C">
       <h2 id="name-document-history">
 <a href="#name-document-history" class="section-name selfRef">Document History</a>
       </h2>
-<p id="appendix-B-1">-03<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<p id="appendix-C-1">-03<a href="#appendix-C-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="appendix-B-2.1">
-          <p id="appendix-B-2.1.1">Completed the trust and federation lifecycle. Split the omnibus <code>trust-anchor-changed</code> event into explicit <code>trust-anchor-added</code>, <code>trust-anchor-rotated</code>, and <code>trust-anchor-revoked</code> events, and added <code>trust-domain-federation-established</code> and <code>trust-domain-federation-updated</code> to complement <code>trust-domain-federation-revoked</code>.<a href="#appendix-B-2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C-2.1">
+          <p id="appendix-C-2.1.1">Completed the trust and federation lifecycle. Split the omnibus <code>trust-anchor-changed</code> event into explicit <code>trust-anchor-added</code>, <code>trust-anchor-rotated</code>, and <code>trust-anchor-revoked</code> events, and added <code>trust-domain-federation-established</code> and <code>trust-domain-federation-updated</code> to complement <code>trust-domain-federation-revoked</code>.<a href="#appendix-C-2.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.2">
-          <p id="appendix-B-2.2.1">Added an optional <code>key_details</code> object (<code>type</code>, <code>name</code>, <code>use</code>, aligned with the IANA JOSE registries) to <code>trust-anchor-added</code>, supporting the addition of a new algorithm (e.g., ECDSA alongside RSA) without rotation.<a href="#appendix-B-2.2.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.2">
+          <p id="appendix-C-2.2.1">Added an optional <code>key_details</code> object (<code>type</code>, <code>name</code>, <code>use</code>, aligned with the IANA JOSE registries) to <code>trust-anchor-added</code>, supporting the addition of a new algorithm (e.g., ECDSA alongside RSA) without rotation.<a href="#appendix-C-2.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.3">
-          <p id="appendix-B-2.3.1">Added an informative reference for condition-bounded credentials and cited it in the credential freshness models discussion.<a href="#appendix-B-2.3.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.3">
+          <p id="appendix-C-2.3.1">Added an informative reference for condition-bounded credentials and cited it in the credential freshness models discussion.<a href="#appendix-C-2.3.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.4">
-          <p id="appendix-B-2.4.1">Corrected the description of condition-liveness to state that it removes (rather than reduces) the local deprovisioning window for conditions the endpoint can evaluate itself.<a href="#appendix-B-2.4.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.4">
+          <p id="appendix-C-2.4.1">Corrected the description of condition-liveness to state that it removes (rather than reduces) the local deprovisioning window for conditions the endpoint can evaluate itself.<a href="#appendix-C-2.4.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.5">
-          <p id="appendix-B-2.5.1">Noted in Compromise Response that credential rejection only takes effect at the next operation, so Receivers holding active connections with an affected workload should also terminate them (best-effort).<a href="#appendix-B-2.5.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.5">
+          <p id="appendix-C-2.5.1">Noted in Compromise Response that credential rejection only takes effect at the next operation, so Receivers holding active connections with an affected workload should also terminate them (best-effort).<a href="#appendix-C-2.5.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.6">
-          <p id="appendix-B-2.6.1">Added a general "Correlating Related Events" rule: a Transmitter SHOULD set a shared <code>txn</code> claim across all SETs describing one underlying occurrence, regardless of event type (replacing the per-event guidance). Added conditional pairing guidance to <code>workload-compromised</code>.<a href="#appendix-B-2.6.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.6">
+          <p id="appendix-C-2.6.1">Added a general "Correlating Related Events" rule: a Transmitter SHOULD set a shared <code>txn</code> claim across all SETs describing one underlying occurrence, regardless of event type (replacing the per-event guidance). Added conditional pairing guidance to <code>workload-compromised</code>.<a href="#appendix-C-2.6.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.7">
-          <p id="appendix-B-2.7.1">Generalised the Compromise Response rule to apply to any event carrying a <code>compromise</code> or <code>key_compromise</code> signal, rather than an enumerated list of event types.<a href="#appendix-B-2.7.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.7">
+          <p id="appendix-C-2.7.1">Generalised the Compromise Response rule to apply to any event carrying a <code>compromise</code> or <code>key_compromise</code> signal, rather than an enumerated list of event types.<a href="#appendix-C-2.7.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.8">
-          <p id="appendix-B-2.8.1">Defined a minimal interoperable key set (<code>region</code>, <code>zone</code>, <code>platform</code>, <code>cluster</code>, <code>image</code>, each optional) for the <code>previous_context</code>/<code>current_context</code> fields of <code>workload-baseline-changed</code>, and allowed profile-specific extension.<a href="#appendix-B-2.8.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.8">
+          <p id="appendix-C-2.8.1">Defined a minimal interoperable key set (<code>region</code>, <code>zone</code>, <code>platform</code>, <code>cluster</code>, <code>image</code>, each optional) for the <code>previous_context</code>/<code>current_context</code> fields of <code>workload-baseline-changed</code>, and allowed profile-specific extension.<a href="#appendix-C-2.8.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.9">
-          <p id="appendix-B-2.9.1">Added a single Privacy Considerations note covering over-disclosure in all free-form/descriptive fields (<code>key_storage_ecosystem</code>, <code>previous_context</code>, <code>current_context</code>), replacing per-field guidance.<a href="#appendix-B-2.9.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.9">
+          <p id="appendix-C-2.9.1">Added a single Privacy Considerations note covering over-disclosure in all free-form/descriptive fields (<code>key_storage_ecosystem</code>, <code>previous_context</code>, <code>current_context</code>), replacing per-field guidance.<a href="#appendix-C-2.9.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.10">
-          <p id="appendix-B-2.10.1">Clarified the distinction between <code>credential-renewal-failure</code> (operational outcome, multiple causes) and <code>posture-evaluation-failed</code> (a security-critical signal in its own right), and how the two relate when posture is the cause of a renewal failure.<a href="#appendix-B-2.10.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.10">
+          <p id="appendix-C-2.10.1">Clarified the distinction between <code>credential-renewal-failure</code> (operational outcome, multiple causes) and <code>posture-evaluation-failed</code> (a security-critical signal in its own right), and how the two relate when posture is the cause of a renewal failure.<a href="#appendix-C-2.10.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.11">
-          <p id="appendix-B-2.11.1">Made <code>reason_admin</code>/<code>reason_user</code> usage consistent: removed the redundant per-event listings and rely on the Common Optional Claims section, which now states the claims are not repeated per event and any event MAY carry them.<a href="#appendix-B-2.11.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.11">
+          <p id="appendix-C-2.11.1">Made <code>reason_admin</code>/<code>reason_user</code> usage consistent: removed the redundant per-event listings and rely on the Common Optional Claims section, which now states the claims are not repeated per event and any event MAY carry them.<a href="#appendix-C-2.11.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.12">
-          <p id="appendix-B-2.12.1">Replaced the free-text <code>reason</code> on <code>posture-evaluation-failed</code> with an enum (<code>platform_integrity_failed</code>, <code>attestation_invalid</code>, <code>image_mismatch</code>, <code>configuration_noncompliant</code>, <code>policy_denied</code>), matching the enum style of sibling events.<a href="#appendix-B-2.12.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.12">
+          <p id="appendix-C-2.12.1">Replaced the free-text <code>reason</code> on <code>posture-evaluation-failed</code> with an enum (<code>platform_integrity_failed</code>, <code>attestation_invalid</code>, <code>image_mismatch</code>, <code>configuration_noncompliant</code>, <code>policy_denied</code>), matching the enum style of sibling events.<a href="#appendix-C-2.12.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.13">
-          <p id="appendix-B-2.13.1">Renamed the <code>credential-compromise</code> event to <code>credential-compromised</code> for tense consistency with the other credential events (<code>-issued</code>, <code>-rotated</code>, <code>-revoked</code>) and <code>workload-compromised</code>.<a href="#appendix-B-2.13.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.13">
+          <p id="appendix-C-2.13.1">Renamed the <code>credential-compromise</code> event to <code>credential-compromised</code> for tense consistency with the other credential events (<code>-issued</code>, <code>-rotated</code>, <code>-revoked</code>) and <code>workload-compromised</code>.<a href="#appendix-C-2.13.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.14">
-          <p id="appendix-B-2.14.1">Added a non-normative example to every event that lacked one, so all event types now have consistent example coverage (and confirmed policy events use the trust-domain subject).<a href="#appendix-B-2.14.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.14">
+          <p id="appendix-C-2.14.1">Added a non-normative example to every event that lacked one, so all event types now have consistent example coverage (and confirmed policy events use the trust-domain subject).<a href="#appendix-C-2.14.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.15">
-          <p id="appendix-B-2.15.1">Established a "WISE Event Types" IANA registry (Specification Required) with all defined event types as initial registrations, replacing the "no new registrations" statement.<a href="#appendix-B-2.15.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.15">
+          <p id="appendix-C-2.15.1">Established a "WISE Event Types" IANA registry (Specification Required) with all defined event types as initial registrations, replacing the "no new registrations" statement.<a href="#appendix-C-2.15.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.16">
-          <p id="appendix-B-2.16.1">Added <code>workload-degraded</code> and <code>workload-restored</code> events for adaptive resilience: an advisory, coarse graduated <code>trust_level</code> signal for intentionally reducing a workload's trust without suspension, and its reverse. Clarified their complementarity with <code>anomalous-behavior-detected</code>, <code>workload-compromised</code>, and <code>workload-disabled</code>.<a href="#appendix-B-2.16.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.16">
+          <p id="appendix-C-2.16.1">Added <code>workload-degraded</code> and <code>workload-restored</code> events for adaptive resilience: an advisory, coarse graduated <code>trust_level</code> signal for intentionally reducing a workload's trust without suspension, and its reverse. Clarified their complementarity with <code>anomalous-behavior-detected</code>, <code>workload-compromised</code>, and <code>workload-disabled</code>.<a href="#appendix-C-2.16.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.17">
-          <p id="appendix-B-2.17.1">Added the Named Information (<code>ni</code>) URI scheme (RFC 6920) as an optional subject identifier for identifying workloads by build/image digest, with a note that a digest identifies an artifact rather than a single workload instance.<a href="#appendix-B-2.17.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.17">
+          <p id="appendix-C-2.17.1">Added the Named Information (<code>ni</code>) URI scheme (RFC 6920) as an optional subject identifier for identifying workloads by build/image digest, with a note that a digest identifies an artifact rather than a single workload instance.<a href="#appendix-C-2.17.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.18">
-          <p id="appendix-B-2.18.1">Replaced the free-form <code>change_description</code> field on <code>trust-domain-federation-updated</code> and the policy-change events with the localizable <code>reason_admin</code>/<code>reason_user</code> common claims, for consistency with the CAEP-aligned pattern.<a href="#appendix-B-2.18.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.18">
+          <p id="appendix-C-2.18.1">Replaced the free-form <code>change_description</code> field on <code>trust-domain-federation-updated</code> and the policy-change events with the localizable <code>reason_admin</code>/<code>reason_user</code> common claims, for consistency with the CAEP-aligned pattern.<a href="#appendix-C-2.18.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-2.19">
-          <p id="appendix-B-2.19.1">Carried the subject in the top-level <code>sub_id</code> claim (RFC 9493 format, per SSF) instead of a nonstandard nested <code>subject</code> member, updating every example; and specified that policy events take the trust-domain subject.<a href="#appendix-B-2.19.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-2.19">
+          <p id="appendix-C-2.19.1">Carried the subject in the top-level <code>sub_id</code> claim (RFC 9493 format, per SSF) instead of a nonstandard nested <code>subject</code> member, updating every example; and specified that policy events take the trust-domain subject.<a href="#appendix-C-2.19.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="appendix-B-3">-02<a href="#appendix-B-3" class="pilcrow">¶</a></p>
+<p id="appendix-C-3">-02<a href="#appendix-C-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="appendix-B-4.1">
-          <p id="appendix-B-4.1.1">Removed the Bound Key Lifecycle Events (<code>bound-key-issued</code>, <code>bound-key-rotated</code>, <code>bound-key-revoked</code>); key compromise and rotation are now handled through the credential events, and a <code>key_compromise</code> reason was added to <code>credential-revoked</code>. The <code>key_storage</code> and <code>key_storage_ecosystem</code> attributes moved to <code>credential-issued</code>.<a href="#appendix-B-4.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C-4.1">
+          <p id="appendix-C-4.1.1">Removed the Bound Key Lifecycle Events (<code>bound-key-issued</code>, <code>bound-key-rotated</code>, <code>bound-key-revoked</code>); key compromise and rotation are now handled through the credential events, and a <code>key_compromise</code> reason was added to <code>credential-revoked</code>. The <code>key_storage</code> and <code>key_storage_ecosystem</code> attributes moved to <code>credential-issued</code>.<a href="#appendix-C-4.1.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-4.2">
-          <p id="appendix-B-4.2.1">Aligned terminology with the WIMSE architecture: replaced "Identity Server" with "Credential Service", and "machine identity lifecycle" with "workload identity lifecycle".<a href="#appendix-B-4.2.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-4.2">
+          <p id="appendix-C-4.2.1">Aligned terminology with the WIMSE architecture: replaced "Identity Server" with "Credential Service", and "machine identity lifecycle" with "workload identity lifecycle".<a href="#appendix-C-4.2.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-4.3">
-          <p id="appendix-B-4.3.1">Softened the single-authority language and aligned it with WIMSE (a trust domain maps to one or more trust anchors).<a href="#appendix-B-4.3.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-4.3">
+          <p id="appendix-C-4.3.1">Softened the single-authority language and aligned it with WIMSE (a trust domain maps to one or more trust anchors).<a href="#appendix-C-4.3.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-4.4">
-          <p id="appendix-B-4.4.1">Renamed "Workload Identity State Events" to "Workload Lifecycle Events" and clarified that credential cancellation and issuance are conveyed by separate companion events.<a href="#appendix-B-4.4.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-4.4">
+          <p id="appendix-C-4.4.1">Renamed "Workload Identity State Events" to "Workload Lifecycle Events" and clarified that credential cancellation and issuance are conveyed by separate companion events.<a href="#appendix-C-4.4.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-4.5">
-          <p id="appendix-B-4.5.1">Added a "Common Optional Claims" section aligning <code>reason_admin</code>, <code>reason_user</code>, and <code>initiating_entity</code> with CAEP as localizable objects.<a href="#appendix-B-4.5.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-4.5">
+          <p id="appendix-C-4.5.1">Added a "Common Optional Claims" section aligning <code>reason_admin</code>, <code>reason_user</code>, and <code>initiating_entity</code> with CAEP as localizable objects.<a href="#appendix-C-4.5.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-4.6">
-          <p id="appendix-B-4.6.1">Promoted RISC to a normative reference and refreshed the RISC, CAEP, and SSF references to their final 1.0 versions.<a href="#appendix-B-4.6.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-4.6">
+          <p id="appendix-C-4.6.1">Promoted RISC to a normative reference and refreshed the RISC, CAEP, and SSF references to their final 1.0 versions.<a href="#appendix-C-4.6.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-4.7">
-          <p id="appendix-B-4.7.1">Added normative references for WPT, RFC 5646, RFC 7523, RFC 8705, and RFC 9325, and cited RFC 7517 for the JWK Set.<a href="#appendix-B-4.7.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-4.7">
+          <p id="appendix-C-4.7.1">Added normative references for WPT, RFC 5646, RFC 7523, RFC 8705, and RFC 9325, and cited RFC 7517 for the JWK Set.<a href="#appendix-C-4.7.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-4.8">
-          <p id="appendix-B-4.8.1">Replaced the TLS 1.2 requirement with a normative reference to the TLS recommendations in RFC 9325.<a href="#appendix-B-4.8.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-4.8">
+          <p id="appendix-C-4.8.1">Replaced the TLS 1.2 requirement with a normative reference to the TLS recommendations in RFC 9325.<a href="#appendix-C-4.8.1" class="pilcrow">¶</a></p>
 </li>
-        <li class="normal" id="appendix-B-4.9">
-          <p id="appendix-B-4.9.1">Normalized enum values to use underscores while keeping event type names hyphenated.<a href="#appendix-B-4.9.1" class="pilcrow">¶</a></p>
+        <li class="normal" id="appendix-C-4.9">
+          <p id="appendix-C-4.9.1">Normalized enum values to use underscores while keeping event type names hyphenated.<a href="#appendix-C-4.9.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="appendix-B-5">-01<a href="#appendix-B-5" class="pilcrow">¶</a></p>
+<p id="appendix-C-5">-01<a href="#appendix-C-5" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="appendix-B-6.1">
-          <p id="appendix-B-6.1.1">Added Supply Chain Events<a href="#appendix-B-6.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C-6.1">
+          <p id="appendix-C-6.1.1">Added Supply Chain Events<a href="#appendix-C-6.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
-<p id="appendix-B-7">-00<a href="#appendix-B-7" class="pilcrow">¶</a></p>
+<p id="appendix-C-7">-00<a href="#appendix-C-7" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="appendix-B-8.1">
-          <p id="appendix-B-8.1.1">Initial draft.<a href="#appendix-B-8.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="appendix-C-8.1">
+          <p id="appendix-C-8.1.1">Initial draft.<a href="#appendix-C-8.1.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 </section>
 </div>
 <div id="authors-addresses">
-<section id="appendix-C">
+<section id="appendix-D">
       <h2 id="name-authors-addresses">
 <a href="#name-authors-addresses" class="section-name selfRef">Authors' Addresses</a>
       </h2>

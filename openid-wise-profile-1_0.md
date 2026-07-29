@@ -1677,6 +1677,15 @@ Description:
 
 The authors would like to thank the members of the OpenID Foundation Shared Signals Working Group and the IETF WIMSE Working Group for their contributions to this specification.
 
+# Reviewers and Contributors
+{:numbered="false"}
+
+The authors want to recognize the contributions and reviews of the following individuals (in alphabetical order):
+
+- Apoorva Deshpande
+- Matt Topper
+- Tom Sato
+
 # Document History
 {:numbered="false"}
 
