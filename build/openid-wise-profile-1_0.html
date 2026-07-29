@@ -1309,7 +1309,7 @@ li > p:last-of-type:only-child {
                     <p id="section-toc.1-1.2.2.3.2.3.1"><a href="#section-2.3.3" class="auto internal xref">2.3.3</a>.  <a href="#name-credential-revoked" class="internal xref">credential-revoked</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.3.2.4">
-                    <p id="section-toc.1-1.2.2.3.2.4.1"><a href="#section-2.3.4" class="auto internal xref">2.3.4</a>.  <a href="#name-credential-compromise" class="internal xref">credential-compromise</a></p>
+                    <p id="section-toc.1-1.2.2.3.2.4.1"><a href="#section-2.3.4" class="auto internal xref">2.3.4</a>.  <a href="#name-credential-compromised" class="internal xref">credential-compromised</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.3.2.5">
                     <p id="section-toc.1-1.2.2.3.2.5.1"><a href="#section-2.3.5" class="auto internal xref">2.3.5</a>.  <a href="#name-credential-renewal-failure" class="internal xref">credential-renewal-failure</a></p>
@@ -1824,13 +1824,13 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 </div>
 </section>
 </div>
-<div id="credential-compromise">
+<div id="credential-compromised">
 <section id="section-2.3.4">
-          <h4 id="name-credential-compromise">
-<a href="#section-2.3.4" class="section-number selfRef">2.3.4. </a><a href="#name-credential-compromise" class="section-name selfRef">credential-compromise</a>
+          <h4 id="name-credential-compromised">
+<a href="#section-2.3.4" class="section-number selfRef">2.3.4. </a><a href="#name-credential-compromised" class="section-name selfRef">credential-compromised</a>
           </h4>
-<p id="section-2.3.4-1">Event Type URI: <code>https://schemas.openid.net/secevent/wise/event-type/credential-compromise</code><a href="#section-2.3.4-1" class="pilcrow">¶</a></p>
-<p id="section-2.3.4-2">The <code>credential-compromise</code> event signals that a workload credential is believed to have been compromised. This is an advisory signal that may precede or accompany a <code>credential-revoked</code> event.<a href="#section-2.3.4-2" class="pilcrow">¶</a></p>
+<p id="section-2.3.4-1">Event Type URI: <code>https://schemas.openid.net/secevent/wise/event-type/credential-compromised</code><a href="#section-2.3.4-1" class="pilcrow">¶</a></p>
+<p id="section-2.3.4-2">The <code>credential-compromised</code> event signals that a workload credential is believed to have been compromised. This is an advisory signal that may precede or accompany a <code>credential-revoked</code> event.<a href="#section-2.3.4-2" class="pilcrow">¶</a></p>
 <p id="section-2.3.4-3">Attributes:<a href="#section-2.3.4-3" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-2.3.4-4.1">
@@ -1844,7 +1844,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 </li>
           </ul>
 <p id="section-2.3.4-5">The following example is non-normative.<a href="#section-2.3.4-5" class="pilcrow">¶</a></p>
-<span id="name-example-credential-compromi"></span><div id="fig-credential-compromise">
+<span id="name-example-credential-compromi"></span><div id="fig-credential-compromised">
 <figure id="figure-4">
             <div class="lang-json sourcecode" id="section-2.3.4-6.1">
 <pre>
@@ -1858,7 +1858,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
     "uri": "wimse://trust.example.com/workload/payment-service"
   },
   "events": {
-    "https://schemas.openid.net/secevent/wise/event-type/credential-compromise": {
+    "https://schemas.openid.net/secevent/wise/event-type/credential-compromised": {
       "credential_type": "wit",
       "credential_id": "jti:wit-signing-key-2024-q4",
       "reason_admin": {
@@ -1870,7 +1870,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 </pre>
 </div>
 <figcaption><a href="#figure-4" class="selfRef">Figure 4</a>:
-<a href="#name-example-credential-compromi" class="selfRef">Example: Credential Compromise</a>
+<a href="#name-example-credential-compromi" class="selfRef">Example: Credential Compromised</a>
             </figcaption></figure>
 </div>
 </section>
@@ -3011,8 +3011,8 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
         <h3 id="name-compromise-response">
 <a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-compromise-response" class="section-name selfRef">Compromise Response</a>
         </h3>
-<p id="section-4.4-1">Several WISE events indicate that a credential, key, trust anchor, federation, or workload can no longer be trusted. This is signalled either by an event whose purpose is to report compromise (<code>credential-compromise</code>, <code>workload-compromised</code>) or by any event carrying a <code>reason</code> of <code>compromise</code> or <code>key_compromise</code>. Upon receiving any such event — regardless of event type, including events defined by future revisions or profiling specifications — Receivers SHOULD take immediate action appropriate to the affected object (for example, reject the affected credentials, keys, or trust material, or isolate the affected workload) without waiting for additional confirmation.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
-<p id="section-4.4-2">Events in this document that carry such a signal include <code>credential-compromise</code>; <code>credential-revoked</code> (with reason <code>compromise</code> or <code>key_compromise</code>); <code>trust-anchor-rotated</code> and <code>trust-anchor-revoked</code> (with reason <code>compromise</code>); <code>trust-domain-federation-revoked</code> (with reason <code>compromise</code>); <code>workload-disabled</code> (with reason <code>compromise</code>); and <code>workload-compromised</code>.<a href="#section-4.4-2" class="pilcrow">¶</a></p>
+<p id="section-4.4-1">Several WISE events indicate that a credential, key, trust anchor, federation, or workload can no longer be trusted. This is signalled either by an event whose purpose is to report compromise (<code>credential-compromised</code>, <code>workload-compromised</code>) or by any event carrying a <code>reason</code> of <code>compromise</code> or <code>key_compromise</code>. Upon receiving any such event — regardless of event type, including events defined by future revisions or profiling specifications — Receivers SHOULD take immediate action appropriate to the affected object (for example, reject the affected credentials, keys, or trust material, or isolate the affected workload) without waiting for additional confirmation.<a href="#section-4.4-1" class="pilcrow">¶</a></p>
+<p id="section-4.4-2">Events in this document that carry such a signal include <code>credential-compromised</code>; <code>credential-revoked</code> (with reason <code>compromise</code> or <code>key_compromise</code>); <code>trust-anchor-rotated</code> and <code>trust-anchor-revoked</code> (with reason <code>compromise</code>); <code>trust-domain-federation-revoked</code> (with reason <code>compromise</code>); <code>workload-disabled</code> (with reason <code>compromise</code>); and <code>workload-compromised</code>.<a href="#section-4.4-2" class="pilcrow">¶</a></p>
 <p id="section-4.4-3">Rejecting credentials only takes effect at the next credential check or proof-of-possession step; neither short credential lifetime nor condition-liveness severs a connection that is already established. A Receiver that holds active connections with, or is actively serving, the affected workload SHOULD therefore also terminate those connections rather than waiting for the next operation. This is best-effort and applies to Receivers, such as gateways or service mesh components, that are able to correlate the workload identifier to live connections.<a href="#section-4.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -3237,10 +3237,13 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           <p id="appendix-B-2.12.1">Replaced the free-text <code>reason</code> on <code>posture-evaluation-failed</code> with an enum (<code>platform_integrity_failed</code>, <code>attestation_invalid</code>, <code>image_mismatch</code>, <code>configuration_noncompliant</code>, <code>policy_denied</code>), matching the enum style of sibling events.<a href="#appendix-B-2.12.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.13">
-          <p id="appendix-B-2.13.1">Replaced the free-form <code>change_description</code> field on <code>trust-domain-federation-updated</code> and the policy-change events with the localizable <code>reason_admin</code>/<code>reason_user</code> common claims, for consistency with the CAEP-aligned pattern.<a href="#appendix-B-2.13.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.13.1">Renamed the <code>credential-compromise</code> event to <code>credential-compromised</code> for tense consistency with the other credential events (<code>-issued</code>, <code>-rotated</code>, <code>-revoked</code>) and <code>workload-compromised</code>.<a href="#appendix-B-2.13.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.14">
-          <p id="appendix-B-2.14.1">Carried the subject in the top-level <code>sub_id</code> claim (RFC 9493 format, per SSF) instead of a nonstandard nested <code>subject</code> member, updating every example; and specified that policy events take the trust-domain subject.<a href="#appendix-B-2.14.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.14.1">Replaced the free-form <code>change_description</code> field on <code>trust-domain-federation-updated</code> and the policy-change events with the localizable <code>reason_admin</code>/<code>reason_user</code> common claims, for consistency with the CAEP-aligned pattern.<a href="#appendix-B-2.14.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.15">
+          <p id="appendix-B-2.15.1">Carried the subject in the top-level <code>sub_id</code> claim (RFC 9493 format, per SSF) instead of a nonstandard nested <code>subject</code> member, updating every example; and specified that policy events take the trust-domain subject.<a href="#appendix-B-2.15.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-B-3">-02<a href="#appendix-B-3" class="pilcrow">¶</a></p>

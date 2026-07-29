@@ -397,11 +397,11 @@ The following example is non-normative.
 ~~~
 {: #fig-credential-revoked title="Example: Credential Revoked"}
 
-### credential-compromise
+### credential-compromised
 
-Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/credential-compromise`
+Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/credential-compromised`
 
-The `credential-compromise` event signals that a workload credential is believed to have been compromised. This is an advisory signal that may precede or accompany a `credential-revoked` event.
+The `credential-compromised` event signals that a workload credential is believed to have been compromised. This is an advisory signal that may precede or accompany a `credential-revoked` event.
 
 Attributes:
 
@@ -422,7 +422,7 @@ The following example is non-normative.
     "uri": "wimse://trust.example.com/workload/payment-service"
   },
   "events": {
-    "https://schemas.openid.net/secevent/wise/event-type/credential-compromise": {
+    "https://schemas.openid.net/secevent/wise/event-type/credential-compromised": {
       "credential_type": "wit",
       "credential_id": "jti:wit-signing-key-2024-q4",
       "reason_admin": {
@@ -432,7 +432,7 @@ The following example is non-normative.
   }
 }
 ~~~
-{: #fig-credential-compromise title="Example: Credential Compromise"}
+{: #fig-credential-compromised title="Example: Credential Compromised"}
 
 ### credential-renewal-failure
 
@@ -1083,9 +1083,9 @@ Access to WISE event streams MUST be authorized. Transmitters MUST verify that R
 
 ## Compromise Response
 
-Several WISE events indicate that a credential, key, trust anchor, federation, or workload can no longer be trusted. This is signalled either by an event whose purpose is to report compromise (`credential-compromise`, `workload-compromised`) or by any event carrying a `reason` of `compromise` or `key_compromise`. Upon receiving any such event — regardless of event type, including events defined by future revisions or profiling specifications — Receivers SHOULD take immediate action appropriate to the affected object (for example, reject the affected credentials, keys, or trust material, or isolate the affected workload) without waiting for additional confirmation.
+Several WISE events indicate that a credential, key, trust anchor, federation, or workload can no longer be trusted. This is signalled either by an event whose purpose is to report compromise (`credential-compromised`, `workload-compromised`) or by any event carrying a `reason` of `compromise` or `key_compromise`. Upon receiving any such event — regardless of event type, including events defined by future revisions or profiling specifications — Receivers SHOULD take immediate action appropriate to the affected object (for example, reject the affected credentials, keys, or trust material, or isolate the affected workload) without waiting for additional confirmation.
 
-Events in this document that carry such a signal include `credential-compromise`; `credential-revoked` (with reason `compromise` or `key_compromise`); `trust-anchor-rotated` and `trust-anchor-revoked` (with reason `compromise`); `trust-domain-federation-revoked` (with reason `compromise`); `workload-disabled` (with reason `compromise`); and `workload-compromised`.
+Events in this document that carry such a signal include `credential-compromised`; `credential-revoked` (with reason `compromise` or `key_compromise`); `trust-anchor-rotated` and `trust-anchor-revoked` (with reason `compromise`); `trust-domain-federation-revoked` (with reason `compromise`); `workload-disabled` (with reason `compromise`); and `workload-compromised`.
 
 Rejecting credentials only takes effect at the next credential check or proof-of-possession step; neither short credential lifetime nor condition-liveness severs a connection that is already established. A Receiver that holds active connections with, or is actively serving, the affected workload SHOULD therefore also terminate those connections rather than waiting for the next operation. This is best-effort and applies to Receivers, such as gateways or service mesh components, that are able to correlate the workload identifier to live connections.
 
@@ -1139,6 +1139,7 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 - Clarified the distinction between `credential-renewal-failure` (operational outcome, multiple causes) and `posture-evaluation-failed` (a security-critical signal in its own right), and how the two relate when posture is the cause of a renewal failure.
 - Made `reason_admin`/`reason_user` usage consistent: removed the redundant per-event listings and rely on the Common Optional Claims section, which now states the claims are not repeated per event and any event MAY carry them.
 - Replaced the free-text `reason` on `posture-evaluation-failed` with an enum (`platform_integrity_failed`, `attestation_invalid`, `image_mismatch`, `configuration_noncompliant`, `policy_denied`), matching the enum style of sibling events.
+- Renamed the `credential-compromise` event to `credential-compromised` for tense consistency with the other credential events (`-issued`, `-rotated`, `-revoked`) and `workload-compromised`.
 - Replaced the free-form `change_description` field on `trust-domain-federation-updated` and the policy-change events with the localizable `reason_admin`/`reason_user` common claims, for consistency with the CAEP-aligned pattern.
 - Carried the subject in the top-level `sub_id` claim (RFC 9493 format, per SSF) instead of a nonstandard nested `subject` member, updating every example; and specified that policy events take the trust-domain subject.
 
