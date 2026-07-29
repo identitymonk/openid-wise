@@ -1984,6 +1984,33 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.4.1-4.2.1"><strong>event_timestamp</strong> - OPTIONAL. Time of disablement.<a href="#section-2.4.1-4.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-2.4.1-5">The following example is non-normative.<a href="#section-2.4.1-5" class="pilcrow">¶</a></p>
+<span id="name-example-workload-disabled"></span><div id="fig-workload-disabled">
+<figure id="figure-6">
+            <div class="lang-json sourcecode" id="section-2.4.1-6.1">
+<pre>
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-010",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-disabled": {
+      "reason": "compromise",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+</pre>
+</div>
+<figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
+<a href="#name-example-workload-disabled" class="selfRef">Example: Workload Disabled</a>
+            </figcaption></figure>
+</div>
 </section>
 </div>
 <div id="workload-enabled">
@@ -1999,6 +2026,32 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.4.2-4.1.1"><strong>event_timestamp</strong> - OPTIONAL. Time of re-enablement.<a href="#section-2.4.2-4.1.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-2.4.2-5">The following example is non-normative.<a href="#section-2.4.2-5" class="pilcrow">¶</a></p>
+<span id="name-example-workload-enabled"></span><div id="fig-workload-enabled">
+<figure id="figure-7">
+            <div class="lang-json sourcecode" id="section-2.4.2-6.1">
+<pre>
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-011",
+  "iat": 1700003600,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-enabled": {
+      "event_timestamp": 1700003600
+    }
+  }
+}
+</pre>
+</div>
+<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
+<a href="#name-example-workload-enabled" class="selfRef">Example: Workload Enabled</a>
+            </figcaption></figure>
+</div>
 </section>
 </div>
 <div id="workload-purged">
@@ -2014,6 +2067,32 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.4.3-4.1.1"><strong>event_timestamp</strong> - OPTIONAL. Time of removal.<a href="#section-2.4.3-4.1.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-2.4.3-5">The following example is non-normative.<a href="#section-2.4.3-5" class="pilcrow">¶</a></p>
+<span id="name-example-workload-purged"></span><div id="fig-workload-purged">
+<figure id="figure-8">
+            <div class="lang-json sourcecode" id="section-2.4.3-6.1">
+<pre>
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-012",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-purged": {
+      "event_timestamp": 1700000000
+    }
+  }
+}
+</pre>
+</div>
+<figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
+<a href="#name-example-workload-purged" class="selfRef">Example: Workload Purged</a>
+            </figcaption></figure>
+</div>
 </section>
 </div>
 </section>
@@ -2094,7 +2173,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.5.1-5">The following example is non-normative.<a href="#section-2.5.1-5" class="pilcrow">¶</a></p>
 <span id="name-example-trust-anchor-added"></span><div id="fig-trust-anchor-added">
-<figure id="figure-6">
+<figure id="figure-9">
             <div class="lang-json sourcecode" id="section-2.5.1-6.1">
 <pre>
 {
@@ -2124,7 +2203,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-6" class="selfRef">Figure 6</a>:
+<figcaption><a href="#figure-9" class="selfRef">Figure 9</a>:
 <a href="#name-example-trust-anchor-added" class="selfRef">Example: Trust Anchor Added</a>
             </figcaption></figure>
 </div>
@@ -2186,7 +2265,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.5.2-5">The following example is non-normative.<a href="#section-2.5.2-5" class="pilcrow">¶</a></p>
 <span id="name-example-trust-anchor-rotate"></span><div id="fig-trust-anchor-rotated">
-<figure id="figure-7">
+<figure id="figure-10">
             <div class="lang-json sourcecode" id="section-2.5.2-6.1">
 <pre>
 {
@@ -2213,7 +2292,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-7" class="selfRef">Figure 7</a>:
+<figcaption><a href="#figure-10" class="selfRef">Figure 10</a>:
 <a href="#name-example-trust-anchor-rotate" class="selfRef">Example: Trust Anchor Rotated (JWKS Rotation)</a>
             </figcaption></figure>
 </div>
@@ -2269,7 +2348,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.5.3-5">The following example is non-normative.<a href="#section-2.5.3-5" class="pilcrow">¶</a></p>
 <span id="name-example-trust-anchor-revoke"></span><div id="fig-trust-anchor-revoked">
-<figure id="figure-8">
+<figure id="figure-11">
             <div class="lang-json sourcecode" id="section-2.5.3-6.1">
 <pre>
 {
@@ -2292,7 +2371,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-8" class="selfRef">Figure 8</a>:
+<figcaption><a href="#figure-11" class="selfRef">Figure 11</a>:
 <a href="#name-example-trust-anchor-revoke" class="selfRef">Example: Trust Anchor Revoked (CA Compromise)</a>
             </figcaption></figure>
 </div>
@@ -2345,7 +2424,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.5.4-5">The following example is non-normative.<a href="#section-2.5.4-5" class="pilcrow">¶</a></p>
 <span id="name-example-trust-domain-federa"></span><div id="fig-federation-established">
-<figure id="figure-9">
+<figure id="figure-12">
             <div class="lang-json sourcecode" id="section-2.5.4-6.1">
 <pre>
 {
@@ -2369,7 +2448,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-9" class="selfRef">Figure 9</a>:
+<figcaption><a href="#figure-12" class="selfRef">Figure 12</a>:
 <a href="#name-example-trust-domain-federa" class="selfRef">Example: Trust Domain Federation Established</a>
             </figcaption></figure>
 </div>
@@ -2411,6 +2490,34 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.5.5-4.4.1"><strong>event_timestamp</strong> - OPTIONAL. Time the decision was made.<a href="#section-2.5.5-4.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-2.5.5-5">The following example is non-normative.<a href="#section-2.5.5-5" class="pilcrow">¶</a></p>
+<span id="name-example-trust-domain-federat"></span><div id="fig-federation-updated">
+<figure id="figure-13">
+            <div class="lang-json sourcecode" id="section-2.5.5-6.1">
+<pre>
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-024",
+  "iat": 1700000000,
+  "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://newpartner.example.org"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/trust-domain-federation-updated": {
+      "trust_domain": "newpartner.example.org",
+      "reason": "anchor_update",
+      "effective_at": 1700000000
+    }
+  }
+}
+</pre>
+</div>
+<figcaption><a href="#figure-13" class="selfRef">Figure 13</a>:
+<a href="#name-example-trust-domain-federat" class="selfRef">Example: Trust Domain Federation Updated</a>
+            </figcaption></figure>
+</div>
 </section>
 </div>
 <div id="trust-domain-federation-revoked">
@@ -2449,6 +2556,34 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.5.6-4.4.1"><strong>event_timestamp</strong> - OPTIONAL. Time the decision was made.<a href="#section-2.5.6-4.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-2.5.6-5">The following example is non-normative.<a href="#section-2.5.6-5" class="pilcrow">¶</a></p>
+<span id="name-example-trust-domain-federati"></span><div id="fig-federation-revoked">
+<figure id="figure-14">
+            <div class="lang-json sourcecode" id="section-2.5.6-6.1">
+<pre>
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-025",
+  "iat": 1700000000,
+  "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://partner.example.org"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/trust-domain-federation-revoked": {
+      "trust_domain": "partner.example.org",
+      "reason": "administrative",
+      "effective_at": 1700604800
+    }
+  }
+}
+</pre>
+</div>
+<figcaption><a href="#figure-14" class="selfRef">Figure 14</a>:
+<a href="#name-example-trust-domain-federati" class="selfRef">Example: Trust Domain Federation Revoked</a>
+            </figcaption></figure>
+</div>
 </section>
 </div>
 </section>
@@ -2479,6 +2614,33 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.6.1-4.3.1"><strong>event_timestamp</strong> - OPTIONAL. Time the change was made.<a href="#section-2.6.1-4.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-2.6.1-5">The following example is non-normative.<a href="#section-2.6.1-5" class="pilcrow">¶</a></p>
+<span id="name-example-issuance-policy-cha"></span><div id="fig-issuance-policy-changed">
+<figure id="figure-15">
+            <div class="lang-json sourcecode" id="section-2.6.1-6.1">
+<pre>
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-050",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/issuance-policy-changed": {
+      "policy_id": "policy:issuance-v3",
+      "effective_at": 1700000000
+    }
+  }
+}
+</pre>
+</div>
+<figcaption><a href="#figure-15" class="selfRef">Figure 15</a>:
+<a href="#name-example-issuance-policy-cha" class="selfRef">Example: Issuance Policy Changed</a>
+            </figcaption></figure>
+</div>
 </section>
 </div>
 <div id="posture-evaluation-policy-changed">
@@ -2500,6 +2662,33 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.6.2-4.3.1"><strong>event_timestamp</strong> - OPTIONAL. Time the change was made.<a href="#section-2.6.2-4.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-2.6.2-5">The following example is non-normative.<a href="#section-2.6.2-5" class="pilcrow">¶</a></p>
+<span id="name-example-posture-evaluation-"></span><div id="fig-posture-evaluation-policy-changed">
+<figure id="figure-16">
+            <div class="lang-json sourcecode" id="section-2.6.2-6.1">
+<pre>
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-051",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/posture-evaluation-policy-changed": {
+      "policy_id": "policy:posture-eval-v2",
+      "effective_at": 1700000000
+    }
+  }
+}
+</pre>
+</div>
+<figcaption><a href="#figure-16" class="selfRef">Figure 16</a>:
+<a href="#name-example-posture-evaluation-" class="selfRef">Example: Posture Evaluation Policy Changed</a>
+            </figcaption></figure>
+</div>
 </section>
 </div>
 <div id="validation-policy-changed">
@@ -2521,6 +2710,33 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.6.3-4.3.1"><strong>event_timestamp</strong> - OPTIONAL. Time the change was made.<a href="#section-2.6.3-4.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-2.6.3-5">The following example is non-normative.<a href="#section-2.6.3-5" class="pilcrow">¶</a></p>
+<span id="name-example-validation-policy-c"></span><div id="fig-validation-policy-changed">
+<figure id="figure-17">
+            <div class="lang-json sourcecode" id="section-2.6.3-6.1">
+<pre>
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-052",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/validation-policy-changed": {
+      "policy_id": "policy:validation-v5",
+      "effective_at": 1700000000
+    }
+  }
+}
+</pre>
+</div>
+<figcaption><a href="#figure-17" class="selfRef">Figure 17</a>:
+<a href="#name-example-validation-policy-c" class="selfRef">Example: Validation Policy Changed</a>
+            </figcaption></figure>
+</div>
 </section>
 </div>
 <div id="posture-evaluation-failed">
@@ -2571,6 +2787,34 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.6.4-5.3.1"><strong>event_timestamp</strong> - OPTIONAL. Time of the failure.<a href="#section-2.6.4-5.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-2.6.4-6">The following example is non-normative.<a href="#section-2.6.4-6" class="pilcrow">¶</a></p>
+<span id="name-example-posture-evaluation-f"></span><div id="fig-posture-evaluation-failed">
+<figure id="figure-18">
+            <div class="lang-json sourcecode" id="section-2.6.4-7.1">
+<pre>
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-053",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/posture-evaluation-failed": {
+      "evaluation_type": "platform",
+      "reason": "platform_integrity_failed",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+</pre>
+</div>
+<figcaption><a href="#figure-18" class="selfRef">Figure 18</a>:
+<a href="#name-example-posture-evaluation-f" class="selfRef">Example: Posture Evaluation Failed</a>
+            </figcaption></figure>
+</div>
 </section>
 </div>
 <div id="posture-evaluation-succeeded">
@@ -2590,6 +2834,33 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.6.5-5.2.1"><strong>event_timestamp</strong> - OPTIONAL. Time of successful evaluation.<a href="#section-2.6.5-5.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-2.6.5-6">The following example is non-normative.<a href="#section-2.6.5-6" class="pilcrow">¶</a></p>
+<span id="name-example-posture-evaluation-s"></span><div id="fig-posture-evaluation-succeeded">
+<figure id="figure-19">
+            <div class="lang-json sourcecode" id="section-2.6.5-7.1">
+<pre>
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-054",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/posture-evaluation-succeeded": {
+      "evaluation_type": "workload",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+</pre>
+</div>
+<figcaption><a href="#figure-19" class="selfRef">Figure 19</a>:
+<a href="#name-example-posture-evaluation-s" class="selfRef">Example: Posture Evaluation Succeeded</a>
+            </figcaption></figure>
+</div>
 </section>
 </div>
 </section>
@@ -2677,7 +2948,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 <p id="section-2.7.1-8">These fields can reveal workload infrastructure topology; see <a href="#privacy-considerations" class="auto internal xref">Section 5</a> for guidance on limiting the detail disclosed.<a href="#section-2.7.1-8" class="pilcrow">¶</a></p>
 <p id="section-2.7.1-9">The following example is non-normative.<a href="#section-2.7.1-9" class="pilcrow">¶</a></p>
 <span id="name-example-workload-baseline-c"></span><div id="fig-baseline-changed">
-<figure id="figure-10">
+<figure id="figure-20">
             <div class="lang-json sourcecode" id="section-2.7.1-10.1">
 <pre>
 {
@@ -2706,7 +2977,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-10" class="selfRef">Figure 10</a>:
+<figcaption><a href="#figure-20" class="selfRef">Figure 20</a>:
 <a href="#name-example-workload-baseline-c" class="selfRef">Example: Workload Baseline Changed (Migration)</a>
             </figcaption></figure>
 </div>
@@ -2728,6 +2999,33 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.7.2-4.2.1"><strong>event_timestamp</strong> - OPTIONAL. Time of detection.<a href="#section-2.7.2-4.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-2.7.2-5">The following example is non-normative.<a href="#section-2.7.2-5" class="pilcrow">¶</a></p>
+<span id="name-example-workload-compromise"></span><div id="fig-workload-compromised">
+<figure id="figure-21">
+            <div class="lang-json sourcecode" id="section-2.7.2-6.1">
+<pre>
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-060",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-compromised": {
+      "detection_method": "runtime-anomaly-detection",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+</pre>
+</div>
+<figcaption><a href="#figure-21" class="selfRef">Figure 21</a>:
+<a href="#name-example-workload-compromise" class="selfRef">Example: Workload Compromised</a>
+            </figcaption></figure>
+</div>
 </section>
 </div>
 <div id="anomalous-behavior-detected">
@@ -2763,6 +3061,34 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.7.3-4.3.1"><strong>event_timestamp</strong> - OPTIONAL. Time of detection.<a href="#section-2.7.3-4.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
+<p id="section-2.7.3-5">The following example is non-normative.<a href="#section-2.7.3-5" class="pilcrow">¶</a></p>
+<span id="name-example-anomalous-behavior-"></span><div id="fig-anomalous-behavior-detected">
+<figure id="figure-22">
+            <div class="lang-json sourcecode" id="section-2.7.3-6.1">
+<pre>
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-061",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/anomalous-behavior-detected": {
+      "anomaly_type": "unexpected-egress",
+      "severity": "medium",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+</pre>
+</div>
+<figcaption><a href="#figure-22" class="selfRef">Figure 22</a>:
+<a href="#name-example-anomalous-behavior-" class="selfRef">Example: Anomalous Behavior Detected</a>
+            </figcaption></figure>
+</div>
 </section>
 </div>
 </section>
@@ -2811,7 +3137,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.8.1-5">The following example is non-normative.<a href="#section-2.8.1-5" class="pilcrow">¶</a></p>
 <span id="name-example-workload-provenance"></span><div id="fig-provenance-changed">
-<figure id="figure-11">
+<figure id="figure-23">
             <div class="lang-json sourcecode" id="section-2.8.1-6.1">
 <pre>
 {
@@ -2835,7 +3161,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-11" class="selfRef">Figure 11</a>:
+<figcaption><a href="#figure-23" class="selfRef">Figure 23</a>:
 <a href="#name-example-workload-provenance" class="selfRef">Example: Workload Provenance Changed</a>
             </figcaption></figure>
 </div>
@@ -2882,7 +3208,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           </ul>
 <p id="section-2.8.2-5">The following example is non-normative.<a href="#section-2.8.2-5" class="pilcrow">¶</a></p>
 <span id="name-example-workload-vulnerabil"></span><div id="fig-vulnerability-status-changed">
-<figure id="figure-12">
+<figure id="figure-24">
             <div class="lang-json sourcecode" id="section-2.8.2-6.1">
 <pre>
 {
@@ -2905,7 +3231,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 }
 </pre>
 </div>
-<figcaption><a href="#figure-12" class="selfRef">Figure 12</a>:
+<figcaption><a href="#figure-24" class="selfRef">Figure 24</a>:
 <a href="#name-example-workload-vulnerabil" class="selfRef">Example: Workload Vulnerability Status Changed</a>
             </figcaption></figure>
 </div>

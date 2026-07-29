@@ -498,6 +498,28 @@ Attributes:
     - `maintenance` - Temporarily disabled for maintenance.
 - **event_timestamp** - OPTIONAL. Time of disablement.
 
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-010",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-disabled": {
+      "reason": "compromise",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-workload-disabled title="Example: Workload Disabled"}
+
 ### workload-enabled
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-enabled`
@@ -508,6 +530,27 @@ Attributes:
 
 - **event_timestamp** - OPTIONAL. Time of re-enablement.
 
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-011",
+  "iat": 1700003600,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-enabled": {
+      "event_timestamp": 1700003600
+    }
+  }
+}
+~~~
+{: #fig-workload-enabled title="Example: Workload Enabled"}
+
 ### workload-purged
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-purged`
@@ -517,6 +560,27 @@ The `workload-purged` event signals that a workload has been permanently removed
 Attributes:
 
 - **event_timestamp** - OPTIONAL. Time of removal.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-012",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-purged": {
+      "event_timestamp": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-workload-purged title="Example: Workload Purged"}
 
 ## Trust and Federation Events
 
@@ -739,6 +803,29 @@ Attributes:
     - `contractual` - Business relationship terms changed.
 - **event_timestamp** - OPTIONAL. Time the decision was made.
 
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-024",
+  "iat": 1700000000,
+  "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://newpartner.example.org"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/trust-domain-federation-updated": {
+      "trust_domain": "newpartner.example.org",
+      "reason": "anchor_update",
+      "effective_at": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-federation-updated title="Example: Trust Domain Federation Updated"}
+
 ### trust-domain-federation-revoked
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/trust-domain-federation-revoked`
@@ -755,6 +842,29 @@ Attributes:
     - `contractual` - Business relationship ended.
 - **effective_at** - OPTIONAL. When the revocation takes effect. JSON number (NumericDate).
 - **event_timestamp** - OPTIONAL. Time the decision was made.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-025",
+  "iat": 1700000000,
+  "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://partner.example.org"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/trust-domain-federation-revoked": {
+      "trust_domain": "partner.example.org",
+      "reason": "administrative",
+      "effective_at": 1700604800
+    }
+  }
+}
+~~~
+{: #fig-federation-revoked title="Example: Trust Domain Federation Revoked"}
 
 ## Policy and Posture Evaluation Events
 
@@ -774,6 +884,28 @@ Attributes:
 - **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
 
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-050",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/issuance-policy-changed": {
+      "policy_id": "policy:issuance-v3",
+      "effective_at": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-issuance-policy-changed title="Example: Issuance Policy Changed"}
+
 ### posture-evaluation-policy-changed
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/posture-evaluation-policy-changed`
@@ -786,6 +918,28 @@ Attributes:
 - **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
 
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-051",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/posture-evaluation-policy-changed": {
+      "policy_id": "policy:posture-eval-v2",
+      "effective_at": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-posture-evaluation-policy-changed title="Example: Posture Evaluation Policy Changed"}
+
 ### validation-policy-changed
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/validation-policy-changed`
@@ -797,6 +951,28 @@ Attributes:
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
 - **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-052",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/validation-policy-changed": {
+      "policy_id": "policy:validation-v5",
+      "effective_at": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-validation-policy-changed title="Example: Validation Policy Changed"}
 
 ### posture-evaluation-failed
 
@@ -820,6 +996,29 @@ Attributes:
     - `policy_denied` - Posture evaluation policy denied the workload.
 - **event_timestamp** - OPTIONAL. Time of the failure.
 
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-053",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/posture-evaluation-failed": {
+      "evaluation_type": "platform",
+      "reason": "platform_integrity_failed",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-posture-evaluation-failed title="Example: Posture Evaluation Failed"}
+
 ### posture-evaluation-succeeded
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/posture-evaluation-succeeded`
@@ -832,6 +1031,28 @@ Attributes:
 
 - **evaluation_type** - OPTIONAL. The scope of evaluation that succeeded.
 - **event_timestamp** - OPTIONAL. Time of successful evaluation.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-054",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/posture-evaluation-succeeded": {
+      "evaluation_type": "workload",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-posture-evaluation-succeeded title="Example: Posture Evaluation Succeeded"}
 
 ## Runtime Posture Events
 
@@ -911,6 +1132,28 @@ Attributes:
 - **detection_method** - OPTIONAL. How the compromise was detected.
 - **event_timestamp** - OPTIONAL. Time of detection.
 
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-060",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-compromised": {
+      "detection_method": "runtime-anomaly-detection",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-workload-compromised title="Example: Workload Compromised"}
+
 ### anomalous-behavior-detected
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/anomalous-behavior-detected`
@@ -926,6 +1169,29 @@ Attributes:
     - `high`
     - `critical`
 - **event_timestamp** - OPTIONAL. Time of detection.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-061",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/anomalous-behavior-detected": {
+      "anomaly_type": "unexpected-egress",
+      "severity": "medium",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-anomalous-behavior-detected title="Example: Anomalous Behavior Detected"}
 
 ## Supply Chain Events
 
@@ -1140,6 +1406,7 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 - Made `reason_admin`/`reason_user` usage consistent: removed the redundant per-event listings and rely on the Common Optional Claims section, which now states the claims are not repeated per event and any event MAY carry them.
 - Replaced the free-text `reason` on `posture-evaluation-failed` with an enum (`platform_integrity_failed`, `attestation_invalid`, `image_mismatch`, `configuration_noncompliant`, `policy_denied`), matching the enum style of sibling events.
 - Renamed the `credential-compromise` event to `credential-compromised` for tense consistency with the other credential events (`-issued`, `-rotated`, `-revoked`) and `workload-compromised`.
+- Added a non-normative example to every event that lacked one, so all 24 event types now have consistent example coverage (and confirmed policy events use the trust-domain subject).
 - Replaced the free-form `change_description` field on `trust-domain-federation-updated` and the policy-change events with the localizable `reason_admin`/`reason_user` common claims, for consistency with the CAEP-aligned pattern.
 - Carried the subject in the top-level `sub_id` claim (RFC 9493 format, per SSF) instead of a nonstandard nested `subject` member, updating every example; and specified that policy events take the trust-domain subject.
 
