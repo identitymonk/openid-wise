@@ -38,6 +38,7 @@ normative:
   RFC5646:
   RFC7516:
   RFC7523:
+  RFC8126:
   RFC8417:
   RFC8705:
   RFC9325:
@@ -131,6 +132,7 @@ normative:
     date: 2026
 
 informative:
+  RFC6920:
   RFC7519:
   RFC7517:
   SPIFFE:
@@ -242,6 +244,8 @@ Unless stated otherwise, any WISE event MAY include the common optional claims d
 - **reason_user** - OPTIONAL. A localizable, user-facing message, as defined in {{CAEP}}. Its value follows the same JSON object structure as `reason_admin`.
 - **initiating_entity** - OPTIONAL. A JSON string describing what triggered the event, as defined in {{CAEP}}: one of `admin`, `user`, `policy`, or `system`.
 
+To avoid repetition, these common claims are not listed in the per-event attribute definitions in the following sections; any event MAY carry them, and some examples include them for illustration.
+
 When a WISE event includes `reason_admin` or `reason_user`, the claim MUST use the localizable JSON object structure defined above rather than a plain string. The following is a non-normative example:
 
 ~~~ json
@@ -307,12 +311,12 @@ The following example is non-normative.
   "jti": "wise-evt-001",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/credential-issued": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "credential_type": "wic",
       "credential_id": "serial:ABC123DEF456",
       "expiry": 1700086400
@@ -344,12 +348,12 @@ The following example is non-normative.
   "jti": "wise-evt-002",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/credential-rotated": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "credential_type": "wit",
       "previous_credential_id": "jti:wit-2024-q4-001",
       "new_credential_id": "jti:wit-2024-q4-002",
@@ -386,12 +390,12 @@ The following example is non-normative.
   "jti": "wise-evt-003",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/credential-revoked": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "credential_type": "wic",
       "credential_id": "serial:ABC123DEF456",
       "reason": "compromise"
@@ -401,18 +405,17 @@ The following example is non-normative.
 ~~~
 {: #fig-credential-revoked title="Example: Credential Revoked"}
 
-### credential-compromise
+### credential-compromised
 
-Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/credential-compromise`
+Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/credential-compromised`
 
-The `credential-compromise` event signals that a workload credential is believed to have been compromised. This is an advisory signal that may precede or accompany a `credential-revoked` event.
+The `credential-compromised` event signals that a workload credential is believed to have been compromised. This is an advisory signal that may precede or accompany a `credential-revoked` event.
 
 Attributes:
 
 - **credential_type** - REQUIRED. The type of credential compromised.
 - **credential_id** - OPTIONAL. Identifier of the compromised credential.
 - **event_timestamp** - OPTIONAL. The time at which the compromise was detected.
-- **reason_admin** - OPTIONAL. Localizable administrative description of the compromise, as defined in the Common Optional Claims ({{common-optional-claims}}).
 
 The following example is non-normative.
 
@@ -422,12 +425,12 @@ The following example is non-normative.
   "jti": "wise-evt-004",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
-    "https://schemas.openid.net/secevent/wise/event-type/credential-compromise": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
+    "https://schemas.openid.net/secevent/wise/event-type/credential-compromised": {
       "credential_type": "wit",
       "credential_id": "jti:wit-signing-key-2024-q4",
       "reason_admin": {
@@ -437,13 +440,15 @@ The following example is non-normative.
   }
 }
 ~~~
-{: #fig-credential-compromise title="Example: Credential Compromise"}
+{: #fig-credential-compromised title="Example: Credential Compromised"}
 
 ### credential-renewal-failure
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/credential-renewal-failure`
 
 The `credential-renewal-failure` event signals that the credential provisioning pipeline failed to renew a workload's credential. In the WIMSE model, credentials are intentionally short-lived to force regular posture evaluation before re-issuance. Under normal operation, renewal happens automatically. This event indicates that the renewal process has failed, and the workload may lose its ability to authenticate once the current credential expires.
+
+This event reports the operational outcome of a failed renewal, which can have several causes (see `failure_reason` below) — the Credential Service being unreachable, a policy denial, an internal error, or a failed posture evaluation. It is distinct from `posture-evaluation-failed`, which reports a posture failure as a security signal in its own right. Failed posture evaluation is only one possible cause of a renewal failure, and a renewal failure is only one possible consequence of a posture failure. When a renewal fails specifically because of posture evaluation, a Transmitter emits `credential-renewal-failure` with `failure_reason` `posture_evaluation_failed` and MAY also emit `posture-evaluation-failed`, correlated using the `txn` claim (see {{correlating-related-events}}).
 
 Attributes:
 
@@ -465,12 +470,12 @@ The following example is non-normative.
   "jti": "wise-evt-005",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/credential-renewal-failure": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "credential_type": "wit",
       "current_expiry": 1700003600,
       "failure_reason": "posture_evaluation_failed"
@@ -501,6 +506,28 @@ Attributes:
     - `maintenance` - Temporarily disabled for maintenance.
 - **event_timestamp** - OPTIONAL. Time of disablement.
 
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-010",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-disabled": {
+      "reason": "compromise",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-workload-disabled title="Example: Workload Disabled"}
+
 ### workload-enabled
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-enabled`
@@ -511,6 +538,114 @@ Attributes:
 
 - **event_timestamp** - OPTIONAL. Time of re-enablement.
 
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-011",
+  "iat": 1700003600,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-enabled": {
+      "event_timestamp": 1700003600
+    }
+  }
+}
+~~~
+{: #fig-workload-enabled title="Example: Workload Enabled"}
+
+### workload-degraded
+
+Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-degraded`
+
+The `workload-degraded` event signals that the trust domain authority has intentionally reduced a workload's trust level without suspending or purging it, so the workload can keep operating with fewer privileges. This supports adaptive resilience: gracefully degrading a workload (for example, revoking database write access or enforcing network quarantine) rather than executing a catastrophic shutdown during an active threat or compliance drift.
+
+This event is advisory. It conveys a reduced trust level; each Receiver maps that level to concrete privilege changes according to its own policy. WISE does not prescribe the enforcement actions a Receiver takes.
+
+Attributes:
+
+- **trust_level** - REQUIRED. The workload's current trust level after degradation, on a coarse graduated scale (from highest to lowest):
+    - `reduced` - Minor reduction; most privileges retained.
+    - `restricted` - Significant reduction; only limited operations should be permitted.
+    - `minimal` - Near-zero trust; only essential operations should be permitted, short of full suspension.
+- **previous_trust_level** - OPTIONAL. The trust level before this change, using the same scale, plus `full` for a workload previously at full trust. If omitted, the Receiver MUST NOT assume a particular prior level.
+- **reason** - OPTIONAL. Why the workload was degraded. Possible values:
+    - `anomaly_detected` - Anomalous behavior was observed for the workload.
+    - `policy_drift` - The workload drifted from its required policy or configuration.
+    - `missing_provenance` - Required provenance was missing or could not be verified.
+    - `posture_degraded` - Posture evaluation indicated a degraded but non-failing state.
+    - `compliance_drift` - The workload drifted from a compliance requirement.
+- **event_timestamp** - OPTIONAL. Time the degradation took effect.
+
+This event is complementary to, and does not overlap with, the related runtime and lifecycle events. `anomalous-behavior-detected` reports an observation (something unusual was seen) and is purely advisory; `workload-degraded` reports a decision by the authority to reduce trust, which may follow such an observation. `workload-compromised` and `workload-disabled` represent the fully-untrusted end of the range — a believed compromise or a suspension — whereas `workload-degraded` keeps the workload operational at a reduced trust level between full trust and suspension. A workload returns to full trust through `workload-restored`.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-013",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-degraded": {
+      "trust_level": "restricted",
+      "previous_trust_level": "full",
+      "reason": "anomaly_detected",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-workload-degraded title="Example: Workload Degraded"}
+
+### workload-restored
+
+Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-restored`
+
+The `workload-restored` event signals that a previously degraded workload has been returned to full trust. It is the reverse of `workload-degraded`. Like `workload-degraded`, it is advisory: Receivers restore privileges according to their own policy.
+
+Attributes:
+
+- **previous_trust_level** - OPTIONAL. The trust level the workload held before restoration (`reduced`, `restricted`, or `minimal`), using the scale defined for `workload-degraded`.
+- **reason** - OPTIONAL. Why trust was restored. Possible values:
+    - `remediated` - The condition that caused degradation was remediated.
+    - `posture_restored` - Posture evaluation returned to a satisfactory state.
+    - `administrative` - Restored by an administrator.
+- **event_timestamp** - OPTIONAL. Time the restoration took effect.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-014",
+  "iat": 1700003600,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-restored": {
+      "previous_trust_level": "restricted",
+      "reason": "remediated",
+      "event_timestamp": 1700003600
+    }
+  }
+}
+~~~
+{: #fig-workload-restored title="Example: Workload Restored"}
+
 ### workload-purged
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-purged`
@@ -520,6 +655,27 @@ The `workload-purged` event signals that a workload has been permanently removed
 Attributes:
 
 - **event_timestamp** - OPTIONAL. Time of removal.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-012",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-purged": {
+      "event_timestamp": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-workload-purged title="Example: Workload Purged"}
 
 ## Trust and Federation Events
 
@@ -561,12 +717,12 @@ The following example is non-normative.
   "jti": "wise-evt-020",
   "iat": 1700000000,
   "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/trust-anchor-added": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com"
-      },
       "anchor_type": "jwks",
       "trust_domain": "trust.example.com",
       "jwks_uri": "https://authority.example.com/.well-known/jwks.json",
@@ -615,12 +771,12 @@ The following example is non-normative.
   "jti": "wise-evt-021",
   "iat": 1700000000,
   "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/trust-anchor-rotated": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com"
-      },
       "anchor_type": "jwks",
       "trust_domain": "trust.example.com",
       "previous_key_id": "kid:signing-2024-q4",
@@ -664,12 +820,12 @@ The following example is non-normative.
   "jti": "wise-evt-022",
   "iat": 1700000000,
   "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/trust-anchor-revoked": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com"
-      },
       "anchor_type": "x509_ca",
       "trust_domain": "trust.example.com",
       "key_id": "serial:CA-ROOT-2023-001",
@@ -708,12 +864,12 @@ The following example is non-normative.
   "jti": "wise-evt-023",
   "iat": 1700000000,
   "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://newpartner.example.org"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/trust-domain-federation-established": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://newpartner.example.org"
-      },
       "trust_domain": "newpartner.example.org",
       "anchor_type": "jwks",
       "jwks_uri": "https://authority.newpartner.example.org/.well-known/jwks.json",
@@ -734,7 +890,6 @@ The `trust-domain-federation-updated` event signals that the terms of an existin
 Attributes:
 
 - **trust_domain** - REQUIRED. The FQDN of the federated trust domain whose federation terms changed.
-- **change_description** - OPTIONAL. Human-readable description of what changed.
 - **effective_at** - OPTIONAL. When the updated terms take effect. JSON number (NumericDate).
 - **reason** - OPTIONAL. Why the federation was updated. Possible values:
     - `policy_change` - Updated due to a change in federation policy.
@@ -742,6 +897,29 @@ Attributes:
     - `administrative` - Administrative decision.
     - `contractual` - Business relationship terms changed.
 - **event_timestamp** - OPTIONAL. Time the decision was made.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-024",
+  "iat": 1700000000,
+  "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://newpartner.example.org"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/trust-domain-federation-updated": {
+      "trust_domain": "newpartner.example.org",
+      "reason": "anchor_update",
+      "effective_at": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-federation-updated title="Example: Trust Domain Federation Updated"}
 
 ### trust-domain-federation-revoked
 
@@ -760,6 +938,29 @@ Attributes:
 - **effective_at** - OPTIONAL. When the revocation takes effect. JSON number (NumericDate).
 - **event_timestamp** - OPTIONAL. Time the decision was made.
 
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-025",
+  "iat": 1700000000,
+  "aud": "https://federation-peer.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://partner.example.org"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/trust-domain-federation-revoked": {
+      "trust_domain": "partner.example.org",
+      "reason": "administrative",
+      "effective_at": 1700604800
+    }
+  }
+}
+~~~
+{: #fig-federation-revoked title="Example: Trust Domain Federation Revoked"}
+
 ## Policy and Posture Evaluation Events
 
 These events signal changes to the policies governing workload identity issuance, posture evaluation, and credential validation within or across trust domains.
@@ -775,9 +976,30 @@ The `issuance-policy-changed` event signals that the policy governing credential
 Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
-- **change_description** - OPTIONAL. Human-readable description of the change.
 - **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-050",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/issuance-policy-changed": {
+      "policy_id": "policy:issuance-v3",
+      "effective_at": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-issuance-policy-changed title="Example: Issuance Policy Changed"}
 
 ### posture-evaluation-policy-changed
 
@@ -788,9 +1010,30 @@ The `posture-evaluation-policy-changed` event signals that the posture evaluatio
 Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
-- **change_description** - OPTIONAL. Human-readable description.
 - **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-051",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/posture-evaluation-policy-changed": {
+      "policy_id": "policy:posture-eval-v2",
+      "effective_at": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-posture-evaluation-policy-changed title="Example: Posture Evaluation Policy Changed"}
 
 ### validation-policy-changed
 
@@ -801,9 +1044,30 @@ The `validation-policy-changed` event signals that the policy used to validate w
 Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
-- **change_description** - OPTIONAL. Human-readable description.
 - **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-052",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/validation-policy-changed": {
+      "policy_id": "policy:validation-v5",
+      "effective_at": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-validation-policy-changed title="Example: Validation Policy Changed"}
 
 ### posture-evaluation-failed
 
@@ -811,14 +1075,44 @@ Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/posture-eva
 
 The `posture-evaluation-failed` event signals that a workload did not pass posture evaluation. The Credential Service determined that the workload's runtime environment, software integrity, or deployment context did not meet the requirements for credential issuance.
 
+Posture evaluation is a security-critical checkpoint, so its failure warrants a dedicated event rather than being buried inside another outcome. It may occur at initial issuance, at renewal, or during continuous re-evaluation, and this event reports the posture failure itself independently of any particular credential operation. A posture failure does not necessarily cause a `credential-renewal-failure` (for example, it may occur outside a renewal), and a `credential-renewal-failure` may occur for reasons unrelated to posture. When a renewal fails because of posture evaluation, the two events are emitted together and correlated using the `txn` claim (see {{correlating-related-events}}).
+
 Attributes:
 
 - **evaluation_type** - OPTIONAL. The scope of evaluation that failed. Possible values:
     - `platform` - Platform-level evaluation (e.g., node integrity, TEE verification).
     - `workload` - Workload-level evaluation (e.g., binary identity, image hash).
     - `runtime` - Runtime environment evaluation (e.g., configuration compliance, network posture).
-- **reason** - OPTIONAL. Why the evaluation failed.
+- **reason** - OPTIONAL. Why the evaluation failed. Possible values:
+    - `platform_integrity_failed` - Platform integrity or TEE verification did not pass.
+    - `attestation_invalid` - Attestation evidence was missing, malformed, or could not be verified.
+    - `image_mismatch` - The workload's binary or image did not match the expected measurement.
+    - `configuration_noncompliant` - The runtime configuration did not meet policy.
+    - `policy_denied` - Posture evaluation policy denied the workload.
 - **event_timestamp** - OPTIONAL. Time of the failure.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-053",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/posture-evaluation-failed": {
+      "evaluation_type": "platform",
+      "reason": "platform_integrity_failed",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-posture-evaluation-failed title="Example: Posture Evaluation Failed"}
 
 ### posture-evaluation-succeeded
 
@@ -832,6 +1126,28 @@ Attributes:
 
 - **evaluation_type** - OPTIONAL. The scope of evaluation that succeeded.
 - **event_timestamp** - OPTIONAL. Time of successful evaluation.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-054",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/posture-evaluation-succeeded": {
+      "evaluation_type": "workload",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-posture-evaluation-succeeded title="Example: Posture Evaluation Succeeded"}
 
 ## Runtime Posture Events
 
@@ -868,7 +1184,7 @@ For interoperability, when `previous_context` or `current_context` is present it
 
 This set is the minimum interoperable capability: where a Receiver understands these keys, it can compare the prior and new environment without prior agreement. Both objects SHOULD use the same keys so they can be compared. The schema MAY be extended with additional deployment- or profile-specific topology information where a Transmitter sees fit; in that case the Transmitter is responsible for ensuring the Receiver can understand the added fields, and how such understanding is established is out of scope for this profile.
 
-Because these fields can reveal workload infrastructure topology (see {{confidentiality}}), a Transmitter SHOULD avoid including detail beyond what the Receiver needs, based on its own evaluation of the privacy risk, particularly for events that may cross a trust-domain boundary. For example, a coarse `region` is preferable to a specific node or host name.
+These fields can reveal workload infrastructure topology; see {{privacy-considerations}} for guidance on limiting the detail disclosed.
 
 The following example is non-normative.
 
@@ -878,12 +1194,12 @@ The following example is non-normative.
   "jti": "wise-evt-030",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/workload-baseline-changed": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "reason": "migration",
       "previous_context": {
         "region": "us-east-1",
@@ -909,8 +1225,29 @@ The `workload-compromised` event signals that a workload is believed to be compr
 Attributes:
 
 - **detection_method** - OPTIONAL. How the compromise was detected.
-- **reason_admin** - OPTIONAL. Localizable administrative description, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **event_timestamp** - OPTIONAL. Time of detection.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-060",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/workload-compromised": {
+      "detection_method": "runtime-anomaly-detection",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-workload-compromised title="Example: Workload Compromised"}
 
 ### anomalous-behavior-detected
 
@@ -926,8 +1263,30 @@ Attributes:
     - `medium`
     - `high`
     - `critical`
-- **reason_admin** - OPTIONAL. Localizable administrative description, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **event_timestamp** - OPTIONAL. Time of detection.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "iss": "https://authority.example.com/",
+  "jti": "wise-evt-061",
+  "iat": 1700000000,
+  "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
+  "events": {
+    "https://schemas.openid.net/secevent/wise/event-type/anomalous-behavior-detected": {
+      "anomaly_type": "unexpected-egress",
+      "severity": "medium",
+      "event_timestamp": 1700000000
+    }
+  }
+}
+~~~
+{: #fig-anomalous-behavior-detected title="Example: Anomalous Behavior Detected"}
 
 ## Supply Chain Events
 
@@ -948,7 +1307,6 @@ Attributes:
 - **provenance_uri** - OPTIONAL. A URI at which the affected provenance document can be retrieved.
 - **provenance_format** - OPTIONAL. A hint indicating the kind of document referenced, for example `sbom` or `attestation`.
 - **artifact_digest** - OPTIONAL. A digest of the workload artifact (such as a container image) that the provenance describes, allowing the relying party to correlate the event with what is running.
-- **reason_admin** - OPTIONAL. Localizable administrative description of the change, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **event_timestamp** - OPTIONAL. The time the change occurred.
 
 The following example is non-normative.
@@ -959,12 +1317,12 @@ The following example is non-normative.
   "jti": "wise-evt-040",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/workload-provenance-changed": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "change_type": "revoked",
       "provenance_uri": "https://provenance.example.com/payment-service/attestation",
       "reason_admin": {
@@ -992,7 +1350,6 @@ Attributes:
     - `under_investigation` - Whether the workload is affected is not yet known.
 - **severity** - OPTIONAL. A qualitative severity to help the relying party prioritise. Possible values: `low`, `medium`, `high`, `critical`.
 - **advisory_uri** - OPTIONAL. A URI at which a full advisory or VEX statement can be retrieved.
-- **reason_admin** - OPTIONAL. Localizable administrative description, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **event_timestamp** - OPTIONAL. The time the status changed.
 
 The following example is non-normative.
@@ -1003,12 +1360,12 @@ The following example is non-normative.
   "jti": "wise-evt-041",
   "iat": 1700000000,
   "aud": "https://rp.partner.example.net/wise",
+  "sub_id": {
+    "format": "uri",
+    "uri": "wimse://trust.example.com/workload/payment-service"
+  },
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/workload-vulnerability-status-changed": {
-      "subject": {
-        "format": "uri",
-        "uri": "wimse://trust.example.com/workload/payment-service"
-      },
       "vulnerability_id": "CVE-2026-12345",
       "status": "affected",
       "severity": "critical",
@@ -1021,7 +1378,7 @@ The following example is non-normative.
 
 # Subject Identifiers for Workload Events
 
-WISE events use subject identifiers as defined in {{RFC9493}}. Workload identities in the WIMSE model are expressed as URIs following the format defined in {{WIMSE-ID}}.
+Following the Shared Signals Framework {{SSF}}, every WISE event conveys its subject in a top-level `sub_id` claim — a sibling of `iss`, `jti`, `iat`, `aud`, and `events`, not a member of the event-specific payload. The value of `sub_id` is a Subject Identifier as defined in {{RFC9493}}. WISE uses the `uri` format, carrying a Workload Identifier expressed as a URI following {{WIMSE-ID}}.
 
 ## URI Format
 
@@ -1058,9 +1415,22 @@ The following example is non-normative.
 }
 ~~~
 
+Deployments identifying workloads primarily by their immutable cryptographic artifacts, such as a compiled binary hash or container image digest, MAY express the workload subject using the Named Information (`ni`) URI scheme defined in {{RFC6920}}. This lets relying parties cryptographically bind security events directly to a workload's build provenance or artifact registry digest, and is particularly useful for supply-chain events and for external monitoring or intelligence platforms that key off artifact hashes rather than the full trust-domain context.
+
+A digest identifies an artifact — and therefore potentially every instance built from it — rather than a single running workload or its Workload Identifier. The `ni` form is therefore best suited to artifact-scoped signals and as a correlation aid; the Workload Identifier `uri` form remains the primary subject for per-workload and credential events.
+
+The following example is non-normative.
+
+~~~ json
+{
+  "format": "uri",
+  "uri": "ni://trust.example.com/sha-256;f4OxZX_x_FO5LcGBSKHWXfwtSx-j1ncoSt3SABJtkGk"
+}
+~~~
+
 ## Trust Domain Subject
 
-For events that apply to an entire trust domain (e.g., the `trust-anchor-*` and `trust-domain-federation-*` events), the subject identifies the trust domain itself using its Workload Identifier Origin as defined in {{WIMSE-ID}}:
+For events that apply to an entire trust domain rather than to a single workload — the `trust-anchor-*` and `trust-domain-federation-*` events, and the policy events (`issuance-policy-changed`, `posture-evaluation-policy-changed`, `validation-policy-changed`) — the `sub_id` identifies the trust domain itself using its Workload Identifier Origin as defined in {{WIMSE-ID}}:
 
 The following example is non-normative.
 
@@ -1087,9 +1457,9 @@ Access to WISE event streams MUST be authorized. Transmitters MUST verify that R
 
 ## Compromise Response
 
-Several WISE events indicate that a credential, key, trust anchor, federation, or workload can no longer be trusted. This is signalled either by an event whose purpose is to report compromise (`credential-compromise`, `workload-compromised`) or by any event carrying a `reason` of `compromise` or `key_compromise`. Upon receiving any such event — regardless of event type, including events defined by future revisions or profiling specifications — Receivers SHOULD take immediate action appropriate to the affected object (for example, reject the affected credentials, keys, or trust material, or isolate the affected workload) without waiting for additional confirmation.
+Several WISE events indicate that a credential, key, trust anchor, federation, or workload can no longer be trusted. This is signalled either by an event whose purpose is to report compromise (`credential-compromised`, `workload-compromised`) or by any event carrying a `reason` of `compromise` or `key_compromise`. Upon receiving any such event — regardless of event type, including events defined by future revisions or profiling specifications — Receivers SHOULD take immediate action appropriate to the affected object (for example, reject the affected credentials, keys, or trust material, or isolate the affected workload) without waiting for additional confirmation.
 
-Events in this document that carry such a signal include `credential-compromise`; `credential-revoked` (with reason `compromise` or `key_compromise`); `trust-anchor-rotated` and `trust-anchor-revoked` (with reason `compromise`); `trust-domain-federation-revoked` (with reason `compromise`); `workload-disabled` (with reason `compromise`); and `workload-compromised`.
+Events in this document that carry such a signal include `credential-compromised`; `credential-revoked` (with reason `compromise` or `key_compromise`); `trust-anchor-rotated` and `trust-anchor-revoked` (with reason `compromise`); `trust-domain-federation-revoked` (with reason `compromise`); `workload-disabled` (with reason `compromise`); and `workload-compromised`.
 
 Rejecting credentials only takes effect at the next credential check or proof-of-possession step; neither short credential lifetime nor condition-liveness severs a connection that is already established. A Receiver that holds active connections with, or is actively serving, the affected workload SHOULD therefore also terminate those connections rather than waiting for the next operation. This is best-effort and applies to Receivers, such as gateways or service mesh components, that are able to correlate the workload identifier to live connections.
 
@@ -1111,11 +1481,194 @@ Supply chain events are advisory inputs to a Receiver's own decision-making. A R
 
 WISE events may reveal information about internal infrastructure, deployment patterns, scaling behavior, and security incidents. Transmitters SHOULD minimize the information disclosed to what is necessary for the Receiver to take appropriate action.
 
+Several fields in this specification carry free-form or descriptive values — for example `key_storage_ecosystem` on `credential-issued`, and `previous_context` / `current_context` on `workload-baseline-changed`. Such fields can inadvertently disclose fine-grained infrastructure or device detail, such as node or host names, IP addresses, internal network identifiers, device models, or software versions. For any such field, a Transmitter SHOULD avoid including detail beyond what the Receiver needs, based on its own evaluation of the privacy risk, particularly for events that may cross a trust-domain boundary. For example, a coarse `region` is preferable to a specific node or host name.
+
 Events SHOULD NOT include personally identifiable information. Workload identifiers SHOULD NOT encode information about the humans who manage or operate the workloads.
 
 # IANA Considerations
 
-This specification defines no new IANA registrations. Event Type URIs are registered under the OpenID Foundation namespace.
+## WISE Event Types Registry
+
+This document requests IANA to establish a new registry titled "WISE Event Types". This registry records the Security Event Token (SET) event types defined by the WISE profile and by future extensions, so that such extensions are discoverable and their identifiers do not collide.
+
+The full Event Type URI of a registered entry is formed by appending its registered Event Type value to the WISE event type base URI:
+
+~~~
+https://schemas.openid.net/secevent/wise/event-type/
+~~~
+
+### Registration Procedure
+
+Registration follows the Specification Required policy defined in Section 4.6 of {{RFC8126}}. The Designated Expert verifies that a registration references a permanent, publicly available specification, that the Event Type value is unique within the registry and consists of lowercase ASCII letters, digits, and hyphens, and that its meaning does not overlap an existing entry.
+
+### Registry Fields
+
+Each entry has the following fields:
+
+- **Event Type**: The path segment appended to the base URI to form the full Event Type URI.
+- **Description**: A brief description of the event type.
+- **Change Controller**: For entries in this document, the OpenID Foundation. For other entries, the party responsible for the registration.
+- **Reference**: The specification defining the event type.
+
+### Initial Registry Contents
+
+The Change Controller for every entry below is the OpenID Foundation, and the Reference for every entry is this document. IANA is requested to register the following Event Type values:
+
+Event Type:
+: `credential-issued`
+
+Description:
+: A new credential was issued to a workload.
+
+Event Type:
+: `credential-rotated`
+
+Description:
+: A workload's credential was rotated.
+
+Event Type:
+: `credential-revoked`
+
+Description:
+: A workload's credential was revoked before its natural expiry.
+
+Event Type:
+: `credential-compromised`
+
+Description:
+: A workload credential is believed to be compromised.
+
+Event Type:
+: `credential-renewal-failure`
+
+Description:
+: Renewal of a workload's credential failed.
+
+Event Type:
+: `workload-disabled`
+
+Description:
+: A workload was suspended by the trust domain authority.
+
+Event Type:
+: `workload-enabled`
+
+Description:
+: A previously disabled workload is active again.
+
+Event Type:
+: `workload-purged`
+
+Description:
+: A workload was permanently removed from the trust domain.
+
+Event Type:
+: `workload-degraded`
+
+Description:
+: A workload's trust level was intentionally reduced without suspending it.
+
+Event Type:
+: `workload-restored`
+
+Description:
+: A previously degraded workload was returned to full trust.
+
+Event Type:
+: `trust-anchor-added`
+
+Description:
+: A new trust anchor was added for a trust domain.
+
+Event Type:
+: `trust-anchor-rotated`
+
+Description:
+: An existing trust anchor was replaced.
+
+Event Type:
+: `trust-anchor-revoked`
+
+Description:
+: A trust anchor was withdrawn and must no longer be used.
+
+Event Type:
+: `trust-domain-federation-established`
+
+Description:
+: A new trust domain was federated.
+
+Event Type:
+: `trust-domain-federation-updated`
+
+Description:
+: The terms of an existing federation changed.
+
+Event Type:
+: `trust-domain-federation-revoked`
+
+Description:
+: A previously federated trust domain is no longer trusted.
+
+Event Type:
+: `issuance-policy-changed`
+
+Description:
+: The credential issuance policy changed.
+
+Event Type:
+: `posture-evaluation-policy-changed`
+
+Description:
+: The posture evaluation policy changed.
+
+Event Type:
+: `validation-policy-changed`
+
+Description:
+: The credential validation policy changed.
+
+Event Type:
+: `posture-evaluation-failed`
+
+Description:
+: A workload did not pass posture evaluation.
+
+Event Type:
+: `posture-evaluation-succeeded`
+
+Description:
+: A workload passed posture evaluation.
+
+Event Type:
+: `workload-baseline-changed`
+
+Description:
+: A workload's runtime environment or deployment context changed.
+
+Event Type:
+: `workload-compromised`
+
+Description:
+: A workload is believed to be compromised based on runtime detection.
+
+Event Type:
+: `anomalous-behavior-detected`
+
+Description:
+: Unusual behavior was observed for a workload.
+
+Event Type:
+: `workload-provenance-changed`
+
+Description:
+: The provenance of a workload changed.
+
+Event Type:
+: `workload-vulnerability-status-changed`
+
+Description:
+: The vulnerability status of a workload changed.
 
 --- back
 
@@ -1136,8 +1689,19 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 - Noted in Compromise Response that credential rejection only takes effect at the next operation, so Receivers holding active connections with an affected workload should also terminate them (best-effort).
 - Added a general "Correlating Related Events" rule: a Transmitter SHOULD set a shared `txn` claim across all SETs describing one underlying occurrence, regardless of event type (replacing the per-event guidance). Added conditional pairing guidance to `workload-compromised`.
 - Generalised the Compromise Response rule to apply to any event carrying a `compromise` or `key_compromise` signal, rather than an enumerated list of event types.
-- Defined a minimal interoperable key set (`region`, `zone`, `platform`, `cluster`, `image`, each optional) for the `previous_context`/`current_context` fields of `workload-baseline-changed`, allowed profile-specific extension, and added guidance to avoid disclosing fine-grained topology across trust-domain boundaries.
+- Defined a minimal interoperable key set (`region`, `zone`, `platform`, `cluster`, `image`, each optional) for the `previous_context`/`current_context` fields of `workload-baseline-changed`, and allowed profile-specific extension.
 - Expanded the `key_storage` values on `credential-issued` from the binary `hardware`/`software` to `software`, `software_encrypted`, `hardware_tpm`, `hardware_hsm`, `hardware_secure_enclave`, `vaulted`, and `unknown`, so a Receiver can distinguish key-protection strength when making a trust decision.
+- Added a single Privacy Considerations note covering over-disclosure in all free-form/descriptive fields (`key_storage_ecosystem`, `previous_context`, `current_context`), replacing per-field guidance.
+- Clarified the distinction between `credential-renewal-failure` (operational outcome, multiple causes) and `posture-evaluation-failed` (a security-critical signal in its own right), and how the two relate when posture is the cause of a renewal failure.
+- Made `reason_admin`/`reason_user` usage consistent: removed the redundant per-event listings and rely on the Common Optional Claims section, which now states the claims are not repeated per event and any event MAY carry them.
+- Replaced the free-text `reason` on `posture-evaluation-failed` with an enum (`platform_integrity_failed`, `attestation_invalid`, `image_mismatch`, `configuration_noncompliant`, `policy_denied`), matching the enum style of sibling events.
+- Renamed the `credential-compromise` event to `credential-compromised` for tense consistency with the other credential events (`-issued`, `-rotated`, `-revoked`) and `workload-compromised`.
+- Added a non-normative example to every event that lacked one, so all event types now have consistent example coverage (and confirmed policy events use the trust-domain subject).
+- Established a "WISE Event Types" IANA registry (Specification Required) with all defined event types as initial registrations, replacing the "no new registrations" statement.
+- Added `workload-degraded` and `workload-restored` events for adaptive resilience: an advisory, coarse graduated `trust_level` signal for intentionally reducing a workload's trust without suspension, and its reverse. Clarified their complementarity with `anomalous-behavior-detected`, `workload-compromised`, and `workload-disabled`.
+- Added the Named Information (`ni`) URI scheme (RFC 6920) as an optional subject identifier for identifying workloads by build/image digest, with a note that a digest identifies an artifact rather than a single workload instance.
+- Replaced the free-form `change_description` field on `trust-domain-federation-updated` and the policy-change events with the localizable `reason_admin`/`reason_user` common claims, for consistency with the CAEP-aligned pattern.
+- Carried the subject in the top-level `sub_id` claim (RFC 9493 format, per SSF) instead of a nonstandard nested `subject` member, updating every example; and specified that policy events take the trust-domain subject.
 
 -02
 
