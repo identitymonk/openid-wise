@@ -2669,7 +2669,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 </li>
           </ul>
 <p id="section-2.7.1-7">This set is the minimum interoperable capability: where a Receiver understands these keys, it can compare the prior and new environment without prior agreement. Both objects SHOULD use the same keys so they can be compared. The schema MAY be extended with additional deployment- or profile-specific topology information where a Transmitter sees fit; in that case the Transmitter is responsible for ensuring the Receiver can understand the added fields, and how such understanding is established is out of scope for this profile.<a href="#section-2.7.1-7" class="pilcrow">¶</a></p>
-<p id="section-2.7.1-8">Because these fields can reveal workload infrastructure topology (see <a href="#confidentiality" class="auto internal xref">Section 4.1</a>), a Transmitter SHOULD avoid including detail beyond what the Receiver needs, based on its own evaluation of the privacy risk, particularly for events that may cross a trust-domain boundary. For example, a coarse <code>region</code> is preferable to a specific node or host name.<a href="#section-2.7.1-8" class="pilcrow">¶</a></p>
+<p id="section-2.7.1-8">These fields can reveal workload infrastructure topology; see <a href="#privacy-considerations" class="auto internal xref">Section 5</a> for guidance on limiting the detail disclosed.<a href="#section-2.7.1-8" class="pilcrow">¶</a></p>
 <p id="section-2.7.1-9">The following example is non-normative.<a href="#section-2.7.1-9" class="pilcrow">¶</a></p>
 <span id="name-example-workload-baseline-c"></span><div id="fig-baseline-changed">
 <figure id="figure-10">
@@ -3059,7 +3059,8 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-privacy-considerations" class="section-name selfRef">Privacy Considerations</a>
       </h2>
 <p id="section-5-1">WISE events may reveal information about internal infrastructure, deployment patterns, scaling behavior, and security incidents. Transmitters SHOULD minimize the information disclosed to what is necessary for the Receiver to take appropriate action.<a href="#section-5-1" class="pilcrow">¶</a></p>
-<p id="section-5-2">Events SHOULD NOT include personally identifiable information. Workload identifiers SHOULD NOT encode information about the humans who manage or operate the workloads.<a href="#section-5-2" class="pilcrow">¶</a></p>
+<p id="section-5-2">Several fields in this specification carry free-form or descriptive values — for example <code>key_storage_ecosystem</code> on <code>credential-issued</code>, and <code>previous_context</code> / <code>current_context</code> on <code>workload-baseline-changed</code>. Such fields can inadvertently disclose fine-grained infrastructure or device detail, such as node or host names, IP addresses, internal network identifiers, device models, or software versions. For any such field, a Transmitter SHOULD avoid including detail beyond what the Receiver needs, based on its own evaluation of the privacy risk, particularly for events that may cross a trust-domain boundary. For example, a coarse <code>region</code> is preferable to a specific node or host name.<a href="#section-5-2" class="pilcrow">¶</a></p>
+<p id="section-5-3">Events SHOULD NOT include personally identifiable information. Workload identifiers SHOULD NOT encode information about the humans who manage or operate the workloads.<a href="#section-5-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="iana-considerations">
@@ -3228,13 +3229,16 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           <p id="appendix-B-2.7.1">Generalised the Compromise Response rule to apply to any event carrying a <code>compromise</code> or <code>key_compromise</code> signal, rather than an enumerated list of event types.<a href="#appendix-B-2.7.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.8">
-          <p id="appendix-B-2.8.1">Defined a minimal interoperable key set (<code>region</code>, <code>zone</code>, <code>platform</code>, <code>cluster</code>, <code>image</code>, each optional) for the <code>previous_context</code>/<code>current_context</code> fields of <code>workload-baseline-changed</code>, allowed profile-specific extension, and added guidance to avoid disclosing fine-grained topology across trust-domain boundaries.<a href="#appendix-B-2.8.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.8.1">Defined a minimal interoperable key set (<code>region</code>, <code>zone</code>, <code>platform</code>, <code>cluster</code>, <code>image</code>, each optional) for the <code>previous_context</code>/<code>current_context</code> fields of <code>workload-baseline-changed</code>, and allowed profile-specific extension.<a href="#appendix-B-2.8.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.9">
-          <p id="appendix-B-2.9.1">Replaced the free-form <code>change_description</code> field on <code>trust-domain-federation-updated</code> and the policy-change events with the localizable <code>reason_admin</code>/<code>reason_user</code> common claims, for consistency with the CAEP-aligned pattern.<a href="#appendix-B-2.9.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.9.1">Added a single Privacy Considerations note covering over-disclosure in all free-form/descriptive fields (<code>key_storage_ecosystem</code>, <code>previous_context</code>, <code>current_context</code>), replacing per-field guidance.<a href="#appendix-B-2.9.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.10">
-          <p id="appendix-B-2.10.1">Carried the subject in the top-level <code>sub_id</code> claim (RFC 9493 format, per SSF) instead of a nonstandard nested <code>subject</code> member, updating every example; and specified that policy events take the trust-domain subject.<a href="#appendix-B-2.10.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.10.1">Replaced the free-form <code>change_description</code> field on <code>trust-domain-federation-updated</code> and the policy-change events with the localizable <code>reason_admin</code>/<code>reason_user</code> common claims, for consistency with the CAEP-aligned pattern.<a href="#appendix-B-2.10.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.11">
+          <p id="appendix-B-2.11.1">Carried the subject in the top-level <code>sub_id</code> claim (RFC 9493 format, per SSF) instead of a nonstandard nested <code>subject</code> member, updating every example; and specified that policy events take the trust-domain subject.<a href="#appendix-B-2.11.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-B-3">-02<a href="#appendix-B-3" class="pilcrow">¶</a></p>
