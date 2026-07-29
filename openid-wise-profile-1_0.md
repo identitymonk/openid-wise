@@ -38,6 +38,7 @@ normative:
   RFC5646:
   RFC7516:
   RFC7523:
+  RFC8126:
   RFC8417:
   RFC8705:
   RFC9325:
@@ -1379,7 +1380,176 @@ Events SHOULD NOT include personally identifiable information. Workload identifi
 
 # IANA Considerations
 
-This specification defines no new IANA registrations. Event Type URIs are registered under the OpenID Foundation namespace.
+## WISE Event Types Registry
+
+This document requests IANA to establish a new registry titled "WISE Event Types". This registry records the Security Event Token (SET) event types defined by the WISE profile and by future extensions, so that such extensions are discoverable and their identifiers do not collide.
+
+The full Event Type URI of a registered entry is formed by appending its registered Event Type value to the WISE event type base URI:
+
+~~~
+https://schemas.openid.net/secevent/wise/event-type/
+~~~
+
+### Registration Procedure
+
+Registration follows the Specification Required policy defined in Section 4.6 of {{RFC8126}}. The Designated Expert verifies that a registration references a permanent, publicly available specification, that the Event Type value is unique within the registry and consists of lowercase ASCII letters, digits, and hyphens, and that its meaning does not overlap an existing entry.
+
+### Registry Fields
+
+Each entry has the following fields:
+
+- **Event Type**: The path segment appended to the base URI to form the full Event Type URI.
+- **Description**: A brief description of the event type.
+- **Change Controller**: For entries in this document, the OpenID Foundation. For other entries, the party responsible for the registration.
+- **Reference**: The specification defining the event type.
+
+### Initial Registry Contents
+
+The Change Controller for every entry below is the OpenID Foundation, and the Reference for every entry is this document. IANA is requested to register the following Event Type values:
+
+Event Type:
+: `credential-issued`
+
+Description:
+: A new credential was issued to a workload.
+
+Event Type:
+: `credential-rotated`
+
+Description:
+: A workload's credential was rotated.
+
+Event Type:
+: `credential-revoked`
+
+Description:
+: A workload's credential was revoked before its natural expiry.
+
+Event Type:
+: `credential-compromised`
+
+Description:
+: A workload credential is believed to be compromised.
+
+Event Type:
+: `credential-renewal-failure`
+
+Description:
+: Renewal of a workload's credential failed.
+
+Event Type:
+: `workload-disabled`
+
+Description:
+: A workload was suspended by the trust domain authority.
+
+Event Type:
+: `workload-enabled`
+
+Description:
+: A previously disabled workload is active again.
+
+Event Type:
+: `workload-purged`
+
+Description:
+: A workload was permanently removed from the trust domain.
+
+Event Type:
+: `trust-anchor-added`
+
+Description:
+: A new trust anchor was added for a trust domain.
+
+Event Type:
+: `trust-anchor-rotated`
+
+Description:
+: An existing trust anchor was replaced.
+
+Event Type:
+: `trust-anchor-revoked`
+
+Description:
+: A trust anchor was withdrawn and must no longer be used.
+
+Event Type:
+: `trust-domain-federation-established`
+
+Description:
+: A new trust domain was federated.
+
+Event Type:
+: `trust-domain-federation-updated`
+
+Description:
+: The terms of an existing federation changed.
+
+Event Type:
+: `trust-domain-federation-revoked`
+
+Description:
+: A previously federated trust domain is no longer trusted.
+
+Event Type:
+: `issuance-policy-changed`
+
+Description:
+: The credential issuance policy changed.
+
+Event Type:
+: `posture-evaluation-policy-changed`
+
+Description:
+: The posture evaluation policy changed.
+
+Event Type:
+: `validation-policy-changed`
+
+Description:
+: The credential validation policy changed.
+
+Event Type:
+: `posture-evaluation-failed`
+
+Description:
+: A workload did not pass posture evaluation.
+
+Event Type:
+: `posture-evaluation-succeeded`
+
+Description:
+: A workload passed posture evaluation.
+
+Event Type:
+: `workload-baseline-changed`
+
+Description:
+: A workload's runtime environment or deployment context changed.
+
+Event Type:
+: `workload-compromised`
+
+Description:
+: A workload is believed to be compromised based on runtime detection.
+
+Event Type:
+: `anomalous-behavior-detected`
+
+Description:
+: Unusual behavior was observed for a workload.
+
+Event Type:
+: `workload-provenance-changed`
+
+Description:
+: The provenance of a workload changed.
+
+Event Type:
+: `workload-vulnerability-status-changed`
+
+Description:
+: The vulnerability status of a workload changed.
 
 --- back
 
@@ -1407,6 +1577,7 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 - Replaced the free-text `reason` on `posture-evaluation-failed` with an enum (`platform_integrity_failed`, `attestation_invalid`, `image_mismatch`, `configuration_noncompliant`, `policy_denied`), matching the enum style of sibling events.
 - Renamed the `credential-compromise` event to `credential-compromised` for tense consistency with the other credential events (`-issued`, `-rotated`, `-revoked`) and `workload-compromised`.
 - Added a non-normative example to every event that lacked one, so all 24 event types now have consistent example coverage (and confirmed policy events use the trust-domain subject).
+- Established a "WISE Event Types" IANA registry (Specification Required) with the 24 event types as initial registrations, replacing the "no new registrations" statement.
 - Replaced the free-form `change_description` field on `trust-domain-federation-updated` and the policy-change events with the localizable `reason_admin`/`reason_user` common claims, for consistency with the CAEP-aligned pattern.
 - Carried the subject in the top-level `sub_id` claim (RFC 9493 format, per SSF) instead of a nonstandard nested `subject` member, updating every example; and specified that policy events take the trust-domain subject.
 
