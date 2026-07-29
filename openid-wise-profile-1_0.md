@@ -242,6 +242,8 @@ Unless stated otherwise, any WISE event MAY include the common optional claims d
 - **reason_user** - OPTIONAL. A localizable, user-facing message, as defined in {{CAEP}}. Its value follows the same JSON object structure as `reason_admin`.
 - **initiating_entity** - OPTIONAL. A JSON string describing what triggered the event, as defined in {{CAEP}}: one of `admin`, `user`, `policy`, or `system`.
 
+To avoid repetition, these common claims are not listed in the per-event attribute definitions in the following sections; any event MAY carry them, and some examples include them for illustration.
+
 When a WISE event includes `reason_admin` or `reason_user`, the claim MUST use the localizable JSON object structure defined above rather than a plain string. The following is a non-normative example:
 
 ~~~ json
@@ -406,7 +408,6 @@ Attributes:
 - **credential_type** - REQUIRED. The type of credential compromised.
 - **credential_id** - OPTIONAL. Identifier of the compromised credential.
 - **event_timestamp** - OPTIONAL. The time at which the compromise was detected.
-- **reason_admin** - OPTIONAL. Localizable administrative description of the compromise, as defined in the Common Optional Claims ({{common-optional-claims}}).
 
 The following example is non-normative.
 
@@ -730,7 +731,6 @@ The `trust-domain-federation-updated` event signals that the terms of an existin
 Attributes:
 
 - **trust_domain** - REQUIRED. The FQDN of the federated trust domain whose federation terms changed.
-- **reason_admin**, **reason_user** - OPTIONAL. Localizable description of the change, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **effective_at** - OPTIONAL. When the updated terms take effect. JSON number (NumericDate).
 - **reason** - OPTIONAL. Why the federation was updated. Possible values:
     - `policy_change` - Updated due to a change in federation policy.
@@ -771,7 +771,6 @@ The `issuance-policy-changed` event signals that the policy governing credential
 Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
-- **reason_admin**, **reason_user** - OPTIONAL. Localizable description of the change, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
 
@@ -784,7 +783,6 @@ The `posture-evaluation-policy-changed` event signals that the posture evaluatio
 Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
-- **reason_admin**, **reason_user** - OPTIONAL. Localizable description of the change, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
 
@@ -797,7 +795,6 @@ The `validation-policy-changed` event signals that the policy used to validate w
 Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
-- **reason_admin**, **reason_user** - OPTIONAL. Localizable description of the change, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
 
@@ -907,7 +904,6 @@ The `workload-compromised` event signals that a workload is believed to be compr
 Attributes:
 
 - **detection_method** - OPTIONAL. How the compromise was detected.
-- **reason_admin** - OPTIONAL. Localizable administrative description, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **event_timestamp** - OPTIONAL. Time of detection.
 
 ### anomalous-behavior-detected
@@ -924,7 +920,6 @@ Attributes:
     - `medium`
     - `high`
     - `critical`
-- **reason_admin** - OPTIONAL. Localizable administrative description, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **event_timestamp** - OPTIONAL. Time of detection.
 
 ## Supply Chain Events
@@ -946,7 +941,6 @@ Attributes:
 - **provenance_uri** - OPTIONAL. A URI at which the affected provenance document can be retrieved.
 - **provenance_format** - OPTIONAL. A hint indicating the kind of document referenced, for example `sbom` or `attestation`.
 - **artifact_digest** - OPTIONAL. A digest of the workload artifact (such as a container image) that the provenance describes, allowing the relying party to correlate the event with what is running.
-- **reason_admin** - OPTIONAL. Localizable administrative description of the change, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **event_timestamp** - OPTIONAL. The time the change occurred.
 
 The following example is non-normative.
@@ -990,7 +984,6 @@ Attributes:
     - `under_investigation` - Whether the workload is affected is not yet known.
 - **severity** - OPTIONAL. A qualitative severity to help the relying party prioritise. Possible values: `low`, `medium`, `high`, `critical`.
 - **advisory_uri** - OPTIONAL. A URI at which a full advisory or VEX statement can be retrieved.
-- **reason_admin** - OPTIONAL. Localizable administrative description, as defined in the Common Optional Claims ({{common-optional-claims}}).
 - **event_timestamp** - OPTIONAL. The time the status changed.
 
 The following example is non-normative.
@@ -1139,6 +1132,7 @@ The authors would like to thank the members of the OpenID Foundation Shared Sign
 - Defined a minimal interoperable key set (`region`, `zone`, `platform`, `cluster`, `image`, each optional) for the `previous_context`/`current_context` fields of `workload-baseline-changed`, and allowed profile-specific extension.
 - Added a single Privacy Considerations note covering over-disclosure in all free-form/descriptive fields (`key_storage_ecosystem`, `previous_context`, `current_context`), replacing per-field guidance.
 - Clarified the distinction between `credential-renewal-failure` (operational outcome, multiple causes) and `posture-evaluation-failed` (a security-critical signal in its own right), and how the two relate when posture is the cause of a renewal failure.
+- Made `reason_admin`/`reason_user` usage consistent: removed the redundant per-event listings and rely on the Common Optional Claims section, which now states the claims are not repeated per event and any event MAY carry them.
 - Replaced the free-form `change_description` field on `trust-domain-federation-updated` and the policy-change events with the localizable `reason_admin`/`reason_user` common claims, for consistency with the CAEP-aligned pattern.
 - Carried the subject in the top-level `sub_id` claim (RFC 9493 format, per SSF) instead of a nonstandard nested `subject` member, updating every example; and specified that policy events take the trust-domain subject.
 

@@ -1576,14 +1576,15 @@ https://schemas.openid.net/secevent/wise/event-type/
             <p id="section-2.2-2.3.1"><strong>initiating_entity</strong> - OPTIONAL. A JSON string describing what triggered the event, as defined in <span>[<a href="#CAEP" class="cite xref">CAEP</a>]</span>: one of <code>admin</code>, <code>user</code>, <code>policy</code>, or <code>system</code>.<a href="#section-2.2-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-2.2-3">When a WISE event includes <code>reason_admin</code> or <code>reason_user</code>, the claim MUST use the localizable JSON object structure defined above rather than a plain string. The following is a non-normative example:<a href="#section-2.2-3" class="pilcrow">¶</a></p>
-<div class="lang-json sourcecode" id="section-2.2-4">
+<p id="section-2.2-3">To avoid repetition, these common claims are not listed in the per-event attribute definitions in the following sections; any event MAY carry them, and some examples include them for illustration.<a href="#section-2.2-3" class="pilcrow">¶</a></p>
+<p id="section-2.2-4">When a WISE event includes <code>reason_admin</code> or <code>reason_user</code>, the claim MUST use the localizable JSON object structure defined above rather than a plain string. The following is a non-normative example:<a href="#section-2.2-4" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="section-2.2-5">
 <pre>
 "reason_admin": {
   "en": "Private key material detected in public repository",
   "de": "Privates Schluesselmaterial in oeffentlichem Repository entdeckt"
 }
-</pre><a href="#section-2.2-4" class="pilcrow">¶</a>
+</pre><a href="#section-2.2-5" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
@@ -1840,9 +1841,6 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
 </li>
             <li class="normal" id="section-2.3.4-4.3">
               <p id="section-2.3.4-4.3.1"><strong>event_timestamp</strong> - OPTIONAL. The time at which the compromise was detected.<a href="#section-2.3.4-4.3.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-2.3.4-4.4">
-              <p id="section-2.3.4-4.4.1"><strong>reason_admin</strong> - OPTIONAL. Localizable administrative description of the compromise, as defined in the Common Optional Claims (<a href="#common-optional-claims" class="auto internal xref">Section 2.2</a>).<a href="#section-2.3.4-4.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-2.3.4-5">The following example is non-normative.<a href="#section-2.3.4-5" class="pilcrow">¶</a></p>
@@ -2390,30 +2388,27 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.5.5-4.1.1"><strong>trust_domain</strong> - REQUIRED. The FQDN of the federated trust domain whose federation terms changed.<a href="#section-2.5.5-4.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.5.5-4.2">
-              <p id="section-2.5.5-4.2.1"><strong>reason_admin</strong>, <strong>reason_user</strong> - OPTIONAL. Localizable description of the change, as defined in the Common Optional Claims (<a href="#common-optional-claims" class="auto internal xref">Section 2.2</a>).<a href="#section-2.5.5-4.2.1" class="pilcrow">¶</a></p>
+              <p id="section-2.5.5-4.2.1"><strong>effective_at</strong> - OPTIONAL. When the updated terms take effect. JSON number (NumericDate).<a href="#section-2.5.5-4.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.5.5-4.3">
-              <p id="section-2.5.5-4.3.1"><strong>effective_at</strong> - OPTIONAL. When the updated terms take effect. JSON number (NumericDate).<a href="#section-2.5.5-4.3.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-2.5.5-4.4">
-              <p id="section-2.5.5-4.4.1"><strong>reason</strong> - OPTIONAL. Why the federation was updated. Possible values:<a href="#section-2.5.5-4.4.1" class="pilcrow">¶</a></p>
+              <p id="section-2.5.5-4.3.1"><strong>reason</strong> - OPTIONAL. Why the federation was updated. Possible values:<a href="#section-2.5.5-4.3.1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-2.5.5-4.4.2.1">
-                  <p id="section-2.5.5-4.4.2.1.1"><code>policy_change</code> - Updated due to a change in federation policy.<a href="#section-2.5.5-4.4.2.1.1" class="pilcrow">¶</a></p>
+<li class="normal" id="section-2.5.5-4.3.2.1">
+                  <p id="section-2.5.5-4.3.2.1.1"><code>policy_change</code> - Updated due to a change in federation policy.<a href="#section-2.5.5-4.3.2.1.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-2.5.5-4.4.2.2">
-                  <p id="section-2.5.5-4.4.2.2.1"><code>anchor_update</code> - The trust anchors used to validate the federated domain changed.<a href="#section-2.5.5-4.4.2.2.1" class="pilcrow">¶</a></p>
+                <li class="normal" id="section-2.5.5-4.3.2.2">
+                  <p id="section-2.5.5-4.3.2.2.1"><code>anchor_update</code> - The trust anchors used to validate the federated domain changed.<a href="#section-2.5.5-4.3.2.2.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-2.5.5-4.4.2.3">
-                  <p id="section-2.5.5-4.4.2.3.1"><code>administrative</code> - Administrative decision.<a href="#section-2.5.5-4.4.2.3.1" class="pilcrow">¶</a></p>
+                <li class="normal" id="section-2.5.5-4.3.2.3">
+                  <p id="section-2.5.5-4.3.2.3.1"><code>administrative</code> - Administrative decision.<a href="#section-2.5.5-4.3.2.3.1" class="pilcrow">¶</a></p>
 </li>
-                <li class="normal" id="section-2.5.5-4.4.2.4">
-                  <p id="section-2.5.5-4.4.2.4.1"><code>contractual</code> - Business relationship terms changed.<a href="#section-2.5.5-4.4.2.4.1" class="pilcrow">¶</a></p>
+                <li class="normal" id="section-2.5.5-4.3.2.4">
+                  <p id="section-2.5.5-4.3.2.4.1"><code>contractual</code> - Business relationship terms changed.<a href="#section-2.5.5-4.3.2.4.1" class="pilcrow">¶</a></p>
 </li>
               </ul>
 </li>
-            <li class="normal" id="section-2.5.5-4.5">
-              <p id="section-2.5.5-4.5.1"><strong>event_timestamp</strong> - OPTIONAL. Time the decision was made.<a href="#section-2.5.5-4.5.1" class="pilcrow">¶</a></p>
+            <li class="normal" id="section-2.5.5-4.4">
+              <p id="section-2.5.5-4.4.1"><strong>event_timestamp</strong> - OPTIONAL. Time the decision was made.<a href="#section-2.5.5-4.4.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -2478,13 +2473,10 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.6.1-4.1.1"><strong>policy_id</strong> - OPTIONAL. Identifier of the policy that changed.<a href="#section-2.6.1-4.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.6.1-4.2">
-              <p id="section-2.6.1-4.2.1"><strong>reason_admin</strong>, <strong>reason_user</strong> - OPTIONAL. Localizable description of the change, as defined in the Common Optional Claims (<a href="#common-optional-claims" class="auto internal xref">Section 2.2</a>).<a href="#section-2.6.1-4.2.1" class="pilcrow">¶</a></p>
+              <p id="section-2.6.1-4.2.1"><strong>effective_at</strong> - OPTIONAL. When the new policy takes effect.<a href="#section-2.6.1-4.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.6.1-4.3">
-              <p id="section-2.6.1-4.3.1"><strong>effective_at</strong> - OPTIONAL. When the new policy takes effect.<a href="#section-2.6.1-4.3.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-2.6.1-4.4">
-              <p id="section-2.6.1-4.4.1"><strong>event_timestamp</strong> - OPTIONAL. Time the change was made.<a href="#section-2.6.1-4.4.1" class="pilcrow">¶</a></p>
+              <p id="section-2.6.1-4.3.1"><strong>event_timestamp</strong> - OPTIONAL. Time the change was made.<a href="#section-2.6.1-4.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -2502,13 +2494,10 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.6.2-4.1.1"><strong>policy_id</strong> - OPTIONAL. Identifier of the policy that changed.<a href="#section-2.6.2-4.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.6.2-4.2">
-              <p id="section-2.6.2-4.2.1"><strong>reason_admin</strong>, <strong>reason_user</strong> - OPTIONAL. Localizable description of the change, as defined in the Common Optional Claims (<a href="#common-optional-claims" class="auto internal xref">Section 2.2</a>).<a href="#section-2.6.2-4.2.1" class="pilcrow">¶</a></p>
+              <p id="section-2.6.2-4.2.1"><strong>effective_at</strong> - OPTIONAL. When the new policy takes effect.<a href="#section-2.6.2-4.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.6.2-4.3">
-              <p id="section-2.6.2-4.3.1"><strong>effective_at</strong> - OPTIONAL. When the new policy takes effect.<a href="#section-2.6.2-4.3.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-2.6.2-4.4">
-              <p id="section-2.6.2-4.4.1"><strong>event_timestamp</strong> - OPTIONAL. Time the change was made.<a href="#section-2.6.2-4.4.1" class="pilcrow">¶</a></p>
+              <p id="section-2.6.2-4.3.1"><strong>event_timestamp</strong> - OPTIONAL. Time the change was made.<a href="#section-2.6.2-4.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -2526,13 +2515,10 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.6.3-4.1.1"><strong>policy_id</strong> - OPTIONAL. Identifier of the policy that changed.<a href="#section-2.6.3-4.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.6.3-4.2">
-              <p id="section-2.6.3-4.2.1"><strong>reason_admin</strong>, <strong>reason_user</strong> - OPTIONAL. Localizable description of the change, as defined in the Common Optional Claims (<a href="#common-optional-claims" class="auto internal xref">Section 2.2</a>).<a href="#section-2.6.3-4.2.1" class="pilcrow">¶</a></p>
+              <p id="section-2.6.3-4.2.1"><strong>effective_at</strong> - OPTIONAL. When the new policy takes effect.<a href="#section-2.6.3-4.2.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.6.3-4.3">
-              <p id="section-2.6.3-4.3.1"><strong>effective_at</strong> - OPTIONAL. When the new policy takes effect.<a href="#section-2.6.3-4.3.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-2.6.3-4.4">
-              <p id="section-2.6.3-4.4.1"><strong>event_timestamp</strong> - OPTIONAL. Time the change was made.<a href="#section-2.6.3-4.4.1" class="pilcrow">¶</a></p>
+              <p id="section-2.6.3-4.3.1"><strong>event_timestamp</strong> - OPTIONAL. Time the change was made.<a href="#section-2.6.3-4.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -2722,10 +2708,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.7.2-4.1.1"><strong>detection_method</strong> - OPTIONAL. How the compromise was detected.<a href="#section-2.7.2-4.1.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.7.2-4.2">
-              <p id="section-2.7.2-4.2.1"><strong>reason_admin</strong> - OPTIONAL. Localizable administrative description, as defined in the Common Optional Claims (<a href="#common-optional-claims" class="auto internal xref">Section 2.2</a>).<a href="#section-2.7.2-4.2.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-2.7.2-4.3">
-              <p id="section-2.7.2-4.3.1"><strong>event_timestamp</strong> - OPTIONAL. Time of detection.<a href="#section-2.7.2-4.3.1" class="pilcrow">¶</a></p>
+              <p id="section-2.7.2-4.2.1"><strong>event_timestamp</strong> - OPTIONAL. Time of detection.<a href="#section-2.7.2-4.2.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -2760,10 +2743,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               </ul>
 </li>
             <li class="normal" id="section-2.7.3-4.3">
-              <p id="section-2.7.3-4.3.1"><strong>reason_admin</strong> - OPTIONAL. Localizable administrative description, as defined in the Common Optional Claims (<a href="#common-optional-claims" class="auto internal xref">Section 2.2</a>).<a href="#section-2.7.3-4.3.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-2.7.3-4.4">
-              <p id="section-2.7.3-4.4.1"><strong>event_timestamp</strong> - OPTIONAL. Time of detection.<a href="#section-2.7.3-4.4.1" class="pilcrow">¶</a></p>
+              <p id="section-2.7.3-4.3.1"><strong>event_timestamp</strong> - OPTIONAL. Time of detection.<a href="#section-2.7.3-4.3.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 </section>
@@ -2809,10 +2789,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.8.1-4.4.1"><strong>artifact_digest</strong> - OPTIONAL. A digest of the workload artifact (such as a container image) that the provenance describes, allowing the relying party to correlate the event with what is running.<a href="#section-2.8.1-4.4.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.8.1-4.5">
-              <p id="section-2.8.1-4.5.1"><strong>reason_admin</strong> - OPTIONAL. Localizable administrative description of the change, as defined in the Common Optional Claims (<a href="#common-optional-claims" class="auto internal xref">Section 2.2</a>).<a href="#section-2.8.1-4.5.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-2.8.1-4.6">
-              <p id="section-2.8.1-4.6.1"><strong>event_timestamp</strong> - OPTIONAL. The time the change occurred.<a href="#section-2.8.1-4.6.1" class="pilcrow">¶</a></p>
+              <p id="section-2.8.1-4.5.1"><strong>event_timestamp</strong> - OPTIONAL. The time the change occurred.<a href="#section-2.8.1-4.5.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-2.8.1-5">The following example is non-normative.<a href="#section-2.8.1-5" class="pilcrow">¶</a></p>
@@ -2883,10 +2860,7 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
               <p id="section-2.8.2-4.4.1"><strong>advisory_uri</strong> - OPTIONAL. A URI at which a full advisory or VEX statement can be retrieved.<a href="#section-2.8.2-4.4.1" class="pilcrow">¶</a></p>
 </li>
             <li class="normal" id="section-2.8.2-4.5">
-              <p id="section-2.8.2-4.5.1"><strong>reason_admin</strong> - OPTIONAL. Localizable administrative description, as defined in the Common Optional Claims (<a href="#common-optional-claims" class="auto internal xref">Section 2.2</a>).<a href="#section-2.8.2-4.5.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-2.8.2-4.6">
-              <p id="section-2.8.2-4.6.1"><strong>event_timestamp</strong> - OPTIONAL. The time the status changed.<a href="#section-2.8.2-4.6.1" class="pilcrow">¶</a></p>
+              <p id="section-2.8.2-4.5.1"><strong>event_timestamp</strong> - OPTIONAL. The time the status changed.<a href="#section-2.8.2-4.5.1" class="pilcrow">¶</a></p>
 </li>
           </ul>
 <p id="section-2.8.2-5">The following example is non-normative.<a href="#section-2.8.2-5" class="pilcrow">¶</a></p>
@@ -3240,10 +3214,13 @@ transitioning toward WIMSE-compliant infrastructure.<a href="#section-2.3-2" cla
           <p id="appendix-B-2.10.1">Clarified the distinction between <code>credential-renewal-failure</code> (operational outcome, multiple causes) and <code>posture-evaluation-failed</code> (a security-critical signal in its own right), and how the two relate when posture is the cause of a renewal failure.<a href="#appendix-B-2.10.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.11">
-          <p id="appendix-B-2.11.1">Replaced the free-form <code>change_description</code> field on <code>trust-domain-federation-updated</code> and the policy-change events with the localizable <code>reason_admin</code>/<code>reason_user</code> common claims, for consistency with the CAEP-aligned pattern.<a href="#appendix-B-2.11.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.11.1">Made <code>reason_admin</code>/<code>reason_user</code> usage consistent: removed the redundant per-event listings and rely on the Common Optional Claims section, which now states the claims are not repeated per event and any event MAY carry them.<a href="#appendix-B-2.11.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="appendix-B-2.12">
-          <p id="appendix-B-2.12.1">Carried the subject in the top-level <code>sub_id</code> claim (RFC 9493 format, per SSF) instead of a nonstandard nested <code>subject</code> member, updating every example; and specified that policy events take the trust-domain subject.<a href="#appendix-B-2.12.1" class="pilcrow">¶</a></p>
+          <p id="appendix-B-2.12.1">Replaced the free-form <code>change_description</code> field on <code>trust-domain-federation-updated</code> and the policy-change events with the localizable <code>reason_admin</code>/<code>reason_user</code> common claims, for consistency with the CAEP-aligned pattern.<a href="#appendix-B-2.12.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="appendix-B-2.13">
+          <p id="appendix-B-2.13.1">Carried the subject in the top-level <code>sub_id</code> claim (RFC 9493 format, per SSF) instead of a nonstandard nested <code>subject</code> member, updating every example; and specified that policy events take the trust-domain subject.<a href="#appendix-B-2.13.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="appendix-B-3">-02<a href="#appendix-B-3" class="pilcrow">¶</a></p>
