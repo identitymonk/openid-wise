@@ -39,6 +39,7 @@ normative:
   RFC7516:
   RFC7517:
   RFC7518:
+  RFC7519:
   RFC7523:
   RFC8126:
   RFC8417:
@@ -135,7 +136,6 @@ normative:
 
 informative:
   RFC6920:
-  RFC7519:
   SPIFFE:
     title: "Secure Production Identity Framework for Everyone"
     target: https://spiffe.io/docs/latest/spiffe-specs/spiffe/
@@ -226,6 +226,12 @@ https://schemas.openid.net/secevent/wise/event-type/
 
 A single underlying occurrence may cause a Transmitter to emit more than one SET — for example, a lifecycle change and its companion credential event, a runtime compromise and a resulting credential revocation, a posture failure and a resulting renewal failure, or a new federation and the trust anchors that accompany it. When a Transmitter emits multiple SETs that describe the same underlying occurrence, it SHOULD set the same value in the OPTIONAL `txn` (transaction identifier) claim {{RFC8417}} on each of them, so that a Receiver can recognise that the events share a cause. This applies regardless of event type.
 
+## Common Mandatory Claims {#mandatory-optional-claims}
+
+Every WISE event payload MUST include the following common mandatory claim. Mandatory common claims are omitted from the per-event attribute lists in the following sections to avoid repetition.
+
+- **event_timestamp** - REQUIRED. A JSON number containing a NumericDate, as defined in {{RFC7519}}, that identifies when the event occurred. For an event that reports a decision or detection, it identifies when the decision was made or the condition was detected, respectively. `event_timestamp` is a member of the individual event payload, not a top-level SET claim. Its value can differ from the containing SET's top-level `iat` value and from the optional `effective_at` value.
+
 ## Common Optional Claims {#common-optional-claims}
 
 Unless stated otherwise, any WISE event MAY include the common optional claims listed below. The `reason_admin`, `reason_user`, and `initiating_entity` claims are defined in Section 2 of {{CAEP}}. The `effective_at` claim is defined by this specification.
@@ -292,7 +298,6 @@ Attributes:
     - `unknown` - The storage mechanism is not known to the Transmitter.
     - Additional values MAY be defined by profiling specifications or private agreement between Transmitter and Receiver.
 - **key_storage_ecosystem** - OPTIONAL. Free-text description of the hardware or software environment protecting the key. Examples: "iPhone 17s, iOS 23 patch 6", "AWS Nitro Enclave", "Azure Confidential VM, AMD SEV-SNP", "FIPS 140-3 Level 3 HSM".
-- **event_timestamp** - OPTIONAL. The time at which the credential was issued. JSON number representing seconds since Unix epoch.
 
 The following example is non-normative.
 
@@ -310,7 +315,8 @@ The following example is non-normative.
     "https://schemas.openid.net/secevent/wise/event-type/credential-issued": {
       "credential_type": "wic",
       "credential_id": "serial:ABC123DEF456",
-      "expiry": 1700086400
+      "expiry": 1700086400,
+      "event_timestamp": 1700000000
     }
   }
 }
@@ -329,7 +335,6 @@ Attributes:
 - **previous_credential_id** - OPTIONAL. Identifier of the credential being replaced.
 - **new_credential_id** - OPTIONAL. Identifier of the newly issued credential.
 - **grace_period_end** - OPTIONAL. The time until which the previous credential remains valid. JSON number (NumericDate).
-- **event_timestamp** - OPTIONAL. The time at which the rotation occurred.
 
 The following example is non-normative.
 
@@ -348,7 +353,8 @@ The following example is non-normative.
       "credential_type": "wit",
       "previous_credential_id": "jti:wit-2024-q4-001",
       "new_credential_id": "jti:wit-2024-q4-002",
-      "grace_period_end": 1700003600
+      "grace_period_end": 1700003600,
+      "event_timestamp": 1700000000
     }
   }
 }
@@ -371,7 +377,6 @@ Attributes:
     - `superseded` - Replaced by a new credential.
     - `cessation` - The workload no longer operates.
     - `policy_violation` - Revoked due to a policy violation.
-- **event_timestamp** - OPTIONAL. The time at which revocation occurred.
 
 The following example is non-normative.
 
@@ -389,7 +394,8 @@ The following example is non-normative.
     "https://schemas.openid.net/secevent/wise/event-type/credential-revoked": {
       "credential_type": "wic",
       "credential_id": "serial:ABC123DEF456",
-      "reason": "compromise"
+      "reason": "compromise",
+      "event_timestamp": 1700000000
     }
   }
 }
@@ -406,7 +412,6 @@ Attributes:
 
 - **credential_type** - REQUIRED. The type of credential compromised.
 - **credential_id** - OPTIONAL. Identifier of the compromised credential.
-- **event_timestamp** - OPTIONAL. The time at which the compromise was detected.
 
 The following example is non-normative.
 
@@ -426,7 +431,8 @@ The following example is non-normative.
       "credential_id": "jti:wit-signing-key-2024-q4",
       "reason_admin": {
         "en": "Private key material detected in public repository"
-      }
+      },
+      "event_timestamp": 1700000000
     }
   }
 }
@@ -451,7 +457,6 @@ Attributes:
     - `posture_evaluation_failed` - The workload did not pass posture evaluation.
     - `policy_denied` - Issuance policy denied renewal.
     - `internal_error` - Internal error in the provisioning pipeline.
-- **event_timestamp** - OPTIONAL. Time the failure was detected.
 
 The following example is non-normative.
 
@@ -469,7 +474,8 @@ The following example is non-normative.
     "https://schemas.openid.net/secevent/wise/event-type/credential-renewal-failure": {
       "credential_type": "wit",
       "current_expiry": 1700003600,
-      "failure_reason": "posture_evaluation_failed"
+      "failure_reason": "posture_evaluation_failed",
+      "event_timestamp": 1700000000
     }
   }
 }
@@ -495,7 +501,6 @@ Attributes:
     - `policy_violation` - Suspended due to a policy violation.
     - `administrative` - Disabled by an administrator.
     - `maintenance` - Temporarily disabled for maintenance.
-- **event_timestamp** - OPTIONAL. Time of disablement.
 
 The following example is non-normative.
 
@@ -527,7 +532,6 @@ The `workload-enabled` event signals that a previously disabled workload is acti
 
 Attributes:
 
-- **event_timestamp** - OPTIONAL. Time of re-enablement.
 
 The following example is non-normative.
 
@@ -571,7 +575,6 @@ Attributes:
     - `missing_provenance` - Required provenance was missing or could not be verified.
     - `posture_degraded` - Posture evaluation indicated a degraded but non-failing state.
     - `compliance_drift` - The workload drifted from a compliance requirement.
-- **event_timestamp** - OPTIONAL. Time the degradation took effect.
 
 This event is complementary to, and does not overlap with, the related runtime and lifecycle events. `anomalous-behavior-detected` reports an observation (something unusual was seen) and is purely advisory; `workload-degraded` reports a decision by the authority to reduce trust, which may follow such an observation. `workload-compromised` and `workload-disabled` represent the fully-untrusted end of the range — a believed compromise or a suspension — whereas `workload-degraded` keeps the workload operational at a reduced trust level between full trust and suspension. A workload returns to full trust through `workload-restored`.
 
@@ -612,7 +615,6 @@ Attributes:
     - `remediated` - The condition that caused degradation was remediated.
     - `posture_restored` - Posture evaluation returned to a satisfactory state.
     - `administrative` - Restored by an administrator.
-- **event_timestamp** - OPTIONAL. Time the restoration took effect.
 
 The following example is non-normative.
 
@@ -645,7 +647,6 @@ The `workload-purged` event signals that a workload has been permanently removed
 
 Attributes:
 
-- **event_timestamp** - OPTIONAL. Time of removal.
 
 The following example is non-normative.
 
@@ -698,7 +699,6 @@ Attributes:
     - `new_environment` - A new environment (data center, region, or cloud provider) under the same trust domain was brought online.
     - `additional_key` - An additional concurrent anchor was introduced (for example, to support a new signature algorithm alongside an existing one).
     - `scheduled_rotation` - A new key was pre-staged ahead of a scheduled rotation.
-- **event_timestamp** - OPTIONAL. Time the anchor was added.
 
 The following example is non-normative.
 
@@ -725,7 +725,8 @@ The following example is non-normative.
         "crv": "P-256"
       },
       "effective_at": 1700000000,
-      "reason": "additional_key"
+      "reason": "additional_key",
+      "event_timestamp": 1700000000
     }
   }
 }
@@ -752,7 +753,6 @@ Attributes:
     - `compromise` - The previous anchor is believed compromised.
     - `policy_change` - Rotated due to updated security policy.
     - `expiry` - Proactive rotation before scheduled expiry.
-- **event_timestamp** - OPTIONAL. Time of rotation.
 
 The following example is non-normative.
 
@@ -775,7 +775,8 @@ The following example is non-normative.
       "jwks_uri": "https://authority.example.com/.well-known/jwks.json",
       "effective_at": 1700000000,
       "old_material_expiry": 1700604800,
-      "reason": "scheduled_rotation"
+      "reason": "scheduled_rotation",
+      "event_timestamp": 1700000000
     }
   }
 }
@@ -800,7 +801,6 @@ Attributes:
     - `policy_change` - Revoked due to updated security policy.
     - `superseded` - Replaced by other material and no longer needed.
     - `expiry` - The anchor reached end of life.
-- **event_timestamp** - OPTIONAL. Time of revocation.
 
 The following example is non-normative.
 
@@ -819,7 +819,8 @@ The following example is non-normative.
       "anchor_type": "x509_ca",
       "trust_domain": "trust.example.com",
       "key_id": "serial:CA-ROOT-2023-001",
-      "reason": "compromise"
+      "reason": "compromise",
+      "event_timestamp": 1700000000
     }
   }
 }
@@ -843,7 +844,6 @@ Attributes:
     - `expansion` - A new data center, region, or cloud provider was added to the enterprise.
     - `administrative` - Administrative decision to establish federation.
     - `contractual` - A new business relationship was established.
-- **event_timestamp** - OPTIONAL. Time the decision was made.
 
 The following example is non-normative.
 
@@ -863,7 +863,8 @@ The following example is non-normative.
       "anchor_type": "jwks",
       "jwks_uri": "https://authority.newpartner.example.org/.well-known/jwks.json",
       "effective_at": 1700000000,
-      "reason": "onboarding"
+      "reason": "onboarding",
+      "event_timestamp": 1700000000
     }
   }
 }
@@ -884,7 +885,6 @@ Attributes:
     - `anchor_update` - The trust anchors used to validate the federated domain changed.
     - `administrative` - Administrative decision.
     - `contractual` - Business relationship terms changed.
-- **event_timestamp** - OPTIONAL. Time the decision was made.
 
 The following example is non-normative.
 
@@ -902,7 +902,8 @@ The following example is non-normative.
     "https://schemas.openid.net/secevent/wise/event-type/trust-domain-federation-updated": {
       "trust_domain": "newpartner.example.org",
       "reason": "anchor_update",
-      "effective_at": 1700000000
+      "effective_at": 1700000000,
+      "event_timestamp": 1700000000
     }
   }
 }
@@ -923,7 +924,6 @@ Attributes:
     - `policy_violation` - Federation revoked due to policy.
     - `administrative` - Administrative decision to end federation.
     - `contractual` - Business relationship ended.
-- **event_timestamp** - OPTIONAL. Time the decision was made.
 
 The following example is non-normative.
 
@@ -941,7 +941,8 @@ The following example is non-normative.
     "https://schemas.openid.net/secevent/wise/event-type/trust-domain-federation-revoked": {
       "trust_domain": "partner.example.org",
       "reason": "administrative",
-      "effective_at": 1700604800
+      "effective_at": 1700604800,
+      "event_timestamp": 1700000000
     }
   }
 }
@@ -963,7 +964,6 @@ The `issuance-policy-changed` event signals that the policy governing credential
 Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
-- **event_timestamp** - OPTIONAL. Time the change was made.
 
 The following example is non-normative.
 
@@ -980,7 +980,8 @@ The following example is non-normative.
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/issuance-policy-changed": {
       "policy_id": "policy:issuance-v3",
-      "effective_at": 1700000000
+      "effective_at": 1700000000,
+      "event_timestamp": 1700000000
     }
   }
 }
@@ -996,7 +997,6 @@ The `posture-evaluation-policy-changed` event signals that the posture evaluatio
 Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
-- **event_timestamp** - OPTIONAL. Time the change was made.
 
 The following example is non-normative.
 
@@ -1013,7 +1013,8 @@ The following example is non-normative.
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/posture-evaluation-policy-changed": {
       "policy_id": "policy:posture-eval-v2",
-      "effective_at": 1700000000
+      "effective_at": 1700000000,
+      "event_timestamp": 1700000000
     }
   }
 }
@@ -1029,7 +1030,6 @@ The `validation-policy-changed` event signals that the policy used to validate w
 Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
-- **event_timestamp** - OPTIONAL. Time the change was made.
 
 The following example is non-normative.
 
@@ -1046,7 +1046,8 @@ The following example is non-normative.
   "events": {
     "https://schemas.openid.net/secevent/wise/event-type/validation-policy-changed": {
       "policy_id": "policy:validation-v5",
-      "effective_at": 1700000000
+      "effective_at": 1700000000,
+      "event_timestamp": 1700000000
     }
   }
 }
@@ -1073,7 +1074,6 @@ Attributes:
     - `image_mismatch` - The workload's binary or image did not match the expected measurement.
     - `configuration_noncompliant` - The runtime configuration did not meet policy.
     - `policy_denied` - Posture evaluation policy denied the workload.
-- **event_timestamp** - OPTIONAL. Time of the failure.
 
 The following example is non-normative.
 
@@ -1109,7 +1109,6 @@ This event does not imply that a prior failure occurred. It is generated each ti
 Attributes:
 
 - **evaluation_type** - OPTIONAL. The scope of evaluation that succeeded.
-- **event_timestamp** - OPTIONAL. Time of successful evaluation.
 
 The following example is non-normative.
 
@@ -1156,7 +1155,6 @@ Attributes:
     - `succeeded` - Re-evaluation completed successfully.
     - `pending` - Re-evaluation has not yet occurred.
     - `failed` - Re-evaluation was attempted and failed.
-- **event_timestamp** - OPTIONAL. Time of the change.
 
 For interoperability, when `previous_context` or `current_context` is present it MAY include the following keys. Each is OPTIONAL, because the corresponding notion may not exist in every deployment:
 
@@ -1193,7 +1191,8 @@ The following example is non-normative.
         "region": "eu-west-1",
         "platform": "kubernetes"
       },
-      "posture_evaluation_status": "succeeded"
+      "posture_evaluation_status": "succeeded",
+      "event_timestamp": 1700000000
     }
   }
 }
@@ -1209,7 +1208,6 @@ The `workload-compromised` event signals that a workload is believed to be compr
 Attributes:
 
 - **detection_method** - OPTIONAL. How the compromise was detected.
-- **event_timestamp** - OPTIONAL. Time of detection.
 
 The following example is non-normative.
 
@@ -1247,7 +1245,6 @@ Attributes:
     - `medium`
     - `high`
     - `critical`
-- **event_timestamp** - OPTIONAL. Time of detection.
 
 The following example is non-normative.
 
@@ -1291,7 +1288,6 @@ Attributes:
 - **provenance_uri** - OPTIONAL. A URI at which the affected provenance document can be retrieved.
 - **provenance_format** - OPTIONAL. A hint indicating the kind of document referenced, for example `sbom` or `attestation`.
 - **artifact_digest** - OPTIONAL. A digest of the workload artifact (such as a container image) that the provenance describes, allowing the relying party to correlate the event with what is running.
-- **event_timestamp** - OPTIONAL. The time the change occurred.
 
 The following example is non-normative.
 
@@ -1311,7 +1307,8 @@ The following example is non-normative.
       "provenance_uri": "https://provenance.example.com/payment-service/attestation",
       "reason_admin": {
         "en": "Build provenance attestation revoked by source repository owner"
-      }
+      },
+      "event_timestamp": 1700000000
     }
   }
 }
@@ -1334,7 +1331,6 @@ Attributes:
     - `under_investigation` - Whether the workload is affected is not yet known.
 - **severity** - OPTIONAL. A qualitative severity to help the relying party prioritise. Possible values: `low`, `medium`, `high`, `critical`.
 - **advisory_uri** - OPTIONAL. A URI at which a full advisory or VEX statement can be retrieved.
-- **event_timestamp** - OPTIONAL. The time the status changed.
 
 The following example is non-normative.
 
@@ -1353,7 +1349,8 @@ The following example is non-normative.
       "vulnerability_id": "CVE-2026-12345",
       "status": "affected",
       "severity": "critical",
-      "advisory_uri": "https://advisories.example.com/CVE-2026-12345"
+      "advisory_uri": "https://advisories.example.com/CVE-2026-12345",
+      "event_timestamp": 1700000000
     }
   }
 }
@@ -1676,6 +1673,7 @@ The authors want to recognize the contributions and reviews of the following ind
 -03
 
 - Made `effective_at` a Common Optional Claim available to any WISE event, removed the redundant per-event definitions, and clarified that, when omitted, a change is effective as of the containing SET's `iat` value and is processed immediately upon receipt.
+- Made `event_timestamp` a Common Mandatory Claim, removed the redundant per-event definitions, and updated all event examples to include it.
 - Completed the trust and federation lifecycle. Split the omnibus `trust-anchor-changed` event into explicit `trust-anchor-added`, `trust-anchor-rotated`, and `trust-anchor-revoked` events, and added `trust-domain-federation-established` and `trust-domain-federation-updated` to complement `trust-domain-federation-revoked`.
 - Added an optional `key_details` object using the standard JWK parameter names `kty`, `alg`, `use`, and `crv`, with values from the applicable JOSE registries, to `trust-anchor-added`, supporting the addition of a new algorithm (e.g., ECDSA alongside RSA) without rotation.
 - Added an informative reference for condition-bounded credentials and cited it in the credential freshness models discussion.
