@@ -23,8 +23,8 @@ author:
   email: jeff@authnopuz.xyz
 - ins: D. Sneeggen
   name: Dag Sneeggen
-  org: Signicat
-  email: dag.sneeggen@signicat.com
+  org: Dendro Systems
+  email: dag@dendro.systems
 - ins: S. O'Dell
   name: Sean O'Dell
   org: CVS Health
