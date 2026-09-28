@@ -227,11 +227,12 @@ A single underlying occurrence may cause a Transmitter to emit more than one SET
 
 ## Common Optional Claims {#common-optional-claims}
 
-Unless stated otherwise, any WISE event MAY include the common optional claims defined in Section 2 of {{CAEP}}. In particular:
+Unless stated otherwise, any WISE event MAY include the common optional claims listed below. The `reason_admin`, `reason_user`, and `initiating_entity` claims are defined in Section 2 of {{CAEP}}. The `effective_at` claim is defined by this specification.
 
 - **reason_admin** - OPTIONAL. A localizable administrative message intended for logging and auditing, as defined in {{CAEP}}. Its value is a JSON object containing one or more key/value pairs, where each key is a BCP 47 {{RFC5646}} language tag and each value is the locale-specific message.
 - **reason_user** - OPTIONAL. A localizable, user-facing message, as defined in {{CAEP}}. Its value follows the same JSON object structure as `reason_admin`.
 - **initiating_entity** - OPTIONAL. A JSON string describing what triggered the event, as defined in {{CAEP}}: one of `admin`, `user`, `policy`, or `system`.
+- **effective_at** - OPTIONAL. A JSON number containing a NumericDate, as defined in {{RFC7519}}, that identifies when the change described by the event takes effect. `effective_at` is a member of the individual event payload, not a top-level SET claim. Its value MAY be earlier than, equal to, or later than the `iat` value of the containing SET. If `effective_at` is omitted, the change MUST be treated as effective as of the containing SET's `iat` value. A Receiver processing the SET at or after that time MUST apply the event-specific processing requirements immediately upon receipt. This claim does not override event-specific processing requirements.
 
 To avoid repetition, these common claims are not listed in the per-event attribute definitions in the following sections; any event MAY carry them, and some examples include them for illustration.
 
@@ -691,7 +692,6 @@ Attributes:
     - `use` - The public key use, using a value from the "JSON Web Key Use" registry (e.g., `sig`, `enc`).
 - **jwks_uri** - OPTIONAL. When `anchor_type` is `jwks`, the URI to fetch the updated JWK Set.
 - **x509_bundle_uri** - OPTIONAL. When `anchor_type` is `x509_ca`, the URI to fetch the updated CA bundle.
-- **effective_at** - OPTIONAL. When the new anchor becomes active. JSON number (NumericDate).
 - **reason** - OPTIONAL. Why the anchor was added. Possible values:
     - `new_environment` - A new environment (data center, region, or cloud provider) under the same trust domain was brought online.
     - `additional_key` - An additional concurrent anchor was introduced (for example, to support a new signature algorithm alongside an existing one).
@@ -743,7 +743,6 @@ Attributes:
 - **new_key_id** - OPTIONAL. Identifier of the replacement anchor.
 - **jwks_uri** - OPTIONAL. When `anchor_type` is `jwks`, the URI to fetch the updated JWK Set.
 - **x509_bundle_uri** - OPTIONAL. When `anchor_type` is `x509_ca`, the URI to fetch the updated CA bundle.
-- **effective_at** - OPTIONAL. When the new material becomes active. JSON number (NumericDate).
 - **old_material_expiry** - OPTIONAL. When the previous material ceases to be valid (grace period end). JSON number (NumericDate).
 - **reason** - OPTIONAL. Why the rotation occurred. Possible values:
     - `scheduled_rotation` - Routine key rotation.
@@ -793,7 +792,6 @@ Attributes:
 - **key_id** - OPTIONAL. Identifier of the revoked anchor. For JWKS, the `kid` value. For X.509, the certificate serial number or Subject Key Identifier.
 - **jwks_uri** - OPTIONAL. When `anchor_type` is `jwks`, the URI to fetch the JWK Set reflecting the removal.
 - **x509_bundle_uri** - OPTIONAL. When `anchor_type` is `x509_ca`, the URI to fetch the CA bundle reflecting the removal.
-- **effective_at** - OPTIONAL. When the revocation takes effect. JSON number (NumericDate).
 - **reason** - OPTIONAL. Why the anchor was revoked. Possible values:
     - `compromise` - The anchor is believed compromised.
     - `policy_change` - Revoked due to updated security policy.
@@ -837,7 +835,6 @@ Attributes:
 - **anchor_type** - OPTIONAL. The type of trust material used to validate credentials from the new domain. Same values as in {{trust-anchor-added}}: `x509_ca` or `jwks`.
 - **jwks_uri** - OPTIONAL. When `anchor_type` is `jwks`, the URI to fetch the JWK Set {{RFC7517}} for the federated domain.
 - **x509_bundle_uri** - OPTIONAL. When `anchor_type` is `x509_ca`, the URI to fetch the CA bundle for the federated domain.
-- **effective_at** - OPTIONAL. When the federation becomes active. JSON number (NumericDate).
 - **reason** - OPTIONAL. Why federation was established. Possible values:
     - `onboarding` - A new organization joined the federation.
     - `expansion` - A new data center, region, or cloud provider was added to the enterprise.
@@ -879,7 +876,6 @@ The `trust-domain-federation-updated` event signals that the terms of an existin
 Attributes:
 
 - **trust_domain** - REQUIRED. The FQDN of the federated trust domain whose federation terms changed.
-- **effective_at** - OPTIONAL. When the updated terms take effect. JSON number (NumericDate).
 - **reason** - OPTIONAL. Why the federation was updated. Possible values:
     - `policy_change` - Updated due to a change in federation policy.
     - `anchor_update` - The trust anchors used to validate the federated domain changed.
@@ -924,7 +920,6 @@ Attributes:
     - `policy_violation` - Federation revoked due to policy.
     - `administrative` - Administrative decision to end federation.
     - `contractual` - Business relationship ended.
-- **effective_at** - OPTIONAL. When the revocation takes effect. JSON number (NumericDate).
 - **event_timestamp** - OPTIONAL. Time the decision was made.
 
 The following example is non-normative.
@@ -965,7 +960,6 @@ The `issuance-policy-changed` event signals that the policy governing credential
 Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
-- **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
 
 The following example is non-normative.
@@ -999,7 +993,6 @@ The `posture-evaluation-policy-changed` event signals that the posture evaluatio
 Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
-- **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
 
 The following example is non-normative.
@@ -1033,7 +1026,6 @@ The `validation-policy-changed` event signals that the policy used to validate w
 Attributes:
 
 - **policy_id** - OPTIONAL. Identifier of the policy that changed.
-- **effective_at** - OPTIONAL. When the new policy takes effect.
 - **event_timestamp** - OPTIONAL. Time the change was made.
 
 The following example is non-normative.
@@ -1680,6 +1672,7 @@ The authors want to recognize the contributions and reviews of the following ind
 
 -03
 
+- Made `effective_at` a Common Optional Claim available to any WISE event, removed the redundant per-event definitions, and clarified that, when omitted, a change is effective as of the containing SET's `iat` value and is processed immediately upon receipt.
 - Completed the trust and federation lifecycle. Split the omnibus `trust-anchor-changed` event into explicit `trust-anchor-added`, `trust-anchor-rotated`, and `trust-anchor-revoked` events, and added `trust-domain-federation-established` and `trust-domain-federation-updated` to complement `trust-domain-federation-revoked`.
 - Added an optional `key_details` object (`type`, `name`, `use`, aligned with the IANA JOSE registries) to `trust-anchor-added`, supporting the addition of a new algorithm (e.g., ECDSA alongside RSA) without rotation.
 - Added an informative reference for condition-bounded credentials and cited it in the credential freshness models discussion.
