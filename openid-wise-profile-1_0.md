@@ -37,6 +37,8 @@ author:
 normative:
   RFC5646:
   RFC7516:
+  RFC7517:
+  RFC7518:
   RFC7523:
   RFC8126:
   RFC8417:
@@ -134,7 +136,6 @@ normative:
 informative:
   RFC6920:
   RFC7519:
-  RFC7517:
   SPIFFE:
     title: "Secure Production Identity Framework for Everyone"
     target: https://spiffe.io/docs/latest/spiffe-specs/spiffe/
@@ -686,10 +687,11 @@ Attributes:
     - `jwks` - JSON Web Key Set {{RFC7517}} used to validate Workload Identity Tokens (WIT).
 - **trust_domain** - REQUIRED. The FQDN of the trust domain the anchor belongs to.
 - **key_id** - OPTIONAL. Identifier of the added anchor. For JWKS, the `kid` value. For X.509, the certificate serial number or Subject Key Identifier.
-- **key_details** - OPTIONAL. A JSON object describing the added key, so a receiver can act (for example, recognise support for a new signature algorithm such as ECDSA alongside RSA) without fetching and diffing the bundle. When present, its members SHOULD use values from the JSON Object Signing and Encryption (JOSE) registries {{IANA.JOSE}}:
-    - `type` - The key type, using a value from the "JSON Web Key Types" registry (e.g., `EC`, `RSA`, `OKP`, `oct`).
-    - `name` - The algorithm, using an "Algorithm Name" from the "JSON Web Signature and Encryption Algorithms" registry (e.g., `RS256`, `ES256`, `EdDSA`).
-    - `use` - The public key use, using a value from the "JSON Web Key Use" registry (e.g., `sig`, `enc`).
+- **key_details** - OPTIONAL. A JSON object carrying selected JSON Web Key (JWK) parameters that describe the added key, so a Receiver can act (for example, recognise support for a new signature algorithm such as ECDSA alongside RSA) without fetching and comparing the bundle. The object is not itself a complete JWK. When present, `key_details` MUST contain `kty` and MAY contain `alg`, `use`, and `crv`. These members use the names and semantics of the corresponding JWK parameters defined in {{RFC7517}} and {{RFC7518}}, and their values SHOULD be taken from the applicable JSON Object Signing and Encryption (JOSE) registries {{IANA.JOSE}}:
+    - `kty` - REQUIRED. The JWK Key Type value identifying the cryptographic algorithm family used with the key (e.g., `EC`, `RSA`, `OKP`, or `oct`).
+    - `alg` - OPTIONAL. The JWK Algorithm value identifying the algorithm intended for use with the key (e.g., `RS256`, `ES256`, or `EdDSA`).
+    - `use` - OPTIONAL. The JWK Public Key Use value identifying the intended use of the public key (e.g., `sig` or `enc`).
+    - `crv` - OPTIONAL. The JWK Curve value identifying the cryptographic curve used with an EC or OKP key (e.g., `P-256` or `Ed25519`). This member is applicable only to key types for which a `crv` parameter is defined.
 - **jwks_uri** - OPTIONAL. When `anchor_type` is `jwks`, the URI to fetch the updated JWK Set.
 - **x509_bundle_uri** - OPTIONAL. When `anchor_type` is `x509_ca`, the URI to fetch the updated CA bundle.
 - **reason** - OPTIONAL. Why the anchor was added. Possible values:
@@ -717,9 +719,10 @@ The following example is non-normative.
       "jwks_uri": "https://authority.example.com/.well-known/jwks.json",
       "key_id": "kid:ecdsa-2026",
       "key_details": {
-        "type": "EC",
-        "name": "ES256",
-        "use": "sig"
+        "kty": "EC",
+        "alg": "ES256",
+        "use": "sig",
+        "crv": "P-256"
       },
       "effective_at": 1700000000,
       "reason": "additional_key"
@@ -1674,7 +1677,7 @@ The authors want to recognize the contributions and reviews of the following ind
 
 - Made `effective_at` a Common Optional Claim available to any WISE event, removed the redundant per-event definitions, and clarified that, when omitted, a change is effective as of the containing SET's `iat` value and is processed immediately upon receipt.
 - Completed the trust and federation lifecycle. Split the omnibus `trust-anchor-changed` event into explicit `trust-anchor-added`, `trust-anchor-rotated`, and `trust-anchor-revoked` events, and added `trust-domain-federation-established` and `trust-domain-federation-updated` to complement `trust-domain-federation-revoked`.
-- Added an optional `key_details` object (`type`, `name`, `use`, aligned with the IANA JOSE registries) to `trust-anchor-added`, supporting the addition of a new algorithm (e.g., ECDSA alongside RSA) without rotation.
+- Added an optional `key_details` object using the standard JWK parameter names `kty`, `alg`, `use`, and `crv`, with values from the applicable JOSE registries, to `trust-anchor-added`, supporting the addition of a new algorithm (e.g., ECDSA alongside RSA) without rotation.
 - Added an informative reference for condition-bounded credentials and cited it in the credential freshness models discussion.
 - Corrected the description of condition-liveness to state that it removes (rather than reduces) the local deprovisioning window for conditions the endpoint can evaluate itself.
 - Noted in Compromise Response that credential rejection only takes effect at the next operation, so Receivers holding active connections with an affected workload should also terminate them (best-effort).
