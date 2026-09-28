@@ -226,7 +226,7 @@ https://schemas.openid.net/secevent/wise/event-type/
 
 A single underlying occurrence may cause a Transmitter to emit more than one SET. For example, when a workload is disabled, the Transmitter emits a `workload-disabled` event together with an accompanying `credential-revoked` event for each credential the disablement invalidates.
 
-A Transmitter SHOULD set the same value in the OPTIONAL `txn` (transaction identifier) claim {{RFC8417}} on all SETs arising from the same occurrence, whatever their event types, so that a Receiver can recognise that they share a cause.
+A Transmitter SHOULD set the same value in the OPTIONAL `txn` (transaction identifier) claim {{RFC8417}} on all SETs arising from the same occurrence, whatever their event types, so that a Receiver can recognize that they share a cause.
 
 ## Common Mandatory Claims {#mandatory-optional-claims}
 
@@ -268,7 +268,7 @@ credential types are included to enable security event signaling for
 environments operating heterogeneous credential ecosystems or
 transitioning toward WIMSE-compliant infrastructure.
 
-Proof-of-possession credentials bind a key to the workload identity: a WIT carries the public key in its `cnf` claim, and the corresponding private key is used to produce Workload Proof Tokens (WPT) {{WPT}}. WISE does not define separate events for the lifecycle of such keys. Because a bound key has no value once its credential is revoked, a compromised or rotated key is signalled through the credential events in this section: revoke the affected credential (with `reason` set to `key_compromise` where applicable) and, where a replacement is issued, emit `credential-rotated` or `credential-issued`.
+Proof-of-possession credentials bind a key to the workload identity: a WIT carries the public key in its `cnf` claim, and the corresponding private key is used to produce Workload Proof Tokens (WPT) {{WPT}}. WISE does not define separate events for the lifecycle of such keys. Because a bound key has no value once its credential is revoked, a compromised or rotated key is signaled through the credential events in this section: revoke the affected credential (with `reason` set to `key_compromise` where applicable) and, where a replacement is issued, emit `credential-rotated` or `credential-issued`.
 
 ### credential-issued
 
@@ -494,7 +494,7 @@ Each of these events conveys only the lifecycle state change; the corresponding 
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-disabled`
 
-The `workload-disabled` event signals that the trust domain authority has suspended a workload. The authority will no longer issue credentials for this workload, and it cancels the workload's currently valid credentials. This event conveys only the lifecycle state change; the resulting credential cancellation is signalled separately through accompanying `credential-revoked` events. A Transmitter SHOULD emit those credential events together with this event.
+The `workload-disabled` event signals that the trust domain authority has suspended a workload. The authority will no longer issue credentials for this workload, and it cancels the workload's currently valid credentials. This event conveys only the lifecycle state change; the resulting credential cancellation is signaled separately through accompanying `credential-revoked` events. A Transmitter SHOULD emit those credential events together with this event.
 
 Attributes:
 
@@ -530,7 +530,7 @@ The following example is non-normative.
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-enabled`
 
-The `workload-enabled` event signals that a previously disabled workload is active again. The trust domain authority will resume issuing credentials for this workload. As with disablement, this event conveys only the lifecycle state change; any credential provisioned as a result is signalled separately through an accompanying `credential-issued` event.
+The `workload-enabled` event signals that a previously disabled workload is active again. The trust domain authority will resume issuing credentials for this workload. As with disablement, this event conveys only the lifecycle state change; any credential provisioned as a result is signaled separately through an accompanying `credential-issued` event.
 
 Attributes:
 
@@ -645,7 +645,7 @@ The following example is non-normative.
 
 Event Type URI: `https://schemas.openid.net/secevent/wise/event-type/workload-purged`
 
-The `workload-purged` event signals that a workload has been permanently removed from the trust domain. This is irreversible. The workload will not be re-provisioned. All credentials previously issued for this workload MUST be considered invalid. As with `workload-disabled`, this event conveys only the lifecycle state change; the resulting credential cancellation is signalled separately through accompanying `credential-revoked` events.
+The `workload-purged` event signals that a workload has been permanently removed from the trust domain. This is irreversible. The workload will not be re-provisioned. All credentials previously issued for this workload MUST be considered invalid. As with `workload-disabled`, this event conveys only the lifecycle state change; the resulting credential cancellation is signaled separately through accompanying `credential-revoked` events.
 
 Attributes:
 
@@ -675,7 +675,7 @@ The following example is non-normative.
 
 These events signal changes to the trust material and federation relationships that federated peers and relying parties use to validate workload identity credentials from a trust domain.
 
-Two related lifecycles are covered, each modelled with explicit create, update, and delete events. The trust anchors (keys and CAs) that validate a trust domain's credentials are managed through `trust-anchor-added`, `trust-anchor-rotated`, and `trust-anchor-revoked`. The federation relationship between trust domains, which determines whether one domain accepts credentials issued by another, is managed through `trust-domain-federation-established`, `trust-domain-federation-updated`, and `trust-domain-federation-revoked`. Replacing an entire trust bundle in a single operation is conveyed as the corresponding set of `trust-anchor-added` and `trust-anchor-revoked` events.
+Two related lifecycles are covered, each modeled with explicit create, update, and delete events. The trust anchors (keys and CAs) that validate a trust domain's credentials are managed through `trust-anchor-added`, `trust-anchor-rotated`, and `trust-anchor-revoked`. The federation relationship between trust domains, which determines whether one domain accepts credentials issued by another, is managed through `trust-domain-federation-established`, `trust-domain-federation-updated`, and `trust-domain-federation-revoked`. Replacing an entire trust bundle in a single operation is conveyed as the corresponding set of `trust-anchor-added` and `trust-anchor-revoked` events.
 
 ### trust-anchor-added
 
@@ -690,7 +690,7 @@ Attributes:
     - `jwks` - JSON Web Key Set {{RFC7517}} used to validate Workload Identity Tokens (WIT).
 - **trust_domain** - REQUIRED. The FQDN of the trust domain the anchor belongs to.
 - **key_id** - OPTIONAL. Identifier of the added anchor. For JWKS, the `kid` value. For X.509, the certificate serial number or Subject Key Identifier.
-- **key_details** - OPTIONAL. A JSON object carrying selected JSON Web Key (JWK) parameters that describe the added key, so a Receiver can act (for example, recognise support for a new signature algorithm such as ECDSA alongside RSA) without fetching and comparing the bundle. The object is not itself a complete JWK. When present, `key_details` MUST contain `kty` and MAY contain `alg`, `use`, and `crv`. These members use the names and semantics of the corresponding JWK parameters defined in {{RFC7517}} and {{RFC7518}}, and their values SHOULD be taken from the applicable JSON Object Signing and Encryption (JOSE) registries {{IANA.JOSE}}:
+- **key_details** - OPTIONAL. A JSON object carrying selected JSON Web Key (JWK) parameters that describe the added key, so a Receiver can act (for example, recognize support for a new signature algorithm such as ECDSA alongside RSA) without fetching and comparing the bundle. The object is not itself a complete JWK. When present, `key_details` MUST contain `kty` and MAY contain `alg`, `use`, and `crv`. These members use the names and semantics of the corresponding JWK parameters defined in {{RFC7517}} and {{RFC7518}}, and their values SHOULD be taken from the applicable JSON Object Signing and Encryption (JOSE) registries {{IANA.JOSE}}:
     - `kty` - REQUIRED. The JWK Key Type value identifying the cryptographic algorithm family used with the key (e.g., `EC`, `RSA`, `OKP`, or `oct`).
     - `alg` - OPTIONAL. The JWK Algorithm value identifying the algorithm intended for use with the key (e.g., `RS256`, `ES256`, or `EdDSA`).
     - `use` - OPTIONAL. The JWK Public Key Use value identifying the intended use of the public key (e.g., `sig` or `enc`).
@@ -1331,7 +1331,7 @@ Attributes:
     - `not_affected` - No remediation is required (for example, the vulnerable code is not reachable).
     - `fixed` - This workload contains a fix for the vulnerability.
     - `under_investigation` - Whether the workload is affected is not yet known.
-- **severity** - OPTIONAL. A qualitative severity to help the relying party prioritise. Possible values: `low`, `medium`, `high`, `critical`.
+- **severity** - OPTIONAL. A qualitative severity to help the relying party prioritize. Possible values: `low`, `medium`, `high`, `critical`.
 - **advisory_uri** - OPTIONAL. A URI at which a full advisory or VEX statement can be retrieved.
 
 The following example is non-normative.
@@ -1440,7 +1440,7 @@ Access to WISE event streams MUST be authorized. Transmitters MUST verify that R
 
 ## Compromise Response
 
-Several WISE events indicate that a credential, key, trust anchor, federation, or workload can no longer be trusted. This is signalled either by an event whose purpose is to report compromise (`credential-compromised`, `workload-compromised`) or by any event carrying a `reason` of `compromise` or `key_compromise`. Upon receiving any such event — regardless of event type, including events defined by future revisions or profiling specifications — Receivers SHOULD take immediate action appropriate to the affected object (for example, reject the affected credentials, keys, or trust material, or isolate the affected workload) without waiting for additional confirmation.
+Several WISE events indicate that a credential, key, trust anchor, federation, or workload can no longer be trusted. This is signaled either by an event whose purpose is to report compromise (`credential-compromised`, `workload-compromised`) or by any event carrying a `reason` of `compromise` or `key_compromise`. Upon receiving any such event — regardless of event type, including events defined by future revisions or profiling specifications — Receivers SHOULD take immediate action appropriate to the affected object (for example, reject the affected credentials, keys, or trust material, or isolate the affected workload) without waiting for additional confirmation.
 
 Events in this document that carry such a signal include `credential-compromised`; `credential-revoked` (with reason `compromise` or `key_compromise`); `trust-anchor-rotated` and `trust-anchor-revoked` (with reason `compromise`); `trust-domain-federation-revoked` (with reason `compromise`); `workload-disabled` (with reason `compromise`); and `workload-compromised`.
 
@@ -1450,11 +1450,11 @@ Rejecting credentials only takes effect at the next credential check or proof-of
 
 Deployments use different mechanisms to limit the exposure window of a compromised or deprovisioned workload:
 
-- Issuer-side status signalling, where the trust domain authority communicates lifecycle changes to relying parties through an event channel. The events defined in this specification serve this purpose.
+- Issuer-side status signaling, where the trust domain authority communicates lifecycle changes to relying parties through an event channel. The events defined in this specification serve this purpose.
 - Short credential lifetime, where the remaining validity period bounds the exposure window. In the WIMSE model, credentials are intentionally short-lived to force posture evaluation before re-issuance.
 - Condition-liveness, where a locally observable condition (hardware release policy, TEE state, platform integrity measurement) gates each key operation. Failure of the condition prevents the next presentation or handshake step without requiring a remote signal.
 
-These mechanisms are complementary, not mutually exclusive. Condition-bounded credentials reduce the local deprovisioning window but cannot observe externally originated changes: issuer policy withdrawal, trust anchor rotation, cross-domain incident response, or administrative decisions to terminate an established connection. WISE events address these cases. Deployments combining short-lived credentials with condition-liveness properties still benefit from issuer-side signalling for lifecycle changes that no local mechanism can detect.
+These mechanisms are complementary, not mutually exclusive. Condition-bounded credentials reduce the local deprovisioning window but cannot observe externally originated changes: issuer policy withdrawal, trust anchor rotation, cross-domain incident response, or administrative decisions to terminate an established connection. WISE events address these cases. Deployments combining short-lived credentials with condition-liveness properties still benefit from issuer-side signaling for lifecycle changes that no local mechanism can detect.
 
 ## Supply Chain Signals
 
@@ -1674,6 +1674,7 @@ The authors want to recognize the contributions and reviews of the following ind
 
 -03
 
+- Standardized the draft on American English spelling.
 - Made `effective_at` a Common Optional Claim available to any WISE event, removed the redundant per-event definitions, and clarified that, when omitted, a change is effective as of the containing SET's `iat` value and is processed immediately upon receipt.
 - Made `event_timestamp` a Common Mandatory Claim, removed the redundant per-event definitions, and updated all event examples to include it.
 - Completed the trust and federation lifecycle. Split the omnibus `trust-anchor-changed` event into explicit `trust-anchor-added`, `trust-anchor-rotated`, and `trust-anchor-revoked` events, and added `trust-domain-federation-established` and `trust-domain-federation-updated` to complement `trust-domain-federation-revoked`.
@@ -1682,7 +1683,7 @@ The authors want to recognize the contributions and reviews of the following ind
 - Corrected the description of condition-liveness to state that it removes (rather than reduces) the local deprovisioning window for conditions the endpoint can evaluate itself.
 - Noted in Compromise Response that credential rejection only takes effect at the next operation, so Receivers holding active connections with an affected workload should also terminate them (best-effort).
 - Added a general "Correlating Related Events" rule: a Transmitter SHOULD set a shared `txn` claim across all SETs describing one underlying occurrence, regardless of event type (replacing the per-event guidance). Added conditional pairing guidance to `workload-compromised`.
-- Generalised the Compromise Response rule to apply to any event carrying a `compromise` or `key_compromise` signal, rather than an enumerated list of event types.
+- Generalized the Compromise Response rule to apply to any event carrying a `compromise` or `key_compromise` signal, rather than an enumerated list of event types.
 - Defined a minimal interoperable key set (`region`, `zone`, `platform`, `cluster`, `image`, each optional) for the `previous_context`/`current_context` fields of `workload-baseline-changed`, and allowed profile-specific extension.
 - Expanded the `key_storage` values on `credential-issued` from the binary `hardware`/`software` to `software`, `software_encrypted`, `hardware_tpm`, `hardware_hsm`, `hardware_secure_enclave`, `vaulted`, and `unknown`, so a Receiver can distinguish key-protection strength when making a trust decision.
 - Added a single Privacy Considerations note covering over-disclosure in all free-form/descriptive fields (`key_storage_ecosystem`, `previous_context`, `current_context`), replacing per-field guidance.
