@@ -1,0 +1,17 @@
+<reference anchor="RFC6920" target="https://www.rfc-editor.org/info/rfc6920">
+  <front>
+    <title>Naming Things with Hashes</title>
+    <author fullname="S. Farrell" initials="S." surname="Farrell"/>
+    <author fullname="D. Kutscher" initials="D." surname="Kutscher"/>
+    <author fullname="C. Dannewitz" initials="C." surname="Dannewitz"/>
+    <author fullname="B. Ohlman" initials="B." surname="Ohlman"/>
+    <author fullname="A. Keranen" initials="A." surname="Keranen"/>
+    <author fullname="P. Hallam-Baker" initials="P." surname="Hallam-Baker"/>
+    <date month="April" year="2013"/>
+    <abstract>
+      <t>This document defines a set of ways to identify a thing (a digital object in this case) using the output from a hash function. It specifies a new URI scheme for this purpose, a way to map these to HTTP URLs, and binary and human-speakable formats for these names. The various formats are designed to support, but not require, a strong link to the referenced object, such that the referenced object may be authenticated to the same degree as the reference to it. The reason for this work is to standardise current uses of hash outputs in URLs and to support new information-centric applications and other uses of hash outputs in protocols.</t>
+    </abstract>
+  </front>
+  <seriesInfo name="RFC" value="6920"/>
+  <seriesInfo name="DOI" value="10.17487/RFC6920"/>
+</reference>

@@ -1,0 +1,12 @@
+<reference anchor="RFC7518" target="https://www.rfc-editor.org/info/rfc7518">
+  <front>
+    <title>JSON Web Algorithms (JWA)</title>
+    <author fullname="M. Jones" initials="M." surname="Jones"/>
+    <date month="May" year="2015"/>
+    <abstract>
+      <t>This specification registers cryptographic algorithms and identifiers to be used with the JSON Web Signature (JWS), JSON Web Encryption (JWE), and JSON Web Key (JWK) specifications. It defines several IANA registries for these identifiers.</t>
+    </abstract>
+  </front>
+  <seriesInfo name="RFC" value="7518"/>
+  <seriesInfo name="DOI" value="10.17487/RFC7518"/>
+</reference>
