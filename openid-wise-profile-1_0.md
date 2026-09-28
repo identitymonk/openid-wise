@@ -224,7 +224,9 @@ https://schemas.openid.net/secevent/wise/event-type/
 
 ## Correlating Related Events {#correlating-related-events}
 
-A single underlying occurrence may cause a Transmitter to emit more than one SET — for example, a lifecycle change and its companion credential event, a runtime compromise and a resulting credential revocation, a posture failure and a resulting renewal failure, or a new federation and the trust anchors that accompany it. When a Transmitter emits multiple SETs that describe the same underlying occurrence, it SHOULD set the same value in the OPTIONAL `txn` (transaction identifier) claim {{RFC8417}} on each of them, so that a Receiver can recognise that the events share a cause. This applies regardless of event type.
+A single underlying occurrence may cause a Transmitter to emit more than one SET. For example, when a workload is disabled, the Transmitter emits a `workload-disabled` event together with an accompanying `credential-revoked` event for each credential the disablement invalidates.
+
+A Transmitter SHOULD set the same value in the OPTIONAL `txn` (transaction identifier) claim {{RFC8417}} on all SETs arising from the same occurrence, whatever their event types, so that a Receiver can recognise that they share a cause.
 
 ## Common Mandatory Claims {#mandatory-optional-claims}
 
