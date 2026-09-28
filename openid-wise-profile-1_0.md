@@ -91,10 +91,10 @@ normative:
     date: 2025
   WIMSE-ARCH:
     title: "Workload Identity in a Multi System Environment (WIMSE) Architecture"
-    target: https://www.ietf.org/archive/id/draft-ietf-wimse-arch-07.html
+    target: https://datatracker.ietf.org/doc/draft-ietf-wimse-arch/
     author:
       - ins: J. Salowey
-        name: Joe Salowey
+        name: Joseph Salowey
       - ins: Y. Rosomakho
         name: Yaroslav Rosomakho
       - ins: H. Tschofenig
@@ -140,24 +140,32 @@ informative:
     title: "Secure Production Identity Framework for Everyone"
     target: https://spiffe.io/docs/latest/spiffe-specs/spiffe/
     date: 2024
-  AGENT-AUTH:
-    title: "AI Agent Authentication and Authorization"
-    target: https://www.ietf.org/archive/id/draft-klrc-aiagent-auth-02.html
+  AIMS:
+    title: "AI Identity Management System"
+    target: https://datatracker.ietf.org/doc/draft-ietf-wimse-aims/
     author:
       - ins: P. Kasselman
         name: Pieter Kasselman
-      - ins: D. Hardt
-        name: Dick Hardt
-      - ins: A. Schwenkschuster
-        name: Arndt Schwenkschuster
+      - ins: J. Lombardo
+        name: Jean-François Lombardo
+      - ins: Y. Rosomakho
+        name: Yaroslav Rosomakho
+      - ins: B. Campbell
+        name: Brian Campbell
+      - ins: N. Steele
+        name: Nick Steele
+      - ins: A. Parecki
+        name: Aaron Parecki
     date: 2026
   CIMD:
-    title: "Client ID Metadata Document"
-    target: https://www.ietf.org/archive/id/draft-parecki-oauth-client-id-metadata-document-07.html
+    title: "OAuth Client ID Metadata Document"
+    target: https://datatracker.ietf.org/doc/draft-ietf-oauth-client-id-metadata-document/
     author:
       - ins: A. Parecki
         name: Aaron Parecki
-    date: 2025
+      - ins: E. Smith
+        name: Emelia Smith
+    date: 2026
   VEX:
     title: "Minimum Requirements for Vulnerability Exploitability eXchange (VEX)"
     target: https://www.cisa.gov/resources-tools/resources/minimum-requirements-vulnerability-exploitability-exchange-vex
@@ -183,7 +191,7 @@ Modern distributed systems rely on workloads, software entities executing for a 
 
 The WIMSE architecture {{WIMSE-ARCH}} establishes the foundational model for workload identity: a trust domain, typically governed by a single authority, provisions cryptographic credentials to workloads that allow them to authenticate to one another. The credentials are short-lived by design, binding a workload identifier to key material through either Workload Identity Tokens (WIT) at the application layer or Workload Identity Certificates (WIC) at the transport layer, as defined in {{WIMSE-CRED}}.
 
-The emergence of AI agents as a new category of workload, as described in {{AGENT-AUTH}}, introduces additional security coordination requirements. AI agents interact with tools, services, and other agents across trust domain boundaries, often autonomously. Like any workload, they require identifiers, credentials, and posture evaluation before credentials are issued. The security events defined in this specification apply equally to traditional service workloads and to AI agent workloads.
+The emergence of AI agents as a new category of workload, as described in {{AIMS}}, introduces additional security coordination requirements. AI agents interact with tools, services, and other agents across trust domain boundaries, often autonomously. Like any workload, they require identifiers, credentials, and posture evaluation before credentials are issued. The security events defined in this specification apply equally to traditional service workloads and to AI agent workloads.
 
 While the RISC {{RISC}} profile addresses risk signals for user accounts and the CAEP {{CAEP}} profile addresses continuous access evaluation for user sessions, no standardized event profile exists for communicating security-relevant state changes about workload identities. This specification fills that gap.
 
@@ -1674,6 +1682,7 @@ The authors want to recognize the contributions and reviews of the following ind
 
 -03
 
+- Updated the WIMSE Architecture, AIMS, and OAuth Client ID Metadata Document references to their current rolling Internet-Draft URLs and author metadata.
 - Standardized the draft on American English spelling.
 - Made `effective_at` a Common Optional Claim available to any WISE event, removed the redundant per-event definitions, and clarified that, when omitted, a change is effective as of the containing SET's `iat` value and is processed immediately upon receipt.
 - Made `event_timestamp` a Common Mandatory Claim, removed the redundant per-event definitions, and updated all event examples to include it.
